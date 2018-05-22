@@ -1,0 +1,38 @@
+.pager__container {
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+    @include medium-phone {
+        width: auto;
+        margin-left: 10px;
+        text-align: right;
+    }
+}
+.pager {
+    padding: 10px;
+    font-weight: bold;
+    color: $accent;
+    display: inline-block;
+}
+.pager--disabled {
+    color: $gray;
+    cursor: default;
+    &:hover {
+        color: $gray;
+    }
+}
+
+.pager--page-size {
+    margin-top: 10px;
+}
+.page-size {
+    color: $accent;
+}
+.page-size--active {
+    color: $dark-gray;
+    cursor: default;
+    font-weight: bold;
+    &:hover {
+        color: $dark-gray;
+    }
+}
