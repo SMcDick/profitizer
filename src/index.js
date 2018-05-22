@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './scss/style.css';
-import App from './App';
+import Orders from './orders';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<Orders source="http://localhost:7555/api/sales/incompmlete" />, document.getElementById('root'));
 registerServiceWorker();
