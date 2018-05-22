@@ -1,18 +1,38 @@
 import React, { Component } from 'react';
+import Orders from './orders';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
+    constructor(){
+        super();
+        this.state = {
+            orders: [],
+            order: ''
+        }
+        this.handleChange = this.handleChange.bind( this );
+    }
+    handleChange( e ){
+        this.setState({ 'order': e })
+    }
+
+    render() {
+        console.log( this.state.order )
+        if( this.state.order !== '' ){
+            return (
+                <h1>Order Number is { this.state.order }</h1>
+            );
+        } else {
+            return (
+                <div className="App width-wrapper">
+                    <Orders
+                        source="http://localhost:7555/api/sales/incomplete"
+                        order={this.state.order}
+                        orders={this.state.orders}
+                        onOrderChange={ this.handleChange }
+                    />
+                </div>
+            );
+        }
+    }
 }
 
 export default App;
