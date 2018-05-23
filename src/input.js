@@ -10,7 +10,6 @@ class Input extends Component {
                     className="input--text"
                     type={this.props.type }
                     defaultValue={this.props.value}
-                    onChange={ this.props.onChange }
                     name={ this.props.name }
                     readOnly={ this.props.readonly } />
             </div>
@@ -21,7 +20,6 @@ Input.propTypes = {
     label: PropType.string,
     type: PropType.string,
     value: PropType.string,
-    onChange: PropType.func,
     name: PropType.string,
     readonly: PropType.bool
 }
