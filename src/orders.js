@@ -1,23 +1,20 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import propTypes from 'prop-types';
-import Form from './form';
 
 class Orders extends Component {
 
     constructor( props ){
         super( props )
         this.state = {
-            orders: [],
-            order: ''
+            orders: []
         }
         console.log( props );
-        this.handleClick = this.handleClick.bind( this );
+        this.chooseOrder = this.chooseOrder.bind( this );
     }
-    handleClick( e, id ){
+    chooseOrder( e, order ){
         e.preventDefault();
-        // this.setState( 'order', 'temp' );
-        this.props.onOrderChange( id )
+        this.props.onOrderChange( order )
     }
 
     componentDidMount() {
@@ -28,23 +25,17 @@ class Orders extends Component {
                 });
             })
     }
-
-    // componentWillUnmount() {
-    //     this.serverRequest.abort();
-    // }
-
     render() {
         return (
             <div>
-            <Form />
-            <h1>Jobs!</h1>
-            { this.state.orders.map( order => {
-                return (
-                    <div key={order.Order_Id} className="job">
-                        <a href={"http://localhost:7555/api/sale/" + order.Order_Id } data-orderno={order.Order_Id} onClick={e => this.handleClick( e, order.Order_Id )}>{ order.Description }</a>
-                    </div>
-                );
-            })}
+                <h1>Orders</h1>
+                { this.state.orders.map( order => {
+                    return (
+                        <div key={order.Order_Id} className="job">
+                            <a href="#" onClick={e => this.chooseOrder( e, order )}>{ order.Description }</a>
+                        </div>
+                    );
+                })}
             </div>
         )
     }
