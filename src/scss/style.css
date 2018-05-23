@@ -76,13 +76,6 @@ img {
   max-width: 100%;
   height: auto; }
 
-.hide-on-internal {
-  visibility: hidden;
-  opacity: 0; }
-  .home .hide-on-internal {
-    visibility: visible;
-    opacity: 1; }
-
 body {
   color: #696969;
   font-family: "Roboto", sans-serif;
@@ -138,160 +131,6 @@ em {
 
 .white-text {
   color: #fff; }
-
-.hero__title {
-  font-size: 36px;
-  font-weight: 200; }
-  .hero__title strong {
-    font-weight: 400; }
-  @media (min-width: 740px) {
-    .hero__title {
-      font-size: 52px; } }
-
-.section__title {
-  font-size: 28px;
-  letter-spacing: 0.39px;
-  text-align: center;
-  margin-bottom: 10px; }
-  @media (min-width: 740px) {
-    .section__title {
-      font-size: 36px;
-      letter-spacing: -0.9px;
-      font-weight: normal;
-      text-align: center;
-      margin-bottom: 20px; } }
-
-.section__subtitle {
-  font-size: 18px;
-  color: #D6D8DD;
-  text-transform: uppercase;
-  text-align: center;
-  margin: 20px 0; }
-  @media (min-width: 740px) {
-    .section__subtitle {
-      font-size: 20px; } }
-
-.site-footer {
-  color: #F4F5F7; }
-
-.copyright {
-  color: rgba(246, 250, 253, 0.6);
-  font-weight: bold;
-  font-size: 14px; }
-
-.menu__link--social {
-  color: #fff; }
-  .menu__link--social::before {
-    font-size: 32px; }
-  .menu__link--social.icomoon-facebook::before, .menu__link--social.icomoon-twitter::before {
-    font-size: 24px; }
-
-.menu__link--sitelinks {
-  font-size: 14px;
-  color: #fff; }
-
-.btn {
-  font-size: 18px;
-  font-weight: 700; }
-
-.cta__login {
-  font-size: 14px;
-  text-transform: uppercase;
-  font-weight: 700; }
-
-.cta__register {
-  font-size: 14px;
-  font-weight: 700; }
-
-.search__select::after {
-  font-weight: bold; }
-
-.select--results::before {
-  font-weight: bold;
-  color: #c0c3cb; }
-
-.result__term {
-  font-size: 18px;
-  color: #F15726; }
-
-.results__sort {
-  font-size: 16px; }
-
-.book__title {
-  font-weight: 400;
-  font-size: 16px; }
-  @media (min-width: 740px) {
-    .book__title {
-      font-size: 20px; } }
-
-.highlight {
-  color: #F15726; }
-
-.instruction__number {
-  font-size: 52px;
-  font-family: "Oswald", sans-serif;
-  color: #F15726; }
-
-.instruction__title {
-  font-family: "Oswald", sans-serif;
-  font-size: 28px;
-  text-transform: uppercase; }
-
-.content--sell .book__title {
-  color: #F15726; }
-
-.price__heading {
-  font-weight: normal; }
-
-.amazon-info {
-  font-size: 20px; }
-  .amazon-info .book__label {
-    font-size: 14px; }
-
-.price__item .btn {
-  font-size: 14px; }
-  @media (min-width: 600px) {
-    .price__item .btn {
-      font-size: 18px; } }
-
-.home__about--heading {
-  font-size: 28px;
-  color: #4BB5C4;
-  letter-spacing: -0.39px;
-  font-weight: normal; }
-  @media (min-width: 600px) {
-    .home__about--heading {
-      font-size: 36px;
-      letter-spacing: -0.5px; } }
-
-.blog-categories .btn {
-  color: #696969;
-  text-transform: capitalize;
-  letter-spacing: -0.44px;
-  font-size: 14px; }
-
-.blog-categories__heading {
-  font-size: 18px;
-  color: #696969;
-  letter-spacing: 1.2px;
-  font-weight: bold;
-  text-transform: uppercase;
-  text-align: center; }
-  @media (min-width: 400px) {
-    .blog-categories__heading {
-      font-weight: normal; } }
-
-.video__title {
-  font-weight: 400;
-  font-size: 36px;
-  color: #4BB5C4;
-  letter-spacing: -0.9px; }
-
-.why-bookscouter__title {
-  font-weight: 400;
-  color: #696969;
-  letter-spacing: -0.3px;
-  font-size: 24px; }
 
 .flex-parent, .flex-parent__column, .flex-parent__wrap, .flex-parent__center-both, .flex-parent__center-main, .flex-parent__center-cross, .flex-parent__space-between, .flex-parent__space-around, .flex-parent__flex-end {
   display: flex; }
@@ -1431,26 +1270,25 @@ em {
 
 .input__wrapper {
   position: relative;
-  box-sizing: border-box; }
-  .input__wrapper.input__wrapper--no-border {
-    border: 0; }
-  .input__wrapper.input__wrapper--remember {
-    margin: 10px 0; }
+  box-sizing: border-box;
+  margin-bottom: 10px; }
 
 .input--text {
   box-shadow: none;
   box-sizing: border-box;
   background: none;
-  border: none;
+  border: 1px solid #D6D8DD;
   display: block;
   margin: 0;
-  padding: 20px 10px;
+  padding: 0 10px;
   width: 100%;
   border-radius: 0;
   line-height: 30px;
   font-size: 16px; }
   .input--text:focus {
     outline: none; }
+  .input--text[readonly] {
+    background: #F4F5F7; }
 
 .input__wrapper--labelize {
   border-bottom: 1px solid #D6D8DD;
@@ -1528,38 +1366,6 @@ em {
   cursor: pointer; }
   .checkbox__label ~ label {
     cursor: pointer; }
-
-input[data-value="exp_month"] {
-  width: 40px;
-  margin-right: 20px; }
-
-input[data-value="exp_year"] {
-  width: 70px; }
-
-.expiration {
-  margin-right: 20px;
-  position: relative; }
-
-.expiration__separator {
-  position: absolute;
-  height: calc( 100% + 1px);
-  width: 20px;
-  left: 40px;
-  top: 0;
-  background: #fff;
-  color: #c0c3cb;
-  padding: 6px 0;
-  box-sizing: border-box;
-  text-align: center;
-  opacity: 0; }
-  .expiration__separator::after {
-    content: '/'; }
-  input:focus ~ .expiration__separator,
-  .labelize ~ .expiration__separator,
-  .input--labelize:focus ~ .label--labelize ~ .expiration__separator {
-    opacity: 1; }
-  .error .expiration__separator {
-    border-bottom: 1px solid #F18467; }
 
 .input__wrapper--with-icon {
   border: 1px solid #D6D8DD;
