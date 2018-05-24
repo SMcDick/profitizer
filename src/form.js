@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropType from 'prop-types';
+import propType from 'prop-types';
 import Input from './input';
 import axios from 'axios';
 
@@ -49,7 +49,7 @@ class OrderForm extends Component {
   }
   handleSubmit( e ){
       e.preventDefault();
-      axios.put("http://localhost:7555/api/sale/" + this.props.details.Order_Id, this.state )
+      axios.put( this.props.api + "sale/" + this.props.details.Order_Id, this.state )
           .then( result => {
               console.log( result );
           })
@@ -90,6 +90,10 @@ class OrderForm extends Component {
     );
   }
 }
-OrderForm.propTypes = { details: PropType.object, edit: PropType.bool }
+OrderForm.propTypes = {
+    details: propType.object,
+    edit: propType.bool,
+    api: propType.string.isRequired
+}
 
 export default OrderForm;

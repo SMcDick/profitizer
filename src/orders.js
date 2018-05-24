@@ -1,33 +1,27 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import propTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 class Orders extends Component {
 
     constructor( props ){
         super( props )
         this.state = {
-            orders: [],
-            order: {}
+            orders: []
         }
         this.chooseOrder = this.chooseOrder.bind( this );
     }
     chooseOrder( e, order ){
-        if( e ){
-            e.preventDefault();
-        }
-
         this.props.onOrderChange( order )
     }
 
     componentDidMount() {
-        this.serverRequest = axios.get(this.props.source)
+        axios.get(this.props.api + this.props.source)
             .then( result => {
                 this.setState({
                     orders: result.data.data
                 });
-                // This is only to choose an order for dev
-                // this.chooseOrder(null, result.data.data[0])
             })
     }
     render() {
@@ -37,7 +31,7 @@ class Orders extends Component {
                 { this.state.orders.map( order => {
                     return (
                         <div key={order.Order_Id} className="job">
-                            <a href="#" onClick={e => this.chooseOrder( e, order )}>{ order.Description }</a>
+                            <Link to={'/orders/' + order.Order_Id} onClick={e => this.chooseOrder( e, order )}>{ order.Description }</Link>
                         </div>
                     );
                 })}
@@ -45,7 +39,11 @@ class Orders extends Component {
         )
     }
 }
-Orders.propTypes = { source: propTypes.string, onOrderChange: propTypes.func };
+Orders.propTypes = {
+    source: propTypes.string.isRequired,
+    onOrderChange: propTypes.func.isRequired,
+    api: propTypes.string.isRequired
+};
 
 
 export default Orders;

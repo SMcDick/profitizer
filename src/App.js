@@ -1,6 +1,24 @@
 import React, { Component } from 'react';
 import Orders from './orders';
 import Order from './order';
+import { BrowserRouter as Router, Route, NavLink, Link } from 'react-router-dom';
+
+const baseurl = "http://localhost:7555/api/"
+
+class Home extends Component{
+    render(){
+        return (
+            <div>
+                <Link to='/inventory'>Inventory</Link>
+                <Link to="/orders">Orders</Link>
+            </div>);
+    }
+}
+class Inventory extends Component{
+    render(){
+        return( <div>Inventory (Eventually)</div> );
+    }
+}
 
 class App extends Component {
     constructor(){
@@ -14,23 +32,23 @@ class App extends Component {
         this.setState({ 'order': val })
     }
 
-    render() {
-        if( this.state.order.Order_Id ){
-            return (
+    render(){
+        return (
+            <Router>
                 <div className="App width-wrapper">
-                    <Order order={this.state.order} onOrderChange={ this.handleChange } />
+                    <ul>
+                        <li><NavLink exact to="/">Home</NavLink></li>
+                    </ul>
+                    <hr />
+                    <Route exact path="/" component={ Home } />
+                    <Route path="/inventory" component={ Inventory } />
+                    <Route exact path="/orders" render={() => <Orders source={'sales/incomplete' } onOrderChange={ this.handleChange } api={ baseurl} /> } />
+                    <Route path="/orders/:id" render={ (props) => {
+                        return (<Order order={ this.state.order } onOrderChange={ this.handleChange } routerProps={ props } api={ baseurl} />);
+                    }} />
                 </div>
-            );
-        } else {
-            return (
-                <div className="App width-wrapper">
-                    <Orders
-                        source="http://localhost:7555/api/sales/incomplete"
-                        onOrderChange={ this.handleChange }
-                    />
-                </div>
-            );
-        }
+            </Router>
+         );
     }
 }
 
