@@ -7,13 +7,16 @@ class Orders extends Component {
     constructor( props ){
         super( props )
         this.state = {
-            orders: []
+            orders: [],
+            order: {}
         }
-        console.log( props );
         this.chooseOrder = this.chooseOrder.bind( this );
     }
     chooseOrder( e, order ){
-        e.preventDefault();
+        if( e ){
+            e.preventDefault();
+        }
+
         this.props.onOrderChange( order )
     }
 
@@ -23,6 +26,8 @@ class Orders extends Component {
                 this.setState({
                     orders: result.data.data
                 });
+                // This is only to choose an order for dev
+                // this.chooseOrder(null, result.data.data[0])
             })
     }
     render() {

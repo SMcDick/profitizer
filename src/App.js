@@ -15,7 +15,6 @@ class App extends Component {
     }
 
     render() {
-        console.log( this.state.order )
         if( this.state.order.Order_Id ){
             return (
                 <div className="App width-wrapper">

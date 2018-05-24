@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import Form from './form';
 
-
 class Order extends Component {
     constructor( props ){
         super( props )
-        console.log( props );
         this.resetOrders = this.resetOrders.bind( this );
         this.editOrder = this.editOrder.bind( this );
         this.state = {edit: false}
