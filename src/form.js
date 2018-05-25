@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import propType from 'prop-types';
 import Input from './input';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 class OrderForm extends Component {
   constructor(props) {
@@ -9,6 +10,7 @@ class OrderForm extends Component {
 
     this.handleInputChange = this.handleInputChange.bind( this )
     this.handleSubmit = this.handleSubmit.bind( this )
+    this.handleCompleted = this.handleCompleted.bind( this );
 
     // Slighly hacky because I need to know the state of Marketplace in order to compute fees
     // So Marketpplace is invoked before the other fields are created
@@ -18,6 +20,9 @@ class OrderForm extends Component {
     for( const key of this.fields ){
         this.state[ key.name ] = props.details[key.name];
     }
+  }
+  handleCompleted( val ){
+      this.props.handleCompleted( val );
   }
   createFields( props, marketplace ){
       let defaultFees = this.computeDefaultFees( props, marketplace );
@@ -51,7 +56,10 @@ class OrderForm extends Component {
       e.preventDefault();
       axios.put( this.props.api + "sale/" + this.props.details.Order_Id, this.state )
           .then( result => {
-              console.log( result );
+              if( result.data.hasOwnProperty( 'Completed' ) && result.data.Completed === 1 ){
+                  this.handleCompleted( true );
+              }
+
           })
   }
   renderInput( options ){
@@ -82,18 +90,26 @@ class OrderForm extends Component {
 
 
   render() {
+      if( this.props.isCompleted ){
+          return (
+              <Redirect exact={true} to='/orders' />
+          );
+      }
     return (
-      <form onSubmit={this.handleSubmit} onChange={ this.handleInputChange }>
-        { this.fields.map( field => this.renderInput( field ) ) }
-        <input type="submit" value="Submit" />
-      </form>
+        <form onSubmit={this.handleSubmit} onChange={ this.handleInputChange }>
+          { this.fields.map( field => this.renderInput( field ) ) }
+          <input type="submit" value="Submit" />
+        </form>
+
     );
   }
 }
 OrderForm.propTypes = {
     details: propType.object,
     edit: propType.bool,
-    api: propType.string.isRequired
+    api: propType.string.isRequired,
+    isCompleted: propType.bool,
+    handleCompleted: propType.func
 }
 
 export default OrderForm;

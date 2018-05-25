@@ -8,7 +8,8 @@ class Order extends Component {
     constructor( props ){
         super( props );
         this.editOrder = this.editOrder.bind( this );
-        this.state = {edit: false}
+        this.handleCompleted = this.handleCompleted.bind( this );
+        this.state = {edit: false, isCompleted: false}
         let match = this.props.routerProps.match;
         if( ! this.props.order.hasOwnProperty( 'Order_Id' ) ){
             axios.get( this.props.api + 'sale/' + match.params.id )
@@ -17,6 +18,9 @@ class Order extends Component {
                 })
         }
 
+    }
+    handleCompleted( val ){
+        this.setState({ isCompleted: val })
     }
     editOrder( e ){
         e.preventDefault();
@@ -29,7 +33,12 @@ class Order extends Component {
                 <Link to="/orders">Back</Link>
                 { ! this.state.edit && <a href="#" onClick={ this.editOrder }>Edit</a> }
                 { this.props.order.hasOwnProperty( 'Order_Id' ) &&
-                    <Form details={this.props.order} edit={ this.state.edit } api={ this.props.api } />
+                    <Form
+                        details={this.props.order}
+                        edit={ this.state.edit }
+                        api={ this.props.api }
+                        handleCompleted={ this.handleCompleted }
+                        isCompleted={ this.state.isCompleted } />
                 }
             </div>
         )
