@@ -31,7 +31,8 @@ class Orders extends Component {
                 { this.state.orders.map( order => {
                     return (
                         <div key={order.Order_Id} className="job">
-                            <Link to={'/orders/' + order.Order_Id} onClick={e => this.chooseOrder( e, order )}>{ order.Description }</Link>
+                            <Link to={'/orders/' + order.Order_Id} onClick={e => this.chooseOrder( e, order )}>{ order.Description }<br />
+                            <div className="sold_date">{ new Date(order.Sold_Date).toUTCString() }</div></Link>
                         </div>
                     );
                 })}

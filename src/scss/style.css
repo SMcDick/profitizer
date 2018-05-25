@@ -1415,6 +1415,11 @@ em {
   .validate-wrapper.validate-wrapper--no-border {
     border: 0; }
 
+.sold_date {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid red; }
+
 .alert {
   opacity: 0;
   visibility: hidden;
