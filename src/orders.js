@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import OrderNav from './orderNav';
 
 class Orders extends Component {
 
@@ -10,6 +11,7 @@ class Orders extends Component {
         this.state = {
             orders: []
         }
+        console.log( props )
         this.chooseOrder = this.chooseOrder.bind( this );
     }
     chooseOrder( e, order ){
@@ -17,17 +19,26 @@ class Orders extends Component {
     }
 
     componentDidMount() {
-        axios.get(this.props.api + this.props.source)
+        axios.get( this.props.api )
             .then( result => {
                 this.setState({
                     orders: result.data.data
                 });
             })
     }
+    componentWillUnmount(){
+        console.log( 'Orders will unmount?' )
+    }
+    static getDerivedStateFromProps( props, state ){
+        console.log( props, state );
+        console.log( 'this should render with every update to orders' )
+        return null;
+    }
     render() {
         return (
             <div>
                 <h1>Orders</h1>
+                <OrderNav />
                 { this.state.orders.map( order => {
                     return (
                         <div key={order.Order_Id} className="job">
@@ -41,7 +52,6 @@ class Orders extends Component {
     }
 }
 Orders.propTypes = {
-    source: propTypes.string.isRequired,
     onOrderChange: propTypes.func.isRequired,
     api: propTypes.string.isRequired
 };

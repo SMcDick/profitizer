@@ -42,9 +42,23 @@ class App extends Component {
                     <hr />
                     <Route exact path="/" component={ Home } />
                     <Route path="/inventory" component={ Inventory } />
-                    <Route exact path="/orders" render={() => <Orders source={'sales/incomplete' } onOrderChange={ this.handleChange } api={ baseurl} /> } />
+                    <Route exact path="/orders" render={ (props) => {
+                        let api = baseurl + 'sales/' + ( props.location.search.indexOf( 'view=all' ) > -1 ? 'all' : 'incomplete' );
+                        return (
+                            <Orders
+                                onOrderChange={ this.handleChange }
+                                routerProps={ props }
+                                api={ api } />
+                            );
+                    }} />
                     <Route path="/orders/:id" render={ (props) => {
-                        return (<Order order={ this.state.order } onOrderChange={ this.handleChange } routerProps={ props } api={ baseurl} />);
+                        return (
+                            <Order
+                                order={ this.state.order }
+                                onOrderChange={ this.handleChange }
+                                routerProps={ props }
+                                api={ baseurl } />
+                            );
                     }} />
                 </div>
             </Router>

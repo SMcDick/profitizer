@@ -11,13 +11,23 @@ class Order extends Component {
         this.handleCompleted = this.handleCompleted.bind( this );
         this.state = {edit: false, isCompleted: false}
         let match = this.props.routerProps.match;
-        if( ! this.props.order.hasOwnProperty( 'Order_Id' ) ){
+        let orderId = this.props.order.hasOwnProperty( 'Order_Id' )
+
+        if( ! orderId && match.params.id !== 'create' || orderId !== match.params.id ){
             axios.get( this.props.api + 'sale/' + match.params.id )
                 .then( result => {
                     this.props.onOrderChange( result.data.data );
                 })
         }
 
+    }
+    static getDerivedStateFromProps( props, state ){
+        console.log( props, state );
+        console.log( 'this should render with every update to orders' );
+        if( props.routerProps.match.params.id === 'create' ){
+            return { edit: true };
+        }
+        return null;
     }
     handleCompleted( val ){
         this.setState({ isCompleted: val })
@@ -33,6 +43,14 @@ class Order extends Component {
                 <Link to="/orders">Back</Link>
                 { ! this.state.edit && <a href="#" onClick={ this.editOrder }>Edit</a> }
                 { this.props.order.hasOwnProperty( 'Order_Id' ) &&
+                    <Form
+                        details={this.props.order}
+                        edit={ this.state.edit }
+                        api={ this.props.api }
+                        handleCompleted={ this.handleCompleted }
+                        isCompleted={ this.state.isCompleted } />
+                }
+                { this.props.routerProps.match.params.id === 'create' &&
                     <Form
                         details={this.props.order}
                         edit={ this.state.edit }
