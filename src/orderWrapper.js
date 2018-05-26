@@ -12,6 +12,7 @@ class OrderWrapper extends Component {
         this.state = {
             orders: []
         }
+        this.handleOrderUpdates = this.handleOrderUpdates.bind( this )
     }
     componentDidMount(){
         console.log( 'order wrapper mounted' )
@@ -22,10 +23,29 @@ class OrderWrapper extends Component {
                 });
             })
     }
+    handleOrderUpdates( val ){
+        this.setState( prevState => {
+            let orders = [ ... prevState.orders ]
+            let current = orders.find( order => order.Order_Id === val.Order_Id )
+            if( current ){
+                if( val.Completed ){
+                    orders.splice( orders.indexOf( current ), 1 )
+                } else {
+                    Object.assign( current, val )
+                }
+            } else {
+                if( ! val.Completed ){
+                    orders.unshift( val )
+                }
+            }
+            return { orders: orders }
+        })
+    }
     componentWillUnmount(){
         console.log( 'order wrapper unmounted' )
     }
     render(){
+        console.log( 'order wrapper rendered')
         return (
             <div>
                 <Switch>
@@ -41,7 +61,8 @@ class OrderWrapper extends Component {
                                     edit={ true }
                                     api={ 'http://localhost:7555/api/' }
                                     routerProps={ props }
-                                    create={ true } />
+                                    create={ true }
+                                    handleOrderUpdates={ this.handleOrderUpdates } />
                             </div>
                         )
                     }} />
@@ -50,7 +71,8 @@ class OrderWrapper extends Component {
                             <Order
                                 orders={ this.state.orders }
                                 routerProps={ props }
-                                api={ 'http://localhost:7555/api/' } />
+                                api={ 'http://localhost:7555/api/' }
+                                handleOrderUpdates={ this.handleOrderUpdates } />
                         )
                     }} />
                 </Switch>

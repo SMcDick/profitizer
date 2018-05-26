@@ -11,7 +11,7 @@ class OrderForm extends Component {
 
     this.handleInputChange = this.handleInputChange.bind( this )
     this.handleSubmit = this.handleSubmit.bind( this )
-    this.handleCompleted = this.handleCompleted.bind( this );
+    this.handleCompleted = this.handleCompleted.bind( this )
 
     // Slighly hacky because I need to know the state of Marketplace in order to compute fees
     // So Marketpplace is invoked before the other fields are created
@@ -63,6 +63,7 @@ class OrderForm extends Component {
       }
       axios[method]( url, this.state )
           .then( result => {
+              this.props.handleOrderUpdates( result.data )
               if( result.data.hasOwnProperty( 'Completed' ) && result.data.Completed === 1 ){
                   this.handleCompleted( true );
               }
@@ -117,7 +118,8 @@ OrderForm.propTypes = {
     api: propType.string.isRequired,
     isCompleted: propType.bool,
     handleCompleted: propType.func,
-    create: propType.bool
+    create: propType.bool,
+    handleOrderUpdates: propType.func
 }
 
 export default OrderForm;

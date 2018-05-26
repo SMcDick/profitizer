@@ -12,7 +12,8 @@ class Order extends Component {
         this.state = {
             edit: false,
             isCompleted: false,
-            order: {}
+            order: {},
+            loading: true
         }
         // let match = this.props.routerProps.match;
         // let orderId = this.props.order.hasOwnProperty( 'Order_Id' )
@@ -23,7 +24,6 @@ class Order extends Component {
         //             this.props.onOrderChange( result.data.data );
         //         })
         // }
-
     }
     static getDerivedStateFromProps( props, state ){
         console.log( props, state );
@@ -31,8 +31,13 @@ class Order extends Component {
         // if( props.routerProps.match.params.id === 'create' ){
         //     return { edit: true };
         // }
+        let order = props.orders.find( order => order.Order_Id.toString() === props.routerProps.match.params.id.toString() )
         if( props.orders.length ){
-            return { order: props.orders.find( order => order.Order_Id.toString() === props.routerProps.match.params.id.toString() )}
+            if( order ){
+                return { order: order, loading: false }
+            } else {
+                return { loading: false }
+            }
         }
         return null;
     }
@@ -44,8 +49,10 @@ class Order extends Component {
         this.setState({ edit: true })
     }
     render() {
-        if( ! this.state.order.hasOwnProperty( 'Order_Id' ) ){
-            return (<div>Loading...</div>);
+        if( this.state.loading ){
+            return (<div>Loading...</div>)
+        } else if( ! this.state.order.hasOwnProperty( 'Order_Id' ) ){
+            return (<div>Order not found</div>)
         }
         return (
             <div>
@@ -57,7 +64,8 @@ class Order extends Component {
                     edit={ this.state.edit }
                     api={ this.props.api }
                     handleCompleted={ this.handleCompleted }
-                    isCompleted={ this.state.isCompleted } />
+                    isCompleted={ this.state.isCompleted }
+                    handleOrderUpdates={ this.props.handleOrderUpdates }/>
             </div>
         )
     }
@@ -68,7 +76,8 @@ Order.propTypes = {
     id: propTypes.string || propTypes.number,
     routerProps: propTypes.object,
     api: propTypes.string,
-    orders: propTypes.array
+    orders: propTypes.array,
+    handleOrderUpdates: propTypes.func
 
 };
 
