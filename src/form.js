@@ -8,7 +8,6 @@ import SelectWrapper from './select'
 class OrderForm extends Component {
   constructor(props) {
     super(props);
-    console.log( props )
 
     this.handleInputChange = this.handleInputChange.bind( this )
     this.handleSubmit = this.handleSubmit.bind( this )

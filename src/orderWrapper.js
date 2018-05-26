@@ -14,9 +14,14 @@ class OrderWrapper extends Component {
         }
         this.handleOrderUpdates = this.handleOrderUpdates.bind( this )
     }
+    static getDerivedStateFromProps( props ){
+        let type = props.location.pathname.indexOf( 'orders/all' ) > -1 ? 'all' : 'incomplete'
+        return { type: type }
+    }
     componentDidMount(){
         console.log( 'order wrapper mounted' )
-        axios.get( "http://localhost:7555/api/sales/incomplete" )
+        let url = "http://localhost:7555/api/sales/" + this.state.type
+        axios.get( url )
             .then( result => {
                 this.setState({
                     orders: result.data.data
@@ -46,10 +51,14 @@ class OrderWrapper extends Component {
     }
     render(){
         console.log( 'order wrapper rendered')
+        console.log( this.state.type )
         return (
             <div>
                 <Switch>
-                    <Route exact path={ this.props.match.url } render={(props) => {
+                    <Route exact path={ this.props.match.url } render={ () => {
+                        return (<Orders orders={ this.state.orders } />)
+                    }} />
+                    <Route exact path={ this.props.match.url + '/all' } render={ () => {
                         return (<Orders orders={ this.state.orders } />)
                     }} />
                     <Route exact path={ this.props.match.url + '/create' } render={ props => {
@@ -66,7 +75,7 @@ class OrderWrapper extends Component {
                             </div>
                         )
                     }} />
-                    <Route path={ this.props.match.url + '/:id' } render={(props) => {
+                    <Route path={ this.props.match.url + '/:id' } render={ props => {
                         return (
                             <Order
                                 orders={ this.state.orders }
@@ -82,7 +91,9 @@ class OrderWrapper extends Component {
 }
 
 OrderWrapper.propTypes = {
-    match: PropType.object
+    match: PropType.object,
+    location: PropType.object,
+    type: PropType.string
 }
 
 export default OrderWrapper

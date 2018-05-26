@@ -15,22 +15,8 @@ class Order extends Component {
             order: {},
             loading: true
         }
-        // let match = this.props.routerProps.match;
-        // let orderId = this.props.order.hasOwnProperty( 'Order_Id' )
-        //
-        // if( ! orderId && match.params.id !== 'create' || orderId !== match.params.id ){
-        //     axios.get( this.props.api + 'sale/' + match.params.id )
-        //         .then( result => {
-        //             this.props.onOrderChange( result.data.data );
-        //         })
-        // }
     }
-    static getDerivedStateFromProps( props, state ){
-        console.log( props, state );
-        console.log( 'this should render with every update to orders' );
-        // if( props.routerProps.match.params.id === 'create' ){
-        //     return { edit: true };
-        // }
+    static getDerivedStateFromProps( props ){
         let order = props.orders.find( order => order.Order_Id.toString() === props.routerProps.match.params.id.toString() )
         if( props.orders.length ){
             if( order ){
@@ -52,7 +38,7 @@ class Order extends Component {
         if( this.state.loading ){
             return (<div>Loading...</div>)
         } else if( ! this.state.order.hasOwnProperty( 'Order_Id' ) ){
-            return (<div>Order not found</div>)
+            return (<div>{'Order not found. Figure our some way to make a new request or if order doesn\'t exist.'}</div>)
         }
         return (
             <div>
