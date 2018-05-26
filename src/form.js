@@ -7,6 +7,7 @@ import { Redirect } from 'react-router-dom';
 class OrderForm extends Component {
   constructor(props) {
     super(props);
+    console.log( props )
 
     this.handleInputChange = this.handleInputChange.bind( this )
     this.handleSubmit = this.handleSubmit.bind( this )
@@ -54,7 +55,13 @@ class OrderForm extends Component {
   }
   handleSubmit( e ){
       e.preventDefault();
-      axios.put( this.props.api + "sale/" + this.props.details.Order_Id, this.state )
+      let url = this.props.api + "sale/" + this.props.details.Order_Id
+      let method = 'put';
+      if( this.props.create ){
+          url = this.props.api + 'createSale'
+          method = 'post'
+      }
+      axios[method]( url, this.state )
           .then( result => {
               if( result.data.hasOwnProperty( 'Completed' ) && result.data.Completed === 1 ){
                   this.handleCompleted( true );
@@ -109,7 +116,8 @@ OrderForm.propTypes = {
     edit: propType.bool,
     api: propType.string.isRequired,
     isCompleted: propType.bool,
-    handleCompleted: propType.func
+    handleCompleted: propType.func,
+    create: propType.bool
 }
 
 export default OrderForm;

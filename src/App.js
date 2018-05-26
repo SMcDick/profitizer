@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import Orders from './orders';
-import Order from './order';
 import { BrowserRouter as Router, Route, NavLink, Link } from 'react-router-dom';
-
-const baseurl = "http://localhost:7555/api/"
+import OrderWrapper from './orderWrapper'
 
 class Home extends Component{
     render(){
@@ -23,14 +20,15 @@ class Inventory extends Component{
 class App extends Component {
     constructor(){
         super();
-        this.state = {
-            order: {}
-        }
-        this.handleChange = this.handleChange.bind( this );
+        // this.state = {
+        //     order: {},
+        //     orders: []
+        // }
+        // this.handleChange = this.handleChange.bind( this );
     }
-    handleChange( val ){
-        this.setState({ 'order': val })
-    }
+    // handleChange( changeObj ){
+    //     this.setState( changeObj )
+    // }
 
     render(){
         return (
@@ -42,24 +40,7 @@ class App extends Component {
                     <hr />
                     <Route exact path="/" component={ Home } />
                     <Route path="/inventory" component={ Inventory } />
-                    <Route exact path="/orders" render={ (props) => {
-                        let api = baseurl + 'sales/' + ( props.location.search.indexOf( 'view=all' ) > -1 ? 'all' : 'incomplete' );
-                        return (
-                            <Orders
-                                onOrderChange={ this.handleChange }
-                                routerProps={ props }
-                                api={ api } />
-                            );
-                    }} />
-                    <Route path="/orders/:id" render={ (props) => {
-                        return (
-                            <Order
-                                order={ this.state.order }
-                                onOrderChange={ this.handleChange }
-                                routerProps={ props }
-                                api={ baseurl } />
-                            );
-                    }} />
+                    <Route path="/orders" component={ OrderWrapper } />
                 </div>
             </Router>
          );
