@@ -3,6 +3,7 @@ import propType from 'prop-types';
 import Input from './input';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import SelectWrapper from './select'
 
 class OrderForm extends Component {
   constructor(props) {
@@ -95,8 +96,14 @@ class OrderForm extends Component {
       }
       return {marketplaceFee, transactionFee};
   }
-
-
+  mapper( collection ){
+      return collection.data.map( item => {
+          return {
+              value: item.Item_Id,
+              label: `${ item.Item } - ${ item.Final_Cost } (${ item.Remaining })`
+          }
+      })
+  }
   render() {
       if( this.props.isCompleted ){
           return (
@@ -105,6 +112,11 @@ class OrderForm extends Component {
       }
     return (
         <form onSubmit={this.handleSubmit} onChange={ this.handleInputChange }>
+            { this.props.create &&
+                <SelectWrapper
+                    url="http://localhost:7555/api/inventory/remaining"
+                    optionsMapper={ this.mapper }  />
+            }
           { this.fields.map( field => this.renderInput( field ) ) }
           <input type="submit" value="Submit" />
         </form>

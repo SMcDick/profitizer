@@ -8,7 +8,8 @@ class Home extends Component{
             <div>
                 <Link to='/inventory'>Inventory</Link>
                 <Link to="/orders">Orders</Link>
-            </div>);
+            </div>
+        )
     }
 }
 class Inventory extends Component{
