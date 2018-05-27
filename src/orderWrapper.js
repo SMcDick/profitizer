@@ -18,15 +18,25 @@ class OrderWrapper extends Component {
         let type = props.location.pathname.indexOf( 'orders/all' ) > -1 ? 'all' : 'incomplete'
         return { type: type }
     }
-    componentDidMount(){
-        console.log( 'order wrapper mounted' )
-        let url = "http://localhost:7555/api/sales/" + this.state.type
+    getSales( type ){
+        let url = "http://localhost:7555/api/sales/" + type
         axios.get( url )
             .then( result => {
                 this.setState({
                     orders: result.data.data
                 });
             })
+    }
+    componentDidMount(){
+        console.log( 'order wrapper mounted' )
+        this.getSales( this.state.type )
+    }
+    shouldComponentUpdate( nextProps, nextState ){
+        console.log( this.state, nextState )
+        if( this.state.type !== nextState.type ){
+            this.getSales( nextState.type )
+        }
+        return true
     }
     handleOrderUpdates( val ){
         this.setState( prevState => {
