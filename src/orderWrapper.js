@@ -10,9 +10,11 @@ class OrderWrapper extends Component {
     constructor( props ){
         super( props )
         this.state = {
-            orders: []
+            orders: [],
+            meta: {}
         }
         this.handleOrderUpdates = this.handleOrderUpdates.bind( this )
+        this.handleMeta = this.handleMeta.bind( this )
     }
     static getDerivedStateFromProps( props ){
         let type = props.location.pathname.indexOf( 'orders/all' ) > -1 ? 'all' : 'incomplete'
@@ -23,7 +25,8 @@ class OrderWrapper extends Component {
         axios.get( url )
             .then( result => {
                 this.setState({
-                    orders: result.data.data
+                    orders: result.data.data,
+                    meta: result.data.meta
                 });
             })
     }
@@ -59,6 +62,9 @@ class OrderWrapper extends Component {
     componentWillUnmount(){
         console.log( 'order wrapper unmounted' )
     }
+    handleMeta( val ){
+        console.log( val )
+    }
     render(){
         console.log( 'order wrapper rendered')
         console.log( this.state.type )
@@ -69,7 +75,7 @@ class OrderWrapper extends Component {
                         return (<Orders orders={ this.state.orders } />)
                     }} />
                     <Route exact path={ this.props.match.url + '/all' } render={ () => {
-                        return (<Orders orders={ this.state.orders } />)
+                        return (<Orders orders={ this.state.orders } meta={ this.state.meta } handleMeta={ this.handleMeta } />)
                     }} />
                     <Route exact path={ this.props.match.url + '/create' } render={ props => {
                         return (

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import OrderNav from './orderNav';
+import Pager from './pager'
 
 class Orders extends Component {
     constructor( props ){
@@ -20,6 +21,7 @@ class Orders extends Component {
             <div>
                 <h1>Orders</h1>
                 <OrderNav />
+                <Pager meta={ this.props.meta } handleMeta={ this.props.handleMeta }/>
                 { this.props.orders.map( order => {
                     return (
                         <div key={order.Order_Id} className="job">
@@ -33,7 +35,8 @@ class Orders extends Component {
     }
 }
 Orders.propTypes = {
-    orders: propTypes.array
+    orders: propTypes.array,
+    handleMeta: propTypes.func
 };
 
 
