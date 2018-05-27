@@ -5,6 +5,7 @@ import { Route, Switch } from 'react-router-dom'
 import Orders from './orders'
 import Order from './order'
 import Form from './form'
+import Pager from './pager'
 
 class OrderWrapper extends Component {
     constructor( props ){
@@ -18,7 +19,7 @@ class OrderWrapper extends Component {
     }
     static getDerivedStateFromProps( props ){
         let type = props.location.pathname.indexOf( 'orders/all' ) > -1 ? 'all' : 'incomplete'
-        return { type: type }
+        return { type: type + props.location.search }
     }
     getSales( type ){
         let url = "http://localhost:7555/api/sales/" + type
@@ -72,10 +73,16 @@ class OrderWrapper extends Component {
             <div>
                 <Switch>
                     <Route exact path={ this.props.match.url } render={ () => {
-                        return (<Orders orders={ this.state.orders } />)
+                        return (
+                            <Orders orders={ this.state.orders } />
+                        )
                     }} />
-                    <Route exact path={ this.props.match.url + '/all' } render={ () => {
-                        return (<Orders orders={ this.state.orders } meta={ this.state.meta } handleMeta={ this.handleMeta } />)
+                    <Route exact path={ this.props.match.url + '/all' } render={ ( props ) => {
+                        return (
+                            <Orders
+                                orders={ this.state.orders }
+                                pager={ <Pager meta={ this.state.meta } routerProps={ props } /> } />
+                            )
                     }} />
                     <Route exact path={ this.props.match.url + '/create' } render={ props => {
                         return (

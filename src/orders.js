@@ -21,7 +21,7 @@ class Orders extends Component {
             <div>
                 <h1>Orders</h1>
                 <OrderNav />
-                <Pager meta={ this.props.meta } handleMeta={ this.props.handleMeta }/>
+                { this.props.pager }
                 { this.props.orders.map( order => {
                     return (
                         <div key={order.Order_Id} className="job">
@@ -36,7 +36,7 @@ class Orders extends Component {
 }
 Orders.propTypes = {
     orders: propTypes.array,
-    handleMeta: propTypes.func
+    pager: propTypes.element
 };
 
 
