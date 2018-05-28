@@ -15,7 +15,6 @@ class OrderWrapper extends Component {
             meta: {}
         }
         this.handleOrderUpdates = this.handleOrderUpdates.bind( this )
-        this.handleMeta = this.handleMeta.bind( this )
     }
     static getDerivedStateFromProps( props ){
         let type = props.location.pathname.indexOf( 'orders/all' ) > -1 ? 'all' : 'incomplete'
@@ -62,9 +61,6 @@ class OrderWrapper extends Component {
     }
     componentWillUnmount(){
         console.log( 'order wrapper unmounted' )
-    }
-    handleMeta( val ){
-        console.log( val )
     }
     render(){
         console.log( 'order wrapper rendered')

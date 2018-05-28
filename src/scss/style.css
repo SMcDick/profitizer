@@ -1481,3 +1481,38 @@ em {
     opacity: 1;
     visibility: visible;
     height: auto; }
+
+.pager__container {
+  width: 100%;
+  margin-top: 20px;
+  text-align: center; }
+  @media (min-width: 400px) {
+    .pager__container {
+      width: auto;
+      margin-left: 10px;
+      text-align: right; } }
+
+.pager {
+  padding: 10px;
+  font-weight: bold;
+  color: #F15726;
+  display: inline-block; }
+
+.pager--disabled {
+  color: #D6D8DD;
+  cursor: default; }
+  .pager--disabled:hover {
+    color: #D6D8DD; }
+
+.pager--page-size {
+  margin-top: 10px; }
+
+.page-size {
+  color: #F15726; }
+
+.page-size--active {
+  color: #696969;
+  cursor: default;
+  font-weight: bold; }
+  .page-size--active:hover {
+    color: #696969; }
