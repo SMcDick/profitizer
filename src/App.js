@@ -19,18 +19,6 @@ class Inventory extends Component{
 }
 
 class App extends Component {
-    constructor(){
-        super();
-        // this.state = {
-        //     order: {},
-        //     orders: []
-        // }
-        // this.handleChange = this.handleChange.bind( this );
-    }
-    // handleChange( changeObj ){
-    //     this.setState( changeObj )
-    // }
-
     render(){
         return (
             <Router>

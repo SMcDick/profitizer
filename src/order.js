@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import Form from './form';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 class Order extends Component {
     constructor( props ){
         super( props );
-        this.editOrder = this.editOrder.bind( this );
         this.handleCompleted = this.handleCompleted.bind( this );
         this.state = {
-            edit: false,
             isCompleted: false,
             order: {},
             loading: true
@@ -18,23 +15,22 @@ class Order extends Component {
     }
     static getDerivedStateFromProps( props ){
         let order = props.orders.find( order => order.Order_Id.toString() === props.routerProps.match.params.id.toString() )
+        let state = {
+            edit: props.routerProps.location.pathname.indexOf( '/edit' ) > -1
+        };
         if( props.orders.length ){
+            state.loading = false
             if( order ){
-                return { order: order, loading: false }
-            } else {
-                return { loading: false }
+                state.order = order
             }
         }
-        return null;
+        return state;
     }
     handleCompleted( val ){
         this.setState({ isCompleted: val })
     }
-    editOrder( e ){
-        e.preventDefault();
-        this.setState({ edit: true })
-    }
     render() {
+        console.log( this.props.routerProps )
         if( this.state.loading ){
             return (<div>Loading...</div>)
         } else if( ! this.state.order.hasOwnProperty( 'Order_Id' ) ){
@@ -43,8 +39,9 @@ class Order extends Component {
         return (
             <div>
                 <h1>Order#: { this.state.order.Order_Id }</h1>
-                <Link to="/orders">Back</Link>
-                { ! this.state.edit && <a href="#" onClick={ this.editOrder }>Edit</a> }
+                {/* <Link to="/orders">Back</Link> */}
+                <a href="#" onClick={ this.props.routerProps.history.goBack }>Back</a>
+                { ! this.state.edit && <Link to={ "/orders/" + this.props.routerProps.match.params.id + '/edit' }>Edit</Link> }
                 <Form
                     details={ this.state.order }
                     edit={ this.state.edit }

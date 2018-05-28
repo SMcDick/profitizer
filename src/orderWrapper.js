@@ -43,7 +43,7 @@ class OrderWrapper extends Component {
     }
     handleOrderUpdates( val ){
         this.setState( prevState => {
-            let orders = [ ... prevState.orders ]
+            let orders = [ ...prevState.orders ]
             let current = orders.find( order => order.Order_Id === val.Order_Id )
             if( current ){
                 if( val.Completed ){
