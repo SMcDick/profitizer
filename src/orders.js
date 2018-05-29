@@ -15,8 +15,8 @@ class Orders extends Component {
         }
         return (
             <div>
-                <h1>Orders</h1>
-                <OrderNav />
+                <h1>{ (this.props.routerProps.match.path === '/orders/all') ? "All " : "Incomplete " }Orders</h1>
+                <OrderNav routerProps={ this.props.routerProps }/>
                 { this.props.pager }
                 { this.props.orders.map( order => {
                     return (
@@ -32,7 +32,8 @@ class Orders extends Component {
 }
 Orders.propTypes = {
     orders: propTypes.array,
-    pager: propTypes.element
+    pager: propTypes.element,
+    routerProps: propTypes.object
 };
 
 

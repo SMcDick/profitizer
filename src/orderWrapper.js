@@ -68,15 +68,18 @@ class OrderWrapper extends Component {
         return (
             <div>
                 <Switch>
-                    <Route exact path={ this.props.match.url } render={ () => {
-                        return (
-                            <Orders orders={ this.state.orders } />
-                        )
-                    }} />
-                    <Route exact path={ this.props.match.url + '/all' } render={ ( props ) => {
+                    <Route exact path={ this.props.match.url } render={ props => {
                         return (
                             <Orders
                                 orders={ this.state.orders }
+                                routerProps={ props } />
+                        )
+                    }} />
+                    <Route exact path={ this.props.match.url + '/all' } render={ props => {
+                        return (
+                            <Orders
+                                orders={ this.state.orders }
+                                routerProps={ props }
                                 pager={ <Pager meta={ this.state.meta } routerProps={ props } /> } />
                             )
                     }} />
