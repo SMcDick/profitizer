@@ -31,11 +31,10 @@ class OrderWrapper extends Component {
             })
     }
     componentDidMount(){
-        console.log( 'order wrapper mounted' )
+        console.log( 'order wrapper mounted (Post initial render)' )
         this.getSales( this.state.type )
     }
     shouldComponentUpdate( nextProps, nextState ){
-        console.log( this.state, nextState )
         if( this.state.type !== nextState.type ){
             this.getSales( nextState.type )
         }
@@ -64,7 +63,6 @@ class OrderWrapper extends Component {
     }
     render(){
         console.log( 'order wrapper rendered')
-        console.log( this.state.type )
         return (
             <div>
                 <Switch>

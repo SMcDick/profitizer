@@ -30,7 +30,6 @@ class Order extends Component {
         this.setState({ isCompleted: val })
     }
     render() {
-        console.log( this.props.routerProps )
         if( this.state.loading ){
             return (<div>Loading...</div>)
         } else if( ! this.state.order.hasOwnProperty( 'Order_Id' ) ){
