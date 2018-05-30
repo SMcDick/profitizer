@@ -13,20 +13,42 @@ class OrderForm extends Component {
     this.handleSubmit = this.handleSubmit.bind( this )
     this.handleCompleted = this.handleCompleted.bind( this )
 
-    // Slighly hacky because I need to know the state of Marketplace in order to compute fees
-    // So Marketpplace is invoked before the other fields are created
-    this.state = {Marketplace: props.details.Marketplace};
-    this.fields = this.createFields( props, this.state.Marketplace );
-
-    for( const key of this.fields ){
-        this.state[ key.name ] = props.details[key.name];
+    this.state = {
+        details: {}
     }
   }
   handleCompleted( val ){
       this.props.handleCompleted( val );
   }
-  createFields( props, marketplace ){
-      let defaultFees = this.computeDefaultFees( props, marketplace );
+  handleInputChange(event) {
+      const target = event.target;
+      const value = target.type === 'checkbox' ? target.checked : target.value;
+      const name = target.name;
+      const state = { ...this.state.details }
+      state[name] = value
+      this.setState({
+          details: state
+      });
+  }
+  handleSubmit( e ){
+      e.preventDefault();
+      let url = this.props.api + "sale/" + this.props.details.Order_Id
+      let method = 'put';
+      if( this.props.create ){
+          url = this.props.api + 'createSale'
+          method = 'post'
+      }
+      axios[method]( url, this.state.details )
+          .then( result => {
+              this.props.handleOrderUpdates( result.data )
+              if( result.data.hasOwnProperty( 'Completed' ) && result.data.Completed === 1 ){
+                  this.handleCompleted( true );
+              }
+
+          })
+  }
+  static createFields( props, marketplace ){
+      let defaultFees = OrderForm.computeDefaultFees( props, marketplace );
       let readonly = ! props.edit;
       return [
           { name: 'Description', readonly: readonly },
@@ -42,47 +64,7 @@ class OrderForm extends Component {
           { name: 'Completed', type: 'checkbox' }
       ];
   }
-  componentWillUpdate(nextProps, nextState ){
-      this.fields = this.createFields( nextProps, nextState.Marketplace );
-  }
-  handleInputChange(event) {
-      const target = event.target;
-      const value = target.type === 'checkbox' ? target.checked : target.value;
-      const name = target.name;
-      this.setState({
-          [name]: value
-      });
-  }
-  handleSubmit( e ){
-      e.preventDefault();
-      let url = this.props.api + "sale/" + this.props.details.Order_Id
-      let method = 'put';
-      if( this.props.create ){
-          url = this.props.api + 'createSale'
-          method = 'post'
-      }
-      axios[method]( url, this.state )
-          .then( result => {
-              this.props.handleOrderUpdates( result.data )
-              if( result.data.hasOwnProperty( 'Completed' ) && result.data.Completed === 1 ){
-                  this.handleCompleted( true );
-              }
-
-          })
-  }
-  renderInput( options ){
-      let value = this.state[options.name] ? this.state[ options.name ].toString() : ''
-      return (
-          <Input
-            key={ options.name }
-            label={ options.label ? options.label : options.name }
-            name={ options.name }
-            value={ value }
-            readonly={ options.readonly }
-            type={ options.type ? options.type : 'text' } />
-      );
-  }
-  computeDefaultFees( props, marketplace ){
+  static computeDefaultFees( props, marketplace ){
       let soldPrice = props.details.Total_Sold_Price;
       let marketplaceFee = 2.95;
       if( soldPrice > 15 ){
@@ -95,13 +77,33 @@ class OrderForm extends Component {
       }
       return {marketplaceFee, transactionFee};
   }
+  static getDerivedStateFromProps( nextProps ){
+      let details = {}
+      for( const key of OrderForm.createFields( nextProps, nextProps.details.Marketplace ) ){
+          details[ key.name ] = nextProps.details[ key.name ]
+      }
+
+      return { details: details }
+  }
   mapper( collection ){
       return collection.data.map( item => {
           return {
               value: item.Item_Id,
-              label: `${ item.Item } - ${ item.Final_Cost } (${ item.Remaining })`
+              label: `${ item.Item } - $${ item.Final_Cost } (${ item.Remaining })`
           }
       })
+  }
+  renderInput( options ){
+      let value = this.state.details[ options.name ] ? this.state.details[ options.name ].toString() : ''
+      return (
+          <Input
+            key={ options.name }
+            label={ options.label ? options.label : options.name }
+            name={ options.name }
+            value={ value }
+            readonly={ options.readonly }
+            type={ options.type ? options.type : 'text' } />
+      );
   }
   render() {
       if( this.props.isCompleted ){
@@ -111,12 +113,14 @@ class OrderForm extends Component {
       }
     return (
         <form onSubmit={this.handleSubmit} onChange={ this.handleInputChange }>
+            { this.renderInput( { name: 'Number_of_Item_types', label: 'Number of Item Types' } ) }
             { this.props.create &&
                 <SelectWrapper
                     url="http://localhost:7555/api/inventory/remaining"
                     optionsMapper={ this.mapper }  />
             }
-          { this.fields.map( field => this.renderInput( field ) ) }
+            { ! this.props.create &&
+                OrderForm.createFields( this.props, this.state.details.Marketplace ).map( field => this.renderInput( field ) ) }
           <input type="submit" value="Submit" />
         </form>
 
