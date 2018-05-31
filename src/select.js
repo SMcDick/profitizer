@@ -8,7 +8,7 @@ class SelectWrapper extends Component {
     constructor( props ){
         super( props )
         this.state = {
-            selectedOption: '',
+            selectedOption: [],
             options: []
         }
     }
@@ -19,22 +19,22 @@ class SelectWrapper extends Component {
             })
     }
 
-    handleChange = (selectedOption) => {
-        this.setState({ selectedOption });
-        if( selectedOption ){
-            console.log(`Selected: ${selectedOption.label}`);
-        }
-
+    handleChange = selectedOption => {
+        this.setState({ selectedOption }, this.props.reactSelectChange( selectedOption ) )
     }
     render() {
-        const { selectedOption } = this.state;
-
+        const { selectedOption, options } = this.state;
         return (
             <Select
-                name="form-field-name"
-                value={selectedOption}
-                onChange={this.handleChange}
-                options={this.state.options}
+                className="react-select-override"
+                name={ this.props.name }
+                value={ selectedOption }
+                onChange={ this.handleChange }
+                options={ options }
+                closeOnSelect={ true }
+                multi
+                placeholder="Choose Items"
+                clearable={ false }
             />
         );
     }
@@ -43,7 +43,9 @@ class SelectWrapper extends Component {
 SelectWrapper.propTypes = {
     options: PropTypes.array,
     url: PropTypes.string,
-    optionsMapper: PropTypes.func
+    optionsMapper: PropTypes.func,
+    name: PropTypes.string,
+    reactSelectChange: PropTypes.func
 }
 
 export default SelectWrapper

@@ -1516,3 +1516,6 @@ em {
   font-weight: bold; }
   .page-size--active:hover {
     color: #696969; }
+
+.react-select-override.Select--multi .Select-value {
+  display: flex; }

@@ -26,6 +26,24 @@ class OrderForm extends Component {
             details: state
         });
     }
+    handleReactSelectChange = val => {
+        const details = { ...this.state.details }
+        let itemGroups = val.map( ( item, idx ) => {
+            let itemNumber = `Item_${ idx + 1 }`
+            let removeSpaces = val => val.replace( /_/g, ' ' )
+            let itemNumberString = removeSpaces( itemNumber )
+            let itemQuantity = `${ itemNumber }_Quantity`
+            let itemQuantityString = removeSpaces( itemQuantity )
+            details[ itemNumber ] = item.value.toString()
+            details[ itemQuantity ] = "1"
+            return [
+                { name: itemNumber, label: itemNumberString, readonly: true, key: itemNumber + '_' + Date.now() },
+                { name: itemQuantity, label: itemQuantityString, readonly: false, key: itemQuantity + '_' + Date.now() }
+            ]
+        })
+        this.items = itemGroups.reduce( ( items, groups ) => items.concat( groups ) )
+        this.setState({ details })
+    }
     handleSubmit( e ){
         e.preventDefault();
         let url = this.props.api + "sale/" + this.props.details.Order_Id
@@ -79,7 +97,7 @@ class OrderForm extends Component {
         return collection.data.map( item => {
             return {
                 value: item.Item_Id,
-                label: `${ item.Item } - $${ item.Final_Cost } (${ item.Remaining })`
+                label: `${ item.Item } ( ${ item.Item_Id } ) - $${ item.Final_Cost } (${ item.Remaining })`
             }
         })
     }
@@ -93,7 +111,7 @@ class OrderForm extends Component {
         }
         return (
             <Input
-                key={ options.name }
+                key={ options.key ? options.key : options.name }
                 label={ options.label ? options.label : options.name }
                 feeEstimate={ feeEstimate.toString() }
                 name={ options.name }
@@ -111,13 +129,17 @@ class OrderForm extends Component {
         let fees = this.computeDefaultFees( this.state.details )
         return (
             <form onSubmit={this.handleSubmit} onChange={ this.handleInputChange }>
-                { this.renderInput( { name: 'Number_of_Item_types', label: 'Number of Item Types' } ) }
                 { this.props.create &&
                     <SelectWrapper
-                    url="http://localhost:7555/api/inventory/remaining"
-                    optionsMapper={ this.mapper }  />
+                        url="http://localhost:7555/api/inventory/remaining"
+                        optionsMapper={ this.mapper }
+                        name="Items Sold"
+                        reactSelectChange={ this.handleReactSelectChange } />
                 }
-                { ! this.props.create &&
+                { this.props.create && this.items &&
+                    this.items.map( field => this.renderInput( field, null ) )
+                }
+                { ( ! this.props.create || this.items ) &&
                     OrderForm.createFields( this.props ).map( field => this.renderInput( field, fees ) )
                 }
                 <input type="submit" value="Submit" />
