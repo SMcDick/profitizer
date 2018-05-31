@@ -6,16 +6,20 @@ class Input extends Component {
         let checked = ( this.props.type === 'checkbox' && this.props.value === "1" );
         return (
             <div className="input__wrapper">
-                <label className="input--label">{this.props.label}</label>
+                <label className="input--label">{this.props.label}
+                    { this.props.feeEstimate &&
+                        <span> (estimate: ${ this.props.feeEstimate })</span>
+                    }</label>
                 <input
                     className="input--text"
                     type={ this.props.type }
                     defaultValue={ this.props.value }
                     defaultChecked={ checked }
                     name={ this.props.name }
-                    readOnly={ this.props.readonly } />
+                    readOnly={ this.props.readonly }
+                    autoComplete="off" />
             </div>
-        );
+        )
     }
 }
 Input.propTypes = {
@@ -23,7 +27,8 @@ Input.propTypes = {
     type: PropType.string,
     value: PropType.string,
     name: PropType.string,
-    readonly: PropType.bool
+    readonly: PropType.bool,
+    feeEstimate: PropType.string
 }
 
 export default Input;

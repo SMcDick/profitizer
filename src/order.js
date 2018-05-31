@@ -6,9 +6,7 @@ import { Link } from 'react-router-dom';
 class Order extends Component {
     constructor( props ){
         super( props );
-        this.handleCompleted = this.handleCompleted.bind( this );
         this.state = {
-            isCompleted: false,
             order: {},
             loading: true
         }
@@ -26,9 +24,6 @@ class Order extends Component {
         }
         return state;
     }
-    handleCompleted( val ){
-        this.setState({ isCompleted: val })
-    }
     render() {
         if( this.state.loading ){
             return (<div>Loading...</div>)
@@ -38,15 +33,12 @@ class Order extends Component {
         return (
             <div>
                 <h1>Order#: { this.state.order.Order_Id }</h1>
-                {/* <Link to="/orders">Back</Link> */}
                 <a href="#" onClick={ this.props.routerProps.history.goBack }>Back</a>
                 { ! this.state.edit && <Link to={ "/orders/" + this.props.routerProps.match.params.id + '/edit' }>Edit</Link> }
                 <Form
                     details={ this.state.order }
                     edit={ this.state.edit }
                     api={ this.props.api }
-                    handleCompleted={ this.handleCompleted }
-                    isCompleted={ this.state.isCompleted }
                     handleOrderUpdates={ this.props.handleOrderUpdates }/>
             </div>
         )
