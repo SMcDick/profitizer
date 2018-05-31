@@ -9,16 +9,20 @@ class SelectWrapper extends Component {
         super( props )
         this.state = {
             selectedOption: [],
+            details: {},
             options: []
         }
     }
     componentDidMount(){
         axios.get( this.props.url )
             .then( result => {
-                this.setState({ options: this.props.optionsMapper( result.data ) })
+                this.props.handleInventory( result.data.data )
+                this.setState({
+                    options: this.props.optionsMapper( result.data ),
+                    details: result.data
+                })
             })
     }
-
     handleChange = selectedOption => {
         this.setState({ selectedOption }, this.props.reactSelectChange( selectedOption ) )
     }
@@ -45,7 +49,8 @@ SelectWrapper.propTypes = {
     url: PropTypes.string,
     optionsMapper: PropTypes.func,
     name: PropTypes.string,
-    reactSelectChange: PropTypes.func
+    reactSelectChange: PropTypes.func,
+    handleInventory: PropTypes.func
 }
 
 export default SelectWrapper

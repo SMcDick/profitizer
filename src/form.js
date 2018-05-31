@@ -13,7 +13,9 @@ class OrderForm extends Component {
         this.handleSubmit = this.handleSubmit.bind( this )
 
         this.state = {
-            details: {}
+            details: {},
+            // TODO This might not be state?
+            inventory: []
         }
     }
     handleInputChange(event) {
@@ -30,15 +32,21 @@ class OrderForm extends Component {
         const details = { ...this.state.details }
         let itemGroups = val.map( ( item, idx ) => {
             let itemNumber = `Item_${ idx + 1 }`
-            let removeSpaces = val => val.replace( /_/g, ' ' )
-            let itemNumberString = removeSpaces( itemNumber )
+            let stringify = val => val.replace( /_/g, ' ' )
+            let itemNumberString = stringify( itemNumber )
             let itemQuantity = `${ itemNumber }_Quantity`
-            let itemQuantityString = removeSpaces( itemQuantity )
+            let itemQuantityString = stringify( itemQuantity )
+            let timestamp = '_' + Date.now()
+            let nameLabel = itemNumber + '_Name'
+            let nameString = stringify( nameLabel )
+            let name = this.state.inventory.find( inv => inv.Item_Id === item.value )
+            name = name ? name.Item : 'Item Not Found - Something went wrong'
             details[ itemNumber ] = item.value.toString()
             details[ itemQuantity ] = "1"
             return [
-                { name: itemNumber, label: itemNumberString, readonly: true, key: itemNumber + '_' + Date.now() },
-                { name: itemQuantity, label: itemQuantityString, readonly: false, key: itemQuantity + '_' + Date.now() }
+                { name: nameLabel, label: nameString, key: nameLabel + timestamp, readonly: true, value: name },
+                { name: itemNumber, label: itemNumberString, readonly: true, key: itemNumber + timestamp },
+                { name: itemQuantity, label: itemQuantityString, readonly: false, key: itemQuantity + timestamp }
             ]
         })
         this.items = itemGroups.reduce( ( items, groups ) => items.concat( groups ) )
@@ -102,7 +110,7 @@ class OrderForm extends Component {
         })
     }
     renderInput( options, fees ){
-        let value = this.state.details[ options.name ] ? this.state.details[ options.name ] : ''
+        let value = options.value ? options.value : this.state.details[ options.name ] ? this.state.details[ options.name ] : ''
         let feeEstimate = ''
         if( options.name === 'Transaction_Fee' ){
             feeEstimate = fees.transactionFee
@@ -120,6 +128,9 @@ class OrderForm extends Component {
                 type={ options.type ? options.type : 'text' } />
         )
     }
+    handleInventory = val => {
+        this.setState({ inventory: val })
+    }
     render() {
         if( this.props.isCompleted ){
             return (
@@ -134,10 +145,13 @@ class OrderForm extends Component {
                         url="http://localhost:7555/api/inventory/remaining"
                         optionsMapper={ this.mapper }
                         name="Items Sold"
-                        reactSelectChange={ this.handleReactSelectChange } />
+                        reactSelectChange={ this.handleReactSelectChange }
+                        handleInventory={ this.handleInventory } />
                 }
                 { this.props.create && this.items &&
-                    this.items.map( field => this.renderInput( field, null ) )
+                    <div className="item-wrapper">
+                        { this.items.map( field => this.renderInput( field, null ) ) }
+                    </div>
                 }
                 { ( ! this.props.create || this.items ) &&
                     OrderForm.createFields( this.props ).map( field => this.renderInput( field, fees ) )

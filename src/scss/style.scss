@@ -32,3 +32,13 @@
 .react-select-override.Select--multi .Select-value {
     display: flex;
 }
+
+.item-wrapper {
+    background: $another-gray;
+    padding: 20px;
+    margin: 10px 0;
+    border: 1px solid $dark-gray;
+    .input__wrapper .input--text:not( [readonly] ) {
+        background: $white;
+    }
+}
