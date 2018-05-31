@@ -30,6 +30,7 @@ class OrderForm extends Component {
     }
     handleReactSelectChange = val => {
         const details = { ...this.state.details }
+        let description = []
         let itemGroups = val.map( ( item, idx ) => {
             let itemNumber = `Item_${ idx + 1 }`
             let stringify = val => val.replace( /_/g, ' ' )
@@ -41,6 +42,7 @@ class OrderForm extends Component {
             let nameString = stringify( nameLabel )
             let name = this.state.inventory.find( inv => inv.Item_Id === item.value )
             name = name ? name.Item : 'Item Not Found - Something went wrong'
+            description.push( name )
             details[ itemNumber ] = item.value.toString()
             details[ itemQuantity ] = "1"
             return [
@@ -50,6 +52,10 @@ class OrderForm extends Component {
             ]
         })
         this.items = itemGroups.reduce( ( items, groups ) => items.concat( groups ) )
+        // TODO this doesn't quite work as expected.
+        // It doesn't update the default value and it doesn't clear out the updated value when
+        // choosing a second item. Leaving for now and might revisit later
+        details.Description = description.join( '; ' )
         this.setState({ details })
     }
     handleSubmit( e ){
