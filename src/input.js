@@ -17,7 +17,8 @@ class Input extends Component {
                     defaultChecked={ checked }
                     name={ this.props.name }
                     readOnly={ this.props.readonly }
-                    autoComplete="off" />
+                    autoComplete="off"
+                    data-lpignore="true" />
             </div>
         )
     }
