@@ -22,6 +22,9 @@ class OrderForm extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+        if( name === '' ){
+            return
+        }
         const state = { ...this.state.details }
         state[name] = value
         this.setState({
@@ -31,7 +34,7 @@ class OrderForm extends Component {
     handleReactSelectChange = val => {
         const details = { ...this.state.details }
         let description = []
-        let itemGroups = val.map( ( item, idx ) => {
+        this.itemGroups = val.map( ( item, idx ) => {
             let itemNumber = `Item_${ idx + 1 }`
             let stringify = val => val.replace( /_/g, ' ' )
             let itemNumberString = stringify( itemNumber )
@@ -46,12 +49,12 @@ class OrderForm extends Component {
             details[ itemNumber ] = item.value.toString()
             details[ itemQuantity ] = "1"
             return [
-                { name: nameLabel, label: nameString, key: nameLabel + timestamp, readonly: true, value: name },
-                { name: itemNumber, label: itemNumberString, readonly: true, key: itemNumber + timestamp },
+                { name: nameLabel, label: nameString, key: nameLabel + timestamp, readonly: true, value: name, type: 'text' },
+                { name: itemNumber, label: itemNumberString, readonly: true, key: itemNumber + timestamp, type: 'text' },
                 { name: itemQuantity, label: itemQuantityString, readonly: false, key: itemQuantity + timestamp }
             ]
         })
-        this.items = itemGroups.reduce( ( items, groups ) => items.concat( groups ), [] )
+        this.itemFields = this.itemGroups.reduce( ( items, groups ) => items.concat( groups ), [] )
         // TODO this doesn't quite work as expected.
         // It doesn't update the default value and it doesn't clear out the updated value when
         // choosing a second item. Leaving for now and might revisit later
@@ -59,31 +62,56 @@ class OrderForm extends Component {
         this.setState({ details })
     }
     handleSubmit( e ){
-        e.preventDefault();
-        let url = this.props.api + "sale/" + this.props.details.Order_Id
-        let method = 'put';
-        if( this.props.create ){
-            url = this.props.api + 'createSale'
-            method = 'post'
-        }
-        axios[method]( url, this.state.details )
-            .then( result => {
-                this.props.handleOrderUpdates( result.data )
+        try {
+            e.preventDefault();
+            let url = this.props.api + "sale/" + this.props.details.Order_Id
+            let method = 'put';
+            if( this.props.create ){
+                url = this.props.api + 'createSale'
+                method = 'post'
+            }
+
+            let requests = [{ url: url, method: method, data: this.state.details }]
+            let extras = []
+            if( this.props.create ){
+                extras = this.itemGroups.map( ( groups, idx ) => {
+                    const { details, inventory } = this.state;
+                    let itemString = `Item_${ idx + 1 }`
+                    let id = details[ itemString ]
+                    let value = details[ `${ itemString }_Quantity` ]
+                    let currentItem = inventory.find( inv => inv.Item_Id.toString() === id )
+                    let currentQty = currentItem.Quantity
+                    let newQty = currentQty - parseInt( value, 10 )
+                    if( newQty < 0 ){
+                        throw ({ error: `Not enough ** ${ currentItem.Item } ** to complete the order. Not processing` })
+                    }
+                    return { url: this.props.api + 'item/' + id, method: method, data: { Quantity: newQty } }
+                })
+            }
+            requests = requests.concat( extras ).map( req => axios[ req.method ]( req.url, req.data ) )
+            axios.all( requests ).then( results => {
+                let sale = results.find( result => result.config.url.toLowerCase().indexOf( 'sale' ) > 0 )
+                // I think this is only to prevent re-requesting the orders list when going back to the orders page
+                // Rethink?
+                this.props.handleOrderUpdates( sale.data )
             })
+        } catch( error ){
+            alert( error.error )
+        }
     }
     static createFields( props ){
         let readonly = ! props.edit;
         return [
-            { name: 'Description', readonly: readonly },
+            { name: 'Description', readonly: readonly, type: 'text' },
             { name: 'Total_Sold_Price', label: 'Total Sold Price', readonly: readonly },
             { name: 'Transaction_Fee', label: `Transaction Fee` },
             { name: 'Marketplace_Fee', label: `Marketplace Fee` },
             { name: 'Shipping' },
             { name: 'Tax', label: 'Tax' },
-            { name: 'Platform_Order_Id', readonly: readonly, label: 'Platform Order Id' },
-            { name: 'Order_Id', readonly: true, label: 'Order ID' },
-            { name: 'Sold_Date', label: 'Sold Date', readonly: readonly },
-            { name: 'Marketplace', readonly: readonly },
+            { name: 'Platform_Order_Id', readonly: readonly, label: 'Platform Order Id', type: 'text' },
+            { name: 'Order_Id', readonly: true, label: 'Order ID', type: 'text' },
+            { name: 'Sold_Date', label: 'Sold Date', readonly: readonly, type: 'date' },
+            { name: 'Marketplace', readonly: readonly, type: 'text' },
             { name: 'Completed', type: 'checkbox' }
         ];
     }
@@ -131,7 +159,7 @@ class OrderForm extends Component {
                 name={ options.name }
                 value={ value.toString() }
                 readonly={ options.readonly }
-                type={ options.type ? options.type : 'text' } />
+                type={ options.type ? options.type : 'number' } />
         )
     }
     handleInventory = val => {
@@ -148,23 +176,22 @@ class OrderForm extends Component {
             <form onSubmit={this.handleSubmit} onChange={ this.handleInputChange }>
                 { this.props.create &&
                     <div className="item-wrapper">
-                    <SelectWrapper
-                        url="http://localhost:7555/api/inventory/remaining"
-                        optionsMapper={ this.mapper }
-                        name="Items Sold"
-                        reactSelectChange={ this.handleReactSelectChange }
-                        handleInventory={ this.handleInventory } />
-                    { this.items &&
-                        this.items.map( field => this.renderInput( field, null ) )
-                    }
+                        <SelectWrapper
+                            url="http://localhost:7555/api/inventory/remaining"
+                            optionsMapper={ this.mapper }
+                            name="Items Sold"
+                            reactSelectChange={ this.handleReactSelectChange }
+                            handleInventory={ this.handleInventory } />
+                        { this.itemFields &&
+                            this.itemFields.map( field => this.renderInput( field, null ) )
+                        }
                     </div>
                 }
-                { ( ! this.props.create || this.items ) &&
+                { ( ! this.props.create || this.itemFields ) &&
                     OrderForm.createFields( this.props ).map( field => this.renderInput( field, fees ) )
                 }
                 <input type="submit" value="Submit" />
             </form>
-
         )
     }
 }
