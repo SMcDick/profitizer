@@ -51,7 +51,7 @@ class OrderForm extends Component {
                 { name: itemQuantity, label: itemQuantityString, readonly: false, key: itemQuantity + timestamp }
             ]
         })
-        this.items = itemGroups.reduce( ( items, groups ) => items.concat( groups ) )
+        this.items = itemGroups.reduce( ( items, groups ) => items.concat( groups ), [] )
         // TODO this doesn't quite work as expected.
         // It doesn't update the default value and it doesn't clear out the updated value when
         // choosing a second item. Leaving for now and might revisit later
