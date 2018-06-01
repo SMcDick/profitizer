@@ -147,16 +147,16 @@ class OrderForm extends Component {
         return (
             <form onSubmit={this.handleSubmit} onChange={ this.handleInputChange }>
                 { this.props.create &&
+                    <div className="item-wrapper">
                     <SelectWrapper
                         url="http://localhost:7555/api/inventory/remaining"
                         optionsMapper={ this.mapper }
                         name="Items Sold"
                         reactSelectChange={ this.handleReactSelectChange }
                         handleInventory={ this.handleInventory } />
-                }
-                { this.props.create && this.items &&
-                    <div className="item-wrapper">
-                        { this.items.map( field => this.renderInput( field, null ) ) }
+                    { this.items &&
+                        this.items.map( field => this.renderInput( field, null ) )
+                    }
                     </div>
                 }
                 { ( ! this.props.create || this.items ) &&
