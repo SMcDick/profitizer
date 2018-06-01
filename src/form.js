@@ -75,6 +75,7 @@ class OrderForm extends Component {
         let readonly = ! props.edit;
         return [
             { name: 'Description', readonly: readonly },
+            { name: 'Total_Sold_Price', label: 'Total Sold Price', readonly: readonly },
             { name: 'Transaction_Fee', label: `Transaction Fee` },
             { name: 'Marketplace_Fee', label: `Marketplace Fee` },
             { name: 'Shipping' },
@@ -82,7 +83,6 @@ class OrderForm extends Component {
             { name: 'Platform_Order_Id', readonly: readonly, label: 'Platform Order Id' },
             { name: 'Order_Id', readonly: true, label: 'Order ID' },
             { name: 'Sold_Date', label: 'Sold Date', readonly: readonly },
-            { name: 'Total_Sold_Price', label: 'Total Sold Price', readonly: readonly },
             { name: 'Marketplace', readonly: readonly },
             { name: 'Completed', type: 'checkbox' }
         ];
