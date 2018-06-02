@@ -4,6 +4,9 @@ import PropType from 'prop-types';
 class Input extends Component {
     render(){
         let checked = ( this.props.type === 'checkbox' && this.props.value === "1" )
+        let value = this.props.value
+        // This is all to show decimals unless the input component has a true int prop
+        value = ! isNaN( Number( value ) ) && this.props.type === 'number' ? Number( value ).toFixed( this.props.int ? 0 : 2 ) : value
         return (
             <div className="input__wrapper">
                 <label className="input--label">{this.props.label}
@@ -13,7 +16,7 @@ class Input extends Component {
                 <input
                     className="input--text"
                     type={ this.props.type }
-                    defaultValue={ this.props.value }
+                    defaultValue={ value }
                     defaultChecked={ checked }
                     name={ this.props.name }
                     readOnly={ this.props.readonly }
