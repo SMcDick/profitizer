@@ -87,7 +87,7 @@ class OrderForm extends Component {
                     if( newSold > currentQty ){
                         throw ({ error: `Not enough ** ${ currentItem.Item } ** to complete the order. Not processing` })
                     }
-                    return { url: this.props.api + 'item/' + id, method: method, data: { Quantity: newSold } }
+                    return { url: this.props.api + 'item/' + id, method: method, data: { Num_Sold: newSold } }
                 })
             }
             requests = requests.concat( extras ).map( req => axios[ req.method ]( req.url, req.data ) )
