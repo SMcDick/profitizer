@@ -26,6 +26,8 @@ class App extends Component {
                 <div className="App width-wrapper">
                     <ul>
                         <li><NavLink exact to="/">Home</NavLink></li>
+                        <li><NavLink to="/inventory">Inventory</NavLink></li>
+                        <li><NavLink to="/orders">Orders</NavLink></li>
                     </ul>
                     <hr />
                     <Route exact path="/" component={ Home } />
