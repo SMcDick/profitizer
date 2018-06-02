@@ -3,13 +3,7 @@ import PropType from 'prop-types';
 
 class Input extends Component {
     render(){
-        let checked = ( this.props.type === 'checkbox' && this.props.value === "1" );
-        let value = this.props.value;
-        if( ! value ){
-            if( this.props.type === 'date' ){
-                value = new Date().toISOString().split( 'T' )[0]
-            }
-        }
+        let checked = ( this.props.type === 'checkbox' && this.props.value === "1" )
         return (
             <div className="input__wrapper">
                 <label className="input--label">{this.props.label}
@@ -19,13 +13,14 @@ class Input extends Component {
                 <input
                     className="input--text"
                     type={ this.props.type }
-                    defaultValue={ value }
+                    defaultValue={ this.props.value }
                     defaultChecked={ checked }
                     name={ this.props.name }
                     readOnly={ this.props.readonly }
                     autoComplete="off"
                     data-lpignore="true"
-                    step={ this.props.int ? 1 : 0.01 } />
+                    step={ this.props.int ? 1 : 0.01 }
+                    required={ this.props.required } />
             </div>
         )
     }
@@ -37,7 +32,8 @@ Input.propTypes = {
     name: PropType.string,
     readonly: PropType.bool,
     feeEstimate: PropType.string,
-    int: PropType.bool
+    int: PropType.bool,
+    required: PropType.bool
 }
 
 export default Input;

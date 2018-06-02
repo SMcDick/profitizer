@@ -35,6 +35,10 @@ class OrderForm extends Component {
     handleReactSelectChange = val => {
         const details = { ...this.state.details }
         let description = []
+        for( var i = 1; i <= 5; i++ ){
+            delete details[ 'Item_' + i ]
+            delete details[ 'Item_' + i + '_Quantity' ]
+        }
         this.itemGroups = val.map( ( item, idx ) => {
             let itemNumber = `Item_${ idx + 1 }`
             let stringify = val => val.replace( /_/g, ' ' )
@@ -56,6 +60,9 @@ class OrderForm extends Component {
             ]
         })
         this.itemFields = this.itemGroups.reduce( ( items, groups ) => items.concat( groups ), [] )
+        if( ! this.itemGroups.length ){
+            this.itemFields = undefined
+        }
         // TODO this doesn't quite work as expected.
         // It doesn't update the default value and it doesn't clear out the updated value when
         // choosing a second item. Leaving for now and might revisit later
@@ -106,14 +113,14 @@ class OrderForm extends Component {
         let readonly = ! props.edit;
         return [
             { name: 'Description', readonly: readonly, type: 'text' },
-            { name: 'Total_Sold_Price', label: 'Total Sold Price', readonly: readonly },
+            { name: 'Total_Sold_Price', label: 'Total Sold Price', readonly: readonly, required: true },
             { name: 'Transaction_Fee', label: `Transaction Fee` },
             { name: 'Marketplace_Fee', label: `Marketplace Fee` },
             { name: 'Shipping' },
             { name: 'Tax', label: 'Tax' },
-            { name: 'Platform_Order_Id', readonly: readonly, label: 'Platform Order Id', type: 'text' },
+            { name: 'Platform_Order_Id', readonly: readonly, label: 'Platform Order Id', type: 'text', required: true },
             { name: 'Order_Id', readonly: true, label: 'Order ID', type: 'text' },
-            { name: 'Sold_Date', label: 'Sold Date', readonly: readonly, type: 'date' },
+            { name: 'Sold_Date', label: 'Sold Date', readonly: readonly, type: 'date', required: true },
             { name: 'Marketplace', readonly: readonly, type: 'text' },
             { name: 'Completed', type: 'checkbox' }
         ];
@@ -135,6 +142,9 @@ class OrderForm extends Component {
         let details = {}
         for( const key of OrderForm.createFields( nextProps ) ){
             details[ key.name ] = nextProps.details[ key.name ]
+        }
+        if( ! details.Sold_Date ){
+            details.Sold_Date = new Date().toISOString().split( 'T' )[0]
         }
         return { details }
     }
@@ -163,7 +173,8 @@ class OrderForm extends Component {
                 value={ value.toString() }
                 readonly={ options.readonly }
                 type={ options.type ? options.type : 'number' }
-                int={ options.int } />
+                int={ options.int }
+                required={ options.required } />
         )
     }
     handleInventory = val => {
@@ -194,7 +205,9 @@ class OrderForm extends Component {
                 { ( ! this.props.create || this.itemFields ) &&
                     OrderForm.createFields( this.props ).map( field => this.renderInput( field, fees ) )
                 }
-                <input type="submit" value="Submit" />
+                { ( ! this.props.create || this.itemFields ) &&
+                    <input type="submit" value="Submit" />
+                }
             </form>
         )
     }
