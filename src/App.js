@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, NavLink, Link } from 'react-router-dom';
 import OrderWrapper from './orderWrapper'
+import InventoryWrapper from './inventoryWrapper'
 
 class Home extends Component{
     render(){
@@ -28,7 +29,7 @@ class App extends Component {
                     </ul>
                     <hr />
                     <Route exact path="/" component={ Home } />
-                    <Route path="/inventory" component={ Inventory } />
+                    <Route path="/inventory" component={ InventoryWrapper } />
                     <Route path="/orders" component={ OrderWrapper } />
                 </div>
             </Router>
