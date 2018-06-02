@@ -13,12 +13,6 @@ class Home extends Component{
         )
     }
 }
-class Inventory extends Component{
-    render(){
-        return( <div>Inventory (Eventually)</div> );
-    }
-}
-
 class App extends Component {
     render(){
         return (
