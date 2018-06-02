@@ -15,7 +15,8 @@ class OrderForm extends Component {
         this.state = {
             details: {},
             // TODO This might not be state?
-            inventory: []
+            inventory: [],
+            redirect: false
         }
     }
     handleInputChange(event) {
@@ -51,7 +52,7 @@ class OrderForm extends Component {
             return [
                 { name: nameLabel, label: nameString, key: nameLabel + timestamp, readonly: true, value: name, type: 'text' },
                 { name: itemNumber, label: itemNumberString, readonly: true, key: itemNumber + timestamp, type: 'text' },
-                { name: itemQuantity, label: itemQuantityString, readonly: false, key: itemQuantity + timestamp }
+                { name: itemQuantity, label: itemQuantityString, readonly: false, key: itemQuantity + timestamp, int: true }
             ]
         })
         this.itemFields = this.itemGroups.reduce( ( items, groups ) => items.concat( groups ), [] )
@@ -81,11 +82,12 @@ class OrderForm extends Component {
                     let value = details[ `${ itemString }_Quantity` ]
                     let currentItem = inventory.find( inv => inv.Item_Id.toString() === id )
                     let currentQty = currentItem.Quantity
-                    let newQty = currentQty - parseInt( value, 10 )
-                    if( newQty < 0 ){
+                    let numSold = currentItem.Num_Sold
+                    let newSold = numSold + parseInt( value, 10 )
+                    if( newSold > currentQty ){
                         throw ({ error: `Not enough ** ${ currentItem.Item } ** to complete the order. Not processing` })
                     }
-                    return { url: this.props.api + 'item/' + id, method: method, data: { Quantity: newQty } }
+                    return { url: this.props.api + 'item/' + id, method: method, data: { Quantity: newSold } }
                 })
             }
             requests = requests.concat( extras ).map( req => axios[ req.method ]( req.url, req.data ) )
@@ -94,6 +96,7 @@ class OrderForm extends Component {
                 // I think this is only to prevent re-requesting the orders list when going back to the orders page
                 // Rethink?
                 this.props.handleOrderUpdates( sale.data )
+                this.setState({ redirect: true })
             })
         } catch( error ){
             alert( error.error )
@@ -159,14 +162,15 @@ class OrderForm extends Component {
                 name={ options.name }
                 value={ value.toString() }
                 readonly={ options.readonly }
-                type={ options.type ? options.type : 'number' } />
+                type={ options.type ? options.type : 'number' }
+                int={ options.int } />
         )
     }
     handleInventory = val => {
         this.setState({ inventory: val })
     }
     render() {
-        if( this.props.isCompleted ){
+        if( this.state.redirect ){
             return (
                 <Redirect exact={true} to='/orders' />
             )
