@@ -157,7 +157,11 @@ class OrderForm extends Component {
         })
     }
     renderInput( options, fees ){
-        let value = options.value ? options.value : this.state.details[ options.name ] ? this.state.details[ options.name ] : ''
+        let value = options.value ? options.value : this.state.details[ options.name ] !== undefined ? this.state.details[ options.name ] : ''
+        if( ! options.type ){
+            value = value.toFixed( options.int ? 0 : 2 )
+        }
+
         let feeEstimate = ''
         if( options.name === 'Transaction_Fee' ){
             feeEstimate = fees.transactionFee
