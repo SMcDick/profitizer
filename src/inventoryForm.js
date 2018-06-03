@@ -50,10 +50,10 @@ class InventoryForm extends Component {
             { name: 'Item_Id', label: 'Item Id', readonly: true, type: 'text' },
             { name: 'Item_Number', label: 'Item Number', readonly: true, type: 'text' },
             { name: 'Item', readonly: false, type: 'text' },
-            { name: 'Quantity', readonly: false },
+            { name: 'Quantity', readonly: false, int: true },
             { name: 'Unit_Cost', label: 'Unit Cost', readonly: false },
             { name: 'Tax', readonly: false },
-            { name: 'Num_Sold', label: 'Number Sold', readonly: false }
+            { name: 'Num_Sold', label: 'Number Sold', readonly: false, int: true }
         ]
     }
     static getDerivedStateFromProps( nextProps ){
@@ -64,7 +64,7 @@ class InventoryForm extends Component {
         return { details }
     }
     renderInput( options ){
-        let value = options.value ? options.value : this.state.details[ options.name ] ? this.state.details[ options.name ] : ''
+        let value = options.value ? options.value : this.state.details[ options.name ] !== undefined ? this.state.details[ options.name ] : ''
         return (
             <Input
                 key={ options.key ? options.key : options.name }
@@ -72,7 +72,9 @@ class InventoryForm extends Component {
                 name={ options.name }
                 value={ value.toString() }
                 readonly={ options.readonly }
-                type={ options.type ? options.type : 'number' } />
+                type={ options.type ? options.type : 'number' }
+                int={ options.int }
+                required={ options.required } />
         )
     }
     render() {
