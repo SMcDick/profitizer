@@ -125,6 +125,32 @@ class OrderForm extends Component {
             { name: 'Completed', type: 'checkbox' }
         ];
     }
+    static createItems( props ){
+        let items = []
+        for( var i = 1; i <= 5; i++ ){
+            let itemNumber = `Item_${ i }`
+            let stringify = val => val.replace( /_/g, ' ' )
+            let itemNumberString = stringify( itemNumber )
+            let itemQuantity = `${ itemNumber }_Quantity`
+            let itemQuantityString = stringify( itemQuantity )
+            let timestamp = '_' + Date.now()
+            let nameLabel = itemNumber + '_Name'
+            let nameString = stringify( nameLabel )
+
+            if( props.details[ itemQuantity ] > 0 ){
+                items.push(
+                    { name: nameLabel, label: nameString, key: nameLabel + timestamp, readonly: true, type: 'text' },
+                    { name: itemNumber, label: itemNumberString, readonly: true, key: itemNumber + timestamp, type: 'text' },
+                    { name: itemQuantity, label: itemQuantityString, readonly: true, key: itemQuantity + timestamp, int: true },
+                    { name: itemNumber + '_Cost', label: stringify( itemNumber + '_Cost' ), readonly: true, key: itemNumber + '_Cost' + timestamp }
+                )
+            }
+        }
+        items.push(
+            { name: 'Total_Cost_calc', label: 'Total Cost', readonly: true, key: 'Total_Cost' }
+        )
+        return items
+    }
     computeDefaultFees( details ){
         let soldPrice = details.Total_Sold_Price;
         let marketplaceFee = 2.95;
@@ -141,6 +167,10 @@ class OrderForm extends Component {
     static getDerivedStateFromProps( nextProps ){
         let details = {}
         for( const key of OrderForm.createFields( nextProps ) ){
+            details[ key.name ] = nextProps.details[ key.name ]
+        }
+        // TODO would not be surprised if this breaks the new order item functionality. Make sure to test
+        for( const key of OrderForm.createItems( nextProps ) ){
             details[ key.name ] = nextProps.details[ key.name ]
         }
         if( ! details.Sold_Date ){
@@ -203,10 +233,16 @@ class OrderForm extends Component {
                     </div>
                 }
                 { ( ! this.props.create || this.itemFields ) &&
-                    OrderForm.createFields( this.props ).map( field => this.renderInput( field, fees ) )
-                }
-                { ( ! this.props.create || this.itemFields ) &&
-                    <input type="submit" value="Submit" />
+                    <div>
+                        { OrderForm.createFields( this.props ).map( field => this.renderInput( field, fees ) ) }
+                        { ! this.props.create &&
+                            <div className="item-wrapper">
+                                <h3>Item Details</h3>
+                                { OrderForm.createItems( this.props ).map( field => this.renderInput( field, null ) ) }
+                            </div>
+                        }
+                        <input type="submit" className="btn" value="Submit" />
+                    </div>
                 }
             </form>
         )
