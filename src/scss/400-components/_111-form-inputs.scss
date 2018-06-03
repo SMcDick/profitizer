@@ -176,8 +176,13 @@
 .item-wrapper {
     background: $another-gray;
     padding: 20px;
-    margin: 10px -10px;
+    margin: 10px 0;
     border: 1px solid $dark-gray;
+    .input__wrapper .input--text:not( [readonly] ) {
+        background: $white;
+    }
+}
+.item-field-wrapper {
     display: flex;
     flex-wrap:wrap;
     h3 {
@@ -189,8 +194,5 @@
         &:nth-of-type( 4n + 1 ){
             flex: 1 1 100%;
         }
-    }
-    .input__wrapper .input--text:not( [readonly] ) {
-        background: $white;
     }
 }

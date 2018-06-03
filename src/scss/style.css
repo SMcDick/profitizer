@@ -1423,19 +1423,21 @@ em {
 .item-wrapper {
   background: #EAECF0;
   padding: 20px;
-  margin: 10px -10px;
-  border: 1px solid #696969;
-  display: flex;
-  flex-wrap: wrap; }
-  .item-wrapper h3 {
-    flex: 1 1 100%; }
-  .item-wrapper .input__wrapper {
-    flex: 1 1 calc( 33.333% - 20px);
-    margin: 0 10px; }
-    .item-wrapper .input__wrapper:nth-of-type(4n + 1) {
-      flex: 1 1 100%; }
+  margin: 10px 0;
+  border: 1px solid #696969; }
   .item-wrapper .input__wrapper .input--text:not([readonly]) {
     background: #fff; }
+
+.item-field-wrapper {
+  display: flex;
+  flex-wrap: wrap; }
+  .item-field-wrapper h3 {
+    flex: 1 1 100%; }
+  .item-field-wrapper .input__wrapper {
+    flex: 1 1 calc( 33.333% - 20px);
+    margin: 0 10px; }
+    .item-field-wrapper .input__wrapper:nth-of-type(4n + 1) {
+      flex: 1 1 100%; }
 
 .alert {
   opacity: 0;

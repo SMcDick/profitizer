@@ -228,7 +228,11 @@ class OrderForm extends Component {
                             reactSelectChange={ this.handleReactSelectChange }
                             handleInventory={ this.handleInventory } />
                         { this.itemFields &&
-                            this.itemFields.map( field => this.renderInput( field, null ) )
+                            // TODO fix this so that the fields display correctly
+                            <div className="item-field-wrapperx">
+                                <h3>Item Details</h3>
+                                { this.itemFields.map( field => this.renderInput( field, null ) ) }
+                            </div>
                         }
                     </div>
                 }
@@ -237,8 +241,10 @@ class OrderForm extends Component {
                         { OrderForm.createFields( this.props ).map( field => this.renderInput( field, fees ) ) }
                         { ! this.props.create &&
                             <div className="item-wrapper">
-                                <h3>Item Details</h3>
-                                { OrderForm.createItems( this.props ).map( field => this.renderInput( field, null ) ) }
+                                <div className="item-field-wrapper">
+                                    <h3>Item Details</h3>
+                                    { OrderForm.createItems( this.props ).map( field => this.renderInput( field, null ) ) }
+                                </div>
                             </div>
                         }
                         <input type="submit" className="btn" value="Submit" />
