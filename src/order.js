@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import Form from './form';
 import { Link } from 'react-router-dom';
+import axios from 'axios'
 
 class Order extends Component {
     constructor( props ){
@@ -23,6 +24,16 @@ class Order extends Component {
             }
         }
         return state;
+    }
+    shouldComponentUpdate( props, state ){
+        if( ! state.order.hasOwnProperty( 'Order_Id' ) ){
+            // TODO figure out a way to handle 404 requests
+            axios.get( props.api + '/sale/' + props.routerProps.match.params.id )
+                .then( result => {
+                    this.setState({ order: result.data.data })
+                })
+        }
+        return true
     }
     render() {
         if( this.state.loading ){
