@@ -67,6 +67,7 @@ class InventoryWrapper extends Component {
                             <div>
                                 <h1>Create a New Inventory Item</h1>
                                 <Form
+                                    details={ { Quantity: 1, Tax: 0, Num_Sold: 0 } }
                                     edit={ true }
                                     api={ 'http://localhost:7555/api/' }
                                     routerProps={ props }
