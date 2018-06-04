@@ -70,7 +70,6 @@ class OrderForm extends Component {
         this.setState({ details })
     }
     handleSubmit( e ){
-        try {
             e.preventDefault();
             let url = this.props.api + "sale/" + this.props.details.Order_Id
             let method = 'put';
@@ -79,35 +78,14 @@ class OrderForm extends Component {
                 method = 'post'
             }
 
-            let requests = [{ url: url, method: method, data: this.state.details }]
-            let extras = []
-            if( this.props.create ){
-                extras = this.itemGroups.map( ( groups, idx ) => {
-                    const { details, inventory } = this.state;
-                    let itemString = `Item_${ idx + 1 }`
-                    let id = details[ itemString ]
-                    let value = details[ `${ itemString }_Quantity` ]
-                    let currentItem = inventory.find( inv => inv.Item_Id.toString() === id )
-                    let currentQty = currentItem.Quantity
-                    let numSold = currentItem.Num_Sold
-                    let newSold = numSold + parseInt( value, 10 )
-                    if( newSold > currentQty ){
-                        throw ({ error: `Not enough ** ${ currentItem.Item } ** to complete the order. Not processing` })
-                    }
-                    return { url: this.props.api + 'item/' + id, method: method, data: { Num_Sold: newSold } }
+            axios[ method ]( url, this.state.details )
+                .then( results => {
+                    this.props.handleOrderUpdates( results.data.sale )
+                    this.setState({ redirect: true })
                 })
-            }
-            requests = requests.concat( extras ).map( req => axios[ req.method ]( req.url, req.data ) )
-            axios.all( requests ).then( results => {
-                let sale = results.find( result => result.config.url.toLowerCase().indexOf( 'sale' ) > 0 )
-                // I think this is only to prevent re-requesting the orders list when going back to the orders page
-                // Rethink?
-                this.props.handleOrderUpdates( sale.data )
-                this.setState({ redirect: true })
-            })
-        } catch( error ){
-            alert( error.error )
-        }
+                .catch( e => {
+                    alert( e.response.data.body )
+                })
     }
     static createFields( props ){
         let readonly = ! props.edit;
