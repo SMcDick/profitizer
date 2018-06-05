@@ -14,11 +14,10 @@ class Input extends Component {
 			<div className="input__wrapper">
 				<label className="input--label">
 					{this.props.label}
-					{this.props.feeEstimate && (
-						<span> (estimate: ${this.props.feeEstimate})</span>
-					)}
+					{this.props.feeEstimate && <span> (estimate: ${this.props.feeEstimate})</span>}
 				</label>
 				<input
+					onChange={this.props.onChange}
 					className="input--text"
 					type={this.props.type}
 					defaultValue={value}
@@ -42,7 +41,8 @@ Input.propTypes = {
 	readonly: PropType.bool,
 	feeEstimate: PropType.string,
 	int: PropType.bool,
-	required: PropType.bool
+	required: PropType.bool,
+	onChange: PropType.func
 }
 
 export default Input

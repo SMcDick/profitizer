@@ -60,6 +60,30 @@ class OrderWrapper extends Component {
 			return { orders: orders }
 		})
 	}
+	handleSearch = e => {
+		e.preventDefault()
+		const target = e.target
+		const value = target.type === "checkbox" ? target.checked : target.value
+		const name = target.name
+		if (name === "") {
+			return
+		}
+		if (!this.state.searchData) {
+			axios.get("http://localhost:7555/api/sales/all?limit=10000").then(results => {
+				this.setState({ searchData: results.data.data }, () => {
+					let orders = this.state.searchData.filter(
+						item => item.Description.toLowerCase().indexOf(value.toLowerCase()) > -1
+					)
+					this.setState({ orders: orders })
+				})
+			})
+		} else {
+			let orders = this.state.searchData.filter(
+				item => item.Description.toLowerCase().indexOf(value.toLowerCase()) > -1
+			)
+			this.setState({ orders: orders })
+		}
+	}
 	componentWillUnmount() {
 		console.log("order wrapper unmounted")
 	}
@@ -72,7 +96,13 @@ class OrderWrapper extends Component {
 						exact
 						path={this.props.match.url}
 						render={props => {
-							return <Orders orders={this.state.orders} routerProps={props} />
+							return (
+								<Orders
+									orders={this.state.orders}
+									routerProps={props}
+									handleSearch={this.handleSearch}
+								/>
+							)
 						}}
 					/>
 					<Route
