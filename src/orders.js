@@ -16,7 +16,7 @@ class Orders extends Component {
 			)
 		}
 		const { children, routerProps, orders } = this.props
-		const childrenWithProps = React.Children.map(children, child =>
+		const childrenWithProps = Children.map(children, child =>
 			React.cloneElement(child, { routerProps: routerProps })
 		)
 		return (
