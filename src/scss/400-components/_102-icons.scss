@@ -85,10 +85,9 @@
 // Clear Icon
 .icon--clear {
     position: relative;
-    right: 0;
-    top: 0;
     height: 16px;
     width: 16px;
+    display: block;
     cursor: pointer;
     &::before,
     &::after {
@@ -223,8 +222,9 @@
 // bang icon
 .icon--bang {
     display: block;
-    height: 20px;
+    height: 18px;
     width: 16px;
+    position: relative;
     &::before,
     &::after {
         @include before;
@@ -236,7 +236,7 @@
     }
     &::before {
         top: 0;
-        height: 14px;
+        height: 12px;
     }
     &::after {
         bottom: 0;

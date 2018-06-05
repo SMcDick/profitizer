@@ -77,8 +77,9 @@ class OrderWrapper extends Component {
                         return (
                             <Orders
                                 orders={ this.state.orders }
-                                routerProps={ props }
-                                pager={ <Pager meta={ this.state.meta } routerProps={ props } /> } />
+                                routerProps={ props }>
+                                    <Pager meta={ this.state.meta } />
+                            </Orders>
                             )
                     }} />
                     <Route exact path={ this.props.match.url + '/create' } render={ props => {
