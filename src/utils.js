@@ -12,6 +12,9 @@ const util = {
 			"/" +
 			fdate.getFullYear()
 		)
+	},
+	stringify: function(val) {
+		return val.replace(/_/g, " ")
 	}
 }
 

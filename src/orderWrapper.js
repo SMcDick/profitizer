@@ -17,10 +17,7 @@ class OrderWrapper extends Component {
 		this.handleOrderUpdates = this.handleOrderUpdates.bind(this)
 	}
 	static getDerivedStateFromProps(props) {
-		let type =
-			props.location.pathname.indexOf("orders/all") > -1
-				? "all"
-				: "incomplete"
+		let type = props.location.pathname.indexOf("orders/all") > -1 ? "all" : "incomplete"
 		return { type: type + props.location.search }
 	}
 	getSales(type) {
@@ -57,6 +54,9 @@ class OrderWrapper extends Component {
 					orders.unshift(val)
 				}
 			}
+			orders.sort((a, b) => {
+				return a.Date_Sold - b.Date_Sold
+			})
 			return { orders: orders }
 		})
 	}
@@ -72,12 +72,7 @@ class OrderWrapper extends Component {
 						exact
 						path={this.props.match.url}
 						render={props => {
-							return (
-								<Orders
-									orders={this.state.orders}
-									routerProps={props}
-								/>
-							)
+							return <Orders orders={this.state.orders} routerProps={props} />
 						}}
 					/>
 					<Route
@@ -85,9 +80,7 @@ class OrderWrapper extends Component {
 						path={this.props.match.url + "/all"}
 						render={props => {
 							return (
-								<Orders
-									orders={this.state.orders}
-									routerProps={props}>
+								<Orders orders={this.state.orders} routerProps={props}>
 									<Pager meta={this.state.meta} />
 								</Orders>
 							)
@@ -106,9 +99,7 @@ class OrderWrapper extends Component {
 										api={"http://localhost:7555/api/"}
 										routerProps={props}
 										create={true}
-										handleOrderUpdates={
-											this.handleOrderUpdates
-										}
+										handleOrderUpdates={this.handleOrderUpdates}
 									/>
 								</div>
 							)
