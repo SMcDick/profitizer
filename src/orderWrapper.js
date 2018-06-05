@@ -12,7 +12,10 @@ class OrderWrapper extends Component {
 		super(props)
 		this.state = {
 			orders: [],
-			meta: {}
+			meta: {},
+            searchFired: false,
+            searchData: [],
+            origOrders: []
 		}
 		this.handleOrderUpdates = this.handleOrderUpdates.bind(this)
 	}
@@ -25,6 +28,7 @@ class OrderWrapper extends Component {
 		axios.get(url).then(result => {
 			this.setState({
 				orders: result.data.data,
+                origOrders: result.data.data,
 				meta: result.data.meta
 			})
 		})
@@ -63,22 +67,28 @@ class OrderWrapper extends Component {
 	handleSearch = e => {
 		e.preventDefault()
 		const target = e.target
-		const value = target.type === "checkbox" ? target.checked : target.value
-		const name = target.name
-		if (name === "") {
+		const value = target.value
+        const { searchData } = this.state
+		if (!value) {
+			this.setState(prevState => {
+				return { orders: prevState.origOrders }
+			})
 			return
 		}
-		if (!this.state.searchData) {
-			axios.get("http://localhost:7555/api/sales/all?limit=10000").then(results => {
-				this.setState({ searchData: results.data.data }, () => {
-					let orders = this.state.searchData.filter(
-						item => item.Description.toLowerCase().indexOf(value.toLowerCase()) > -1
-					)
-					this.setState({ orders: orders })
-				})
+		if (!this.state.searchFired) {
+			this.setState({ searchFired: true })
+			axios.get("http://localhost:7555/api/sales/year/2018").then(results => {
+				this.setState({searchData: results.data.data},
+					() => {
+						let orders = searchData.filter(
+							item => item.Description.toLowerCase().indexOf(value.toLowerCase()) > -1
+						)
+						this.setState({ orders: orders })
+					}
+				)
 			})
-		} else {
-			let orders = this.state.searchData.filter(
+		} else if (searchData) {
+			let orders = searchData.filter(
 				item => item.Description.toLowerCase().indexOf(value.toLowerCase()) > -1
 			)
 			this.setState({ orders: orders })
