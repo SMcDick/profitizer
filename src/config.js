@@ -3,7 +3,7 @@ let backendHost
 
 const hostname = window && window.location && window.location.hostname
 
-if (hostname === "nfshost.com") {
+if (hostname === "express-test-api.nfshost.com") {
 	backendHost = "https://express-api-test.nfshost.com"
 } else if (hostname === "staging.realsite.com") {
 	backendHost = "https://staging.api.realsite.com"
