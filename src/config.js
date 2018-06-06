@@ -2,7 +2,7 @@ let backendHost
 // const apiVersion = "v1"
 
 const hostname = window && window.location && window.location.hostname
-
+console.log(hostname)
 if (hostname === "express-test-api.nfshost.com") {
 	backendHost = "https://express-api-test.nfshost.com"
 } else if (hostname === "staging.realsite.com") {
