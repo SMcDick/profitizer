@@ -8,15 +8,14 @@ class App extends Component {
 		return (
 			<Router>
 				<div className="App width-wrapper">
-					<ul>
-						<li>
+					<ul className="flex-parent nav">
+						<li className="flex-child nav__item">
 							<NavLink to="/inventory">Inventory</NavLink>
 						</li>
-						<li>
+						<li className="flex-child nav__item">
 							<NavLink to="/orders">Orders</NavLink>
 						</li>
 					</ul>
-					<hr />
 					<Route path="/inventory" component={InventoryWrapper} />
 					<Route path="/orders" component={OrderWrapper} />
 				</div>

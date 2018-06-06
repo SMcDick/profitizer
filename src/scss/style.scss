@@ -11,8 +11,6 @@
 @import "300-structure/_101-typography";
 @import "300-structure/_102-flexbox";
 @import "300-structure/_103-grid";
-@import "300-structure/_200-header";
-@import "300-structure/_300-footer";
 @import "400-components/_101-icomoon";
 @import "400-components/_102-icons";
 @import "400-components/_103-button";
@@ -20,21 +18,20 @@
 @import "400-components/_105-whiteout";
 @import "400-components/_106-collapsable";
 @import "400-components/_107-select";
-@import "400-components/_108-loading-screen";
-@import "400-components/_109-rating-star";
 @import "400-components/_110-modals";
 @import "400-components/_111-form-inputs";
 @import "400-components/_112-alerts";
 @import "400-components/_113-expandables";
+@import "400-components/_114-search";
 @import "500-layouts/_120-pager.scss";
 @import "500-layouts/_121-item-rows.scss";
 
 //Package overrides
 .react-select-override.Select--multi .Select-value {
-    display: flex;
+	display: flex;
 }
 
 .App {
-    padding-top: 60px;
-    padding-bottom: 60px;
+	padding-top: 30px;
+	padding-bottom: 30px;
 }

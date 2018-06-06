@@ -14,11 +14,17 @@ class Orders extends Component {
 			React.cloneElement(child, { routerProps: routerProps })
 		)
 		return (
-			<div>
+			<section>
 				<h1>{routerProps.match.path === "/orders/all" ? "All " : "Incomplete "}Orders</h1>
 				<OrderNav routerProps={routerProps} />
 				{childrenWithProps}
-				<Input type="text" name="Search" onChange={this.props.handleSearch} label="Search" />
+				<Input
+					type="text"
+					name="Search"
+					onChange={this.props.handleSearch}
+					label="Search"
+					className="search__wrapper"
+				/>
 				<div className="item__grid">
 					<div className="item__row item__row--header">
 						<span className="item__detail item__detail--icon" />
@@ -48,7 +54,7 @@ class Orders extends Component {
 					})}
 					{!orders.length && <div>No results</div>}
 				</div>
-			</div>
+			</section>
 		)
 	}
 }

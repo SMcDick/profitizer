@@ -8,14 +8,16 @@ class OrderNav extends Component {
 		let type = pathCheck ? "Incomplete" : "All"
 		let link = pathCheck ? "" : "/all"
 		return (
-			<ul>
-				<li>
-					<Link to="/orders/create">Create New Order</Link>
-				</li>
-				<li>
+			<div className="flex-parent__space-between flex-parent__center-cross padBot20">
+				<div className="flex-child">
 					<Link to={"/orders" + link}>View {type} Orders</Link>
-				</li>
-			</ul>
+				</div>
+				<div className="flex-child">
+					<Link to="/orders/create" className="btn">
+						Create New Order
+					</Link>
+				</div>
+			</div>
 		)
 	}
 }
