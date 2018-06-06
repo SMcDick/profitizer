@@ -1,0 +1,27 @@
+npm run build
+
+then
+
+cp -r ~/hddev/profitizer/build/. ~/hddev/node-mysql/public/
+
+then
+
+*INSTRUCTION FOR API*
+
+commit changes to gh
+
+then
+
+ssh kylepsullivan_express-api-test@ssh.phx.nearlyfreespeech.net
+
+then
+
+cd ../protected/node-mysql
+
+then
+
+git pull --rebase
+
+then
+
+log into NFS are restart node Daemon
