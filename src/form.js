@@ -6,6 +6,7 @@ import { Redirect } from "react-router-dom"
 import SelectWrapper from "./select"
 
 import util from "./utils"
+import { API_ROOT } from "./config"
 
 class OrderForm extends Component {
 	constructor(props) {
@@ -85,12 +86,12 @@ class OrderForm extends Component {
 		this.setState({ details })
 	}
 	handleSubmit(e) {
-		const { api, create, details, handleOrderUpdates } = this.props
+		const { create, details, handleOrderUpdates } = this.props
 		e.preventDefault()
-		let url = api + "sale/" + details.Order_Id
+		let url = API_ROOT + "sale/" + details.Order_Id
 		let method = "put"
 		if (create) {
-			url = api + "createSale"
+			url = API_ROOT + "createSale"
 			method = "post"
 		}
 
@@ -254,7 +255,7 @@ class OrderForm extends Component {
 				{this.props.create && (
 					<div className="item-wrapper">
 						<SelectWrapper
-							url="http://localhost:7555/api/inventory/remaining"
+							url={API_ROOT + "inventory/remaining"}
 							optionsMapper={this.mapper}
 							name="Items Sold"
 							reactSelectChange={this.handleReactSelectChange}
@@ -292,7 +293,6 @@ class OrderForm extends Component {
 OrderForm.propTypes = {
 	details: propType.object,
 	edit: propType.bool,
-	api: propType.string,
 	isCompleted: propType.bool,
 	handleCompleted: propType.func,
 	create: propType.bool,

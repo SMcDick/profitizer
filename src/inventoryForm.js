@@ -3,6 +3,8 @@ import propType from "prop-types"
 import Input from "./input"
 import axios from "axios"
 
+import { API_ROOT } from "./config"
+
 class InventoryForm extends Component {
 	constructor(props) {
 		super(props)
@@ -30,10 +32,10 @@ class InventoryForm extends Component {
 	handleSubmit(e) {
 		try {
 			e.preventDefault()
-			let url = this.props.api + "item/" + this.props.details.Item_Id
+			let url = API_ROOT + "item/" + this.props.details.Item_Id
 			let method = "put"
 			if (this.props.create) {
-				url = this.props.api + "createItem"
+				url = API_ROOT + "createItem"
 				method = "post"
 			}
 
@@ -70,9 +72,7 @@ class InventoryForm extends Component {
 	renderInput(options) {
 		let value = options.value
 			? options.value
-			: this.state.details[options.name] !== undefined
-				? this.state.details[options.name]
-				: ""
+			: this.state.details[options.name] !== undefined ? this.state.details[options.name] : ""
 		return (
 			<Input
 				key={options.key ? options.key : options.name}
@@ -88,12 +88,8 @@ class InventoryForm extends Component {
 	}
 	render() {
 		return (
-			<form
-				onSubmit={this.handleSubmit}
-				onChange={this.handleInputChange}>
-				{InventoryForm.createFields(this.props).map(field =>
-					this.renderInput(field)
-				)}
+			<form onSubmit={this.handleSubmit} onChange={this.handleInputChange}>
+				{InventoryForm.createFields(this.props).map(field => this.renderInput(field))}
 				<input type="submit" value="Submit" />
 			</form>
 		)
@@ -102,9 +98,6 @@ class InventoryForm extends Component {
 InventoryForm.propTypes = {
 	details: propType.object,
 	edit: propType.bool,
-	api: propType.string,
-	isCompleted: propType.bool,
-	handleCompleted: propType.func,
 	create: propType.bool,
 	handleOrderUpdates: propType.func
 }

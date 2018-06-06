@@ -13,9 +13,7 @@ class Item extends Component {
 	}
 	static getDerivedStateFromProps(props) {
 		let item = props.inventory.find(
-			item =>
-				item.Item_Id.toString() ===
-				props.routerProps.match.params.id.toString()
+			item => item.Item_Id.toString() === props.routerProps.match.params.id.toString()
 		)
 		let state = {
 			edit: props.routerProps.location.pathname.indexOf("/edit") > -1
@@ -32,13 +30,7 @@ class Item extends Component {
 		if (this.state.loading) {
 			return <div>Loading...</div>
 		} else if (!this.state.item.hasOwnProperty("Item_Id")) {
-			return (
-				<div>
-					{
-						"Item not found. Figure our some way to make a new request or if item doesn't exist."
-					}
-				</div>
-			)
+			return <div>{"Item not found. Figure our some way to make a new request or if item doesn't exist."}</div>
 		}
 		return (
 			<div>
@@ -47,20 +39,9 @@ class Item extends Component {
 					Back
 				</a>
 				{!this.state.edit && (
-					<Link
-						to={
-							"/inventory/" +
-							this.props.routerProps.match.params.id +
-							"/edit"
-						}>
-						Edit
-					</Link>
+					<Link to={"/inventory/" + this.props.routerProps.match.params.id + "/edit"}>Edit</Link>
 				)}
-				<Form
-					details={this.state.item}
-					edit={this.state.edit}
-					api={this.props.api}
-				/>
+				<Form details={this.state.item} edit={this.state.edit} />
 			</div>
 		)
 	}
@@ -70,7 +51,6 @@ Item.propTypes = {
 	onOrderChange: propTypes.func,
 	id: propTypes.string || propTypes.number,
 	routerProps: propTypes.object,
-	api: propTypes.string,
 	orders: propTypes.array,
 	handleOrderUpdates: propTypes.func
 }

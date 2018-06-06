@@ -7,6 +7,8 @@ import Inventory from "./inventory"
 import Item from "./item"
 import Form from "./inventoryForm"
 
+import { API_ROOT } from "./config"
+
 class InventoryWrapper extends Component {
 	constructor(props) {
 		super(props)
@@ -16,14 +18,11 @@ class InventoryWrapper extends Component {
 		}
 	}
 	static getDerivedStateFromProps(props) {
-		let type =
-			props.location.pathname.indexOf("inventory/remaining") > -1
-				? "remaining"
-				: "all"
+		let type = props.location.pathname.indexOf("inventory/remaining") > -1 ? "remaining" : "all"
 		return { type: type + props.location.search }
 	}
 	getSales(type) {
-		let url = "http://localhost:7555/api/inventory/" + type
+		let url = API_ROOT + "inventory/" + type
 		axios.get(url).then(result => {
 			this.setState({
 				inventory: result.data.data,
@@ -53,12 +52,7 @@ class InventoryWrapper extends Component {
 						exact
 						path={this.props.match.url}
 						render={props => {
-							return (
-								<Inventory
-									inventory={this.state.inventory}
-									routerProps={props}
-								/>
-							)
+							return <Inventory inventory={this.state.inventory} routerProps={props} />
 						}}
 					/>
 					<Route
@@ -69,12 +63,7 @@ class InventoryWrapper extends Component {
 								<Inventory
 									inventory={this.state.inventory}
 									routerProps={props}
-									pager={
-										<Pager
-											meta={this.state.meta}
-											routerProps={props}
-										/>
-									}
+									pager={<Pager meta={this.state.meta} routerProps={props} />}
 								/>
 							)
 						}}
@@ -93,7 +82,6 @@ class InventoryWrapper extends Component {
 											Num_Sold: 0
 										}}
 										edit={true}
-										api={"http://localhost:7555/api/"}
 										routerProps={props}
 										create={true}
 									/>
@@ -104,13 +92,7 @@ class InventoryWrapper extends Component {
 					<Route
 						path={this.props.match.url + "/:id"}
 						render={props => {
-							return (
-								<Item
-									inventory={this.state.inventory}
-									routerProps={props}
-									api={"http://localhost:7555/api/"}
-								/>
-							)
+							return <Item inventory={this.state.inventory} routerProps={props} />
 						}}
 					/>
 				</Switch>

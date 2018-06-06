@@ -4,6 +4,8 @@ import Form from "./form"
 import { Link } from "react-router-dom"
 import axios from "axios"
 
+import { API_ROOT } from "./config"
+
 class Order extends Component {
 	constructor(props) {
 		super(props)
@@ -16,15 +18,9 @@ class Order extends Component {
 	//     console.log( 'order is unmounted')
 	// }
 	componentDidMount() {
-		axios
-			.get(
-				this.props.api +
-					"/sale/" +
-					this.props.routerProps.match.params.id
-			)
-			.then(result => {
-				this.setState({ order: result.data.data, loading: false })
-			})
+		axios.get(API_ROOT + "/sale/" + this.props.routerProps.match.params.id).then(result => {
+			this.setState({ order: result.data.data, loading: false })
+		})
 	}
 	static getDerivedStateFromProps(props) {
 		// let order = props.orders.find( order => order.Order_Id.toString() === props.routerProps.match.params.id.toString() )
@@ -53,13 +49,7 @@ class Order extends Component {
 		if (this.state.loading) {
 			return <div>Loading...</div>
 		} else if (!this.state.order.hasOwnProperty("Order_Id")) {
-			return (
-				<div>
-					{
-						"Order not found. Figure our some way to make a new request or if order doesn't exist."
-					}
-				</div>
-			)
+			return <div>{"Order not found. Figure our some way to make a new request or if order doesn't exist."}</div>
 		}
 		return (
 			<div>
@@ -68,19 +58,11 @@ class Order extends Component {
 					Back
 				</a>
 				{!this.state.edit && (
-					<Link
-						to={
-							"/orders/" +
-							this.props.routerProps.match.params.id +
-							"/edit"
-						}>
-						Edit
-					</Link>
+					<Link to={"/orders/" + this.props.routerProps.match.params.id + "/edit"}>Edit</Link>
 				)}
 				<Form
 					details={this.state.order}
 					edit={this.state.edit}
-					api={this.props.api}
 					handleOrderUpdates={this.props.handleOrderUpdates}
 				/>
 			</div>
@@ -92,7 +74,6 @@ Order.propTypes = {
 	onOrderChange: propTypes.func,
 	id: propTypes.string || propTypes.number,
 	routerProps: propTypes.object,
-	api: propTypes.string,
 	orders: propTypes.array,
 	handleOrderUpdates: propTypes.func
 }

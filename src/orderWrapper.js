@@ -7,6 +7,8 @@ import Order from "./order"
 import Form from "./form"
 import Pager from "./pager"
 
+import { API_ROOT } from "./config"
+
 class OrderWrapper extends Component {
 	constructor(props) {
 		super(props)
@@ -24,7 +26,7 @@ class OrderWrapper extends Component {
 		return { type: type + props.location.search }
 	}
 	getSales(type) {
-		let url = "http://localhost:7555/api/sales/" + type
+		let url = API_ROOT + "sales/" + type
 		axios.get(url).then(result => {
 			this.setState({
 				orders: result.data.data,
@@ -77,7 +79,7 @@ class OrderWrapper extends Component {
 		}
 		if (!this.state.searchFired) {
 			this.setState({ searchFired: true })
-			axios.get("http://localhost:7555/api/sales/year/2018").then(results => {
+			axios.get(API_ROOT + "/sales/year/2018").then(results => {
 				this.setState({ searchData: results.data.data }, () => {
 					let orders = searchData.filter(
 						item => item.Description.toLowerCase().indexOf(value.toLowerCase()) > -1
@@ -132,7 +134,6 @@ class OrderWrapper extends Component {
 									<Form
 										details={{ Marketplace: "Poshmark" }}
 										edit={true}
-										api={"http://localhost:7555/api/"}
 										routerProps={props}
 										create={true}
 										handleOrderUpdates={this.handleOrderUpdates}
@@ -148,7 +149,6 @@ class OrderWrapper extends Component {
 								<Order
 									orders={this.state.orders}
 									routerProps={props}
-									api={"http://localhost:7555/api/"}
 									handleOrderUpdates={this.handleOrderUpdates}
 								/>
 							)
