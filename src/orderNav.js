@@ -4,9 +4,9 @@ import PropTypes from "prop-types"
 
 class OrderNav extends Component {
 	render() {
-		let pathCheck = this.props.routerProps.match.path === "/orders/all"
-		let type = pathCheck ? "Incomplete" : "All"
-		let link = pathCheck ? "" : "/all"
+		let pathCheck = this.props.routerProps.match.path === "/orders/incomplete"
+		let type = pathCheck ? "All" : "Incomplete"
+		let link = pathCheck ? "" : "/incomplete"
 		return (
 			<div className="flex-parent__space-between flex-parent__center-cross padBot20">
 				<div className="flex-child">

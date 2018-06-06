@@ -5,7 +5,6 @@ import { Route, Switch } from "react-router-dom"
 import Orders from "./orders"
 import Order from "./order"
 import Form from "./form"
-import Pager from "./pager"
 
 import { API_ROOT } from "./config"
 
@@ -14,36 +13,23 @@ class OrderWrapper extends Component {
 		super(props)
 		this.state = {
 			orders: [],
-			meta: {},
-			searchFired: false,
-			searchData: [],
-			origOrders: []
+			filter: {},
+			search: ""
 		}
 		this.handleOrderUpdates = this.handleOrderUpdates.bind(this)
 	}
 	static getDerivedStateFromProps(props) {
-		let type = props.location.pathname.indexOf("orders/all") > -1 ? "all" : "incomplete"
-		return { type: type + props.location.search }
-	}
-	getSales(type) {
-		let url = API_ROOT + "sales/" + type
-		axios.get(url).then(result => {
-			this.setState({
-				orders: result.data.data,
-				origOrders: result.data.data,
-				meta: result.data.meta
-			})
-		})
+		let type = props.location.pathname.indexOf("orders/incomplete") > -1 ? "incomplete" : null
+		return { filter: { type: type } }
 	}
 	componentDidMount() {
 		console.log("order wrapper mounted (Post initial render)")
-		this.getSales(this.state.type)
-	}
-	shouldComponentUpdate(nextProps, nextState) {
-		if (this.state.type !== nextState.type) {
-			this.getSales(nextState.type)
-		}
-		return true
+		axios.get(API_ROOT + "sales/all").then(result => {
+			let data = result.data.data
+			this.setState({
+				orders: data
+			})
+		})
 	}
 	handleOrderUpdates(val) {
 		this.setState(prevState => {
@@ -70,33 +56,23 @@ class OrderWrapper extends Component {
 		e.preventDefault()
 		const target = e.target
 		const value = target.value
-		const { searchData } = this.state
-		if (!value) {
-			this.setState(prevState => {
-				return { orders: prevState.origOrders }
-			})
-			return
-		}
-		if (!this.state.searchFired) {
-			this.setState({ searchFired: true })
-			axios.get(API_ROOT + "/sales/year/2018").then(results => {
-				this.setState({ searchData: results.data.data }, () => {
-					let orders = searchData.filter(
-						item => item.Description.toLowerCase().indexOf(value.toLowerCase()) > -1
-					)
-					this.setState({ orders: orders })
-				})
-			})
-		} else if (searchData) {
-			let orders = searchData.filter(item => item.Description.toLowerCase().indexOf(value.toLowerCase()) > -1)
-			this.setState({ orders: orders })
-		}
+		this.setState({ search: value })
 	}
 	componentWillUnmount() {
 		console.log("order wrapper unmounted")
 	}
 	render() {
 		console.log("order wrapper rendered")
+		let activeOrders = this.state.orders
+		const { filter, search } = this.state
+		if (filter.type) {
+			activeOrders = activeOrders.filter(order => order.Completed === 0)
+		}
+		if (search.length) {
+			activeOrders = activeOrders.filter(
+				order => order.Description.toLowerCase().indexOf(search.toLowerCase()) > -1
+			)
+		}
 		return (
 			<div>
 				<Switch>
@@ -104,24 +80,14 @@ class OrderWrapper extends Component {
 						exact
 						path={this.props.match.url}
 						render={props => {
-							return (
-								<Orders
-									orders={this.state.orders}
-									routerProps={props}
-									handleSearch={this.handleSearch}
-								/>
-							)
+							return <Orders orders={activeOrders} routerProps={props} handleSearch={this.handleSearch} />
 						}}
 					/>
 					<Route
 						exact
-						path={this.props.match.url + "/all"}
+						path={this.props.match.url + "/incomplete"}
 						render={props => {
-							return (
-								<Orders orders={this.state.orders} routerProps={props}>
-									<Pager meta={this.state.meta} />
-								</Orders>
-							)
+							return <Orders orders={activeOrders} routerProps={props} handleSearch={this.handleSearch} />
 						}}
 					/>
 					<Route
@@ -147,7 +113,7 @@ class OrderWrapper extends Component {
 						render={props => {
 							return (
 								<Order
-									orders={this.state.orders}
+									orders={activeOrders}
 									routerProps={props}
 									handleOrderUpdates={this.handleOrderUpdates}
 								/>
