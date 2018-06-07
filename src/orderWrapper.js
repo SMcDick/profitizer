@@ -2,10 +2,12 @@ import React, { Component } from "react"
 import axios from "axios"
 import PropType from "prop-types"
 import { Route, Switch } from "react-router-dom"
+import Moment from "moment"
 import Orders from "./orders"
 import Order from "./order"
 import Form from "./form"
 
+import util from "./utils"
 import { API_ROOT } from "./config"
 
 class OrderWrapper extends Component {
@@ -13,14 +15,15 @@ class OrderWrapper extends Component {
 		super(props)
 		this.state = {
 			orders: [],
-			filter: {},
+			query: util.queryParams(props.location.search),
+			filters: {},
 			search: ""
 		}
 		this.handleOrderUpdates = this.handleOrderUpdates.bind(this)
 	}
 	static getDerivedStateFromProps(props) {
-		let type = props.location.pathname.indexOf("orders/incomplete") > -1 ? "incomplete" : null
-		return { filter: { type: type } }
+		let query = util.queryParams(props.location.search)
+		return { query: query, filters: query.filters ? query.filters : {} }
 	}
 	componentDidMount() {
 		console.log("order wrapper mounted (Post initial render)")
@@ -64,9 +67,48 @@ class OrderWrapper extends Component {
 	render() {
 		console.log("order wrapper rendered")
 		let activeOrders = this.state.orders
-		const { filter, search } = this.state
-		if (filter.type) {
+		const { filters, search } = this.state
+		if (filters.incomplete === "true") {
 			activeOrders = activeOrders.filter(order => order.Completed === 0)
+		}
+		if (filters.day === "today") {
+			activeOrders = activeOrders.filter(order => Moment(order.Sold_Date).isSame(Moment(), "day"))
+		}
+		if (filters.day === "yesterday") {
+			activeOrders = activeOrders.filter(order => Moment(order.Sold_Date).isSame(Moment().add(-1, "days"), "day"))
+		}
+		if (filters.week === "current") {
+			activeOrders = activeOrders.filter(order => Moment(order.Sold_Date).isSame(Moment(), "week"))
+		}
+		if (filters.week === "last") {
+			activeOrders = activeOrders.filter(order => {
+				let last = Moment().add(-1, "week")
+				let lastStart = last.clone().startOf("week")
+				let lastEnd = last.clone().endOf("week")
+				return Moment(order.Sold_Date).isBetween(lastStart, lastEnd, "week", [])
+			})
+		}
+		if (filters.month === "current") {
+			activeOrders = activeOrders.filter(order => Moment(order.Sold_Date).isSame(Moment(), "month"))
+		}
+		if (filters.month === "last") {
+			activeOrders = activeOrders.filter(order => {
+				let last = Moment().add(-1, "month")
+				let lastStart = last.clone().startOf("month")
+				let lastEnd = last.clone().endOf("month")
+				return Moment(order.Sold_Date).isBetween(lastStart, lastEnd, "month", [])
+			})
+		}
+		if (filters.year === "current") {
+			activeOrders = activeOrders.filter(order => Moment(order.Sold_Date).isSame(Moment(), "year"))
+		}
+		if (filters.year === "last") {
+			activeOrders = activeOrders.filter(order => {
+				let last = Moment().add(-1, "year")
+				let lastStart = last.clone().startOf("year")
+				let lastEnd = last.clone().endOf("year")
+				return Moment(order.Sold_Date).isBetween(lastStart, lastEnd, "year", [])
+			})
 		}
 		if (search.length) {
 			activeOrders = activeOrders.filter(
@@ -79,13 +121,6 @@ class OrderWrapper extends Component {
 					<Route
 						exact
 						path={this.props.match.url}
-						render={props => {
-							return <Orders orders={activeOrders} routerProps={props} handleSearch={this.handleSearch} />
-						}}
-					/>
-					<Route
-						exact
-						path={this.props.match.url + "/incomplete"}
 						render={props => {
 							return <Orders orders={activeOrders} routerProps={props} handleSearch={this.handleSearch} />
 						}}
@@ -128,7 +163,8 @@ class OrderWrapper extends Component {
 OrderWrapper.propTypes = {
 	match: PropType.object,
 	location: PropType.object,
-	type: PropType.string
+	type: PropType.string,
+	query: PropType.object
 }
 
 export default OrderWrapper

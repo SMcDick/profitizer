@@ -1,6 +1,7 @@
 import React, { Component, Children } from "react"
 import propTypes from "prop-types"
 import { Link } from "react-router-dom"
+import Moment from "moment"
 import OrderNav from "./orderNav"
 
 import Input from "./input"
@@ -13,9 +14,16 @@ class Orders extends Component {
 		const childrenWithProps = Children.map(children, child =>
 			React.cloneElement(child, { routerProps: routerProps })
 		)
+		let totals = {
+			sales: util.formatMoney(util.totaler(orders, "Total_Sold_Price")),
+			return: util.formatMoney(util.totaler(orders, "Return_calc")),
+			profit: util.formatMoney(util.totaler(orders, "Profit_calc")),
+			cost: util.formatMoney(util.totaler(orders, "Total_Cost_calc"))
+		}
+
 		return (
 			<section>
-				<h1>{routerProps.match.path === "/orders/all" ? "All " : "Incomplete "}Orders</h1>
+				<h1>Orders</h1>
 				<OrderNav routerProps={routerProps} />
 				{childrenWithProps}
 				<Input
@@ -25,6 +33,18 @@ class Orders extends Component {
 					label="Search"
 					className="search__wrapper"
 				/>
+				<div className="item-wrapper">
+					<div className="pad10">
+						Details:<br />
+						Cost of Goods Sold: {totals.cost}
+						<br />
+						Total Sales: {totals.sales}
+						<br />
+						Total Return: {totals.return}
+						<br />
+						Total Profit: {totals.profit}
+					</div>
+				</div>
 				<div className="item__grid">
 					<div className="item__row item__row--header">
 						<span className="item__detail item__detail--icon item__detail--minor" />
@@ -49,7 +69,7 @@ class Orders extends Component {
 								</span>
 								<span className="item__detail">${order.Profit_calc.toFixed(2)}</span>
 								<span className="item__detail item__detail--date">
-									{util.formatDate(order.Sold_Date)}
+									{Moment(order.Sold_Date).format("M/D/YYYY")}
 								</span>
 							</Link>
 						)
