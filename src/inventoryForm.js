@@ -2,7 +2,9 @@ import React, { Component } from "react"
 import propType from "prop-types"
 import Input from "./input"
 import axios from "axios"
+import { Redirect, Link } from "react-router-dom"
 
+import util from "./utils"
 import { API_ROOT } from "./config"
 
 class InventoryForm extends Component {
@@ -13,7 +15,8 @@ class InventoryForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this)
 
 		this.state = {
-			details: {}
+			details: {},
+			redirect: false
 		}
 	}
 	handleInputChange(event) {
@@ -23,43 +26,41 @@ class InventoryForm extends Component {
 		if (name === "") {
 			return
 		}
-		const state = { ...this.state.details }
-		state[name] = value
-		this.setState({
-			details: state
-		})
+		const details = { ...this.state.details }
+		details[name] = value
+		this.setState({ details })
 	}
 	handleSubmit(e) {
-		try {
-			e.preventDefault()
-			let url = API_ROOT + "item/" + this.props.details.Item_Id
-			let method = "put"
-			if (this.props.create) {
-				url = API_ROOT + "createItem"
-				method = "post"
-			}
-
-			axios[method](url, this.state.details).then(result => {
-				this.setState({ details: result.data })
-			})
-		} catch (error) {
-			alert(error.error)
+		const { create, details } = this.props
+		e.preventDefault()
+		let url = API_ROOT + "item/" + details.Item_Id
+		let method = "put"
+		if (create) {
+			url = API_ROOT + "createItem"
+			method = "post"
 		}
+
+		axios[method](url, this.state.details)
+			.then(results => {
+				let data = results.data
+				// if (create) {
+				// 	data = data.sale
+				// }
+				// handleOrderUpdates(data)
+				this.setState({ redirect: true })
+			})
+			.catch(e => {
+				alert(e.response.data.body)
+			})
 	}
 	static createFields() {
 		return [
 			{ name: "Item_Id", label: "Item Id", readonly: true, type: "text" },
-			// { name: 'Item_Number', label: 'Item Number', readonly: true, type: 'text' },
-			{ name: "Item", readonly: false, type: "text" },
-			{ name: "Quantity", readonly: false, int: true },
-			{ name: "Unit_Cost", label: "Unit Cost", readonly: false },
-			{ name: "Tax", readonly: false },
-			{
-				name: "Num_Sold",
-				label: "Number Sold",
-				readonly: false,
-				int: true
-			}
+			{ name: "Item", type: "text" },
+			{ name: "Quantity", int: true },
+			{ name: "Unit_Cost", label: "Unit Cost" },
+			{ name: "Tax" },
+			{ name: "Num_Sold", label: "Number Sold", int: true }
 		]
 	}
 	static getDerivedStateFromProps(nextProps) {
@@ -70,14 +71,16 @@ class InventoryForm extends Component {
 		return { details }
 	}
 	renderInput(options) {
-		let value = options.value
-			? options.value
-			: this.state.details[options.name] !== undefined ? this.state.details[options.name] : ""
+		const { details } = this.state
+		const name = options.name
+		let stateVal = details[name] !== undefined ? details[name] : ""
+		let value = options.value ? options.value : stateVal
+		let label = options.label ? options.label : util.stringify(options.name)
 		return (
 			<Input
-				key={options.key ? options.key : options.name}
-				label={options.label ? options.label : options.name}
-				name={options.name}
+				key={options.key ? options.key : name}
+				label={label}
+				name={name}
 				value={value.toString()}
 				readonly={options.readonly}
 				type={options.type ? options.type : "number"}
@@ -87,10 +90,13 @@ class InventoryForm extends Component {
 		)
 	}
 	render() {
+		if (this.state.redirect) {
+			return <Redirect exact={true} to="/inventory" />
+		}
 		return (
 			<form onSubmit={this.handleSubmit} onChange={this.handleInputChange}>
-				{InventoryForm.createFields(this.props).map(field => this.renderInput(field))}
-				<input type="submit" value="Submit" />
+				{InventoryForm.createFields().map(field => this.renderInput(field))}
+				<input type="submit" value="Submit" className="btn" />
 			</form>
 		)
 	}

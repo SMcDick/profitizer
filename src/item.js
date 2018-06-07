@@ -2,6 +2,10 @@ import React, { Component } from "react"
 import propTypes from "prop-types"
 import Form from "./inventoryForm"
 import { Link } from "react-router-dom"
+import axios from "axios"
+
+import util from "./utils"
+import { API_ROOT } from "./config"
 
 class Item extends Component {
 	constructor(props) {
@@ -11,20 +15,10 @@ class Item extends Component {
 			loading: true
 		}
 	}
-	static getDerivedStateFromProps(props) {
-		let item = props.inventory.find(
-			item => item.Item_Id.toString() === props.routerProps.match.params.id.toString()
-		)
-		let state = {
-			edit: props.routerProps.location.pathname.indexOf("/edit") > -1
-		}
-		if (props.inventory.length) {
-			state.loading = false
-			if (item) {
-				state.item = item
-			}
-		}
-		return state
+	componentDidMount() {
+		axios.get(API_ROOT + "/item/" + this.props.routerProps.match.params.id).then(result => {
+			this.setState({ item: result.data.data, loading: false })
+		})
 	}
 	render() {
 		if (this.state.loading) {
@@ -32,27 +26,60 @@ class Item extends Component {
 		} else if (!this.state.item.hasOwnProperty("Item_Id")) {
 			return <div>{"Item not found. Figure our some way to make a new request or if item doesn't exist."}</div>
 		}
+		let totaler = (sale, field) => {
+			return sale.reduce((total, value) => total + value[field], 0)
+		}
+		const { item } = this.state
+		let totals = {
+			sales: totaler(item.sales, "Total_Sold_Price"),
+			return: totaler(item.sales, "Return_calc"),
+			realizedProfit: totaler(item.sales, "Profit_calc")
+		}
+		totals.overallProfit = totals.return - item.Total_Cost
+		console.log(item.sales, totals)
 		return (
-			<div>
-				<h1>Item #: {this.state.item.Item_Id}</h1>
+			<section>
+				<h1>Item#: {this.state.item.Item_Id}</h1>
 				<a href="#" onClick={this.props.routerProps.history.goBack}>
 					Back
 				</a>
-				{!this.state.edit && (
-					<Link to={"/inventory/" + this.props.routerProps.match.params.id + "/edit"}>Edit</Link>
-				)}
-				<Form details={this.state.item} edit={this.state.edit} />
-			</div>
+				<Form details={this.state.item} />
+				<div className="pad10">
+					Details:<br />
+					Total Cost: {util.formatMoney(item.Total_Cost)}
+					<br />
+					Total Sales: {util.formatMoney(totals.sales)}
+					<br />
+					Total Return: {util.formatMoney(totals.return)}
+					<br />
+					Realized Profit: {util.formatMoney(totals.realizedProfit)}
+					<br />
+					Overall Profit: {util.formatMoney(totals.overallProfit)}
+				</div>
+				<div className="item-wrapper item__grid">
+					<div className="item__row item__row--header">
+						<span className="item__detail">Order Id</span>
+						<span className="item__detail">Profit</span>
+						<span className="item__detail item__detail--date">Sold Date</span>
+					</div>
+					{this.state.item.sales.map(sale => {
+						return (
+							<Link to={"/orders/" + sale.Order_Id} key={sale.Order_Id} className="item__row">
+								<span className="item__detail">#{sale.Order_Id}</span>
+								<span className="item__detail">${sale.Profit_calc.toFixed(2)}</span>
+								<span className="item__detail item__detail--date">{sale.Sold_Date}</span>
+							</Link>
+						)
+					})}
+				</div>
+			</section>
 		)
 	}
 }
 Item.propTypes = {
-	order: propTypes.object,
-	onOrderChange: propTypes.func,
 	id: propTypes.string || propTypes.number,
 	routerProps: propTypes.object,
-	orders: propTypes.array,
-	handleOrderUpdates: propTypes.func
+	items: propTypes.array
 }
 
 export default Item

@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import axios from "axios"
 import PropType from "prop-types"
 import { Route, Switch } from "react-router-dom"
-import Pager from "./pager"
 import Inventory from "./inventory"
 import Item from "./item"
 import Form from "./inventoryForm"
@@ -14,37 +13,49 @@ class InventoryWrapper extends Component {
 		super(props)
 		this.state = {
 			inventory: [],
-			meta: {}
+			filter: {},
+			search: ""
 		}
 	}
 	static getDerivedStateFromProps(props) {
-		let type = props.location.pathname.indexOf("inventory/remaining") > -1 ? "remaining" : "all"
+		let type = props.location.pathname.indexOf("inventory/all") > -1 ? "remaining" : "all"
 		return { type: type + props.location.search }
 	}
-	getSales(type) {
-		let url = API_ROOT + "inventory/" + type
-		axios.get(url).then(result => {
+	componentDidMount() {
+		console.log("inventory wrapper mounted (Post initial render)")
+		axios.get(API_ROOT + "inventory/all").then(result => {
 			this.setState({
-				inventory: result.data.data,
-				meta: result.data.meta
+				inventory: result.data.data
 			})
 		})
 	}
-	componentDidMount() {
-		console.log("order wrapper mounted (Post initial render)")
-		this.getSales(this.state.type)
-	}
-	shouldComponentUpdate(nextProps, nextState) {
-		if (this.state.type !== nextState.type) {
-			this.getSales(nextState.type)
-		}
-		return true
-	}
+	// shouldComponentUpdate(nextProps, nextState) {
+	// 	if (this.state.type !== nextState.type) {
+	// 		this.getSales(nextState.type)
+	// 	}
+	// 	return true
+	// }
 	componentWillUnmount() {
-		console.log("order wrapper unmounted")
+		console.log("inventory wrapper unmounted")
+	}
+	handleSearch = e => {
+		e.preventDefault()
+		const target = e.target
+		const value = target.value
+		this.setState({ search: value })
 	}
 	render() {
-		console.log("order wrapper rendered")
+		console.log("inventory wrapper rendered")
+		let activeInventory = this.state.inventory
+		const { filter, search } = this.state
+		// if (filter.type) {
+		// 	activeInventory = activeInventory.filter(order => order.Completed === 0)
+		// }
+		if (search.length) {
+			activeInventory = activeInventory.filter(
+				item => item.Description.toLowerCase().indexOf(search.toLowerCase()) > -1
+			)
+		}
 		return (
 			<div>
 				<Switch>
@@ -52,18 +63,11 @@ class InventoryWrapper extends Component {
 						exact
 						path={this.props.match.url}
 						render={props => {
-							return <Inventory inventory={this.state.inventory} routerProps={props} />
-						}}
-					/>
-					<Route
-						exact
-						path={this.props.match.url + "/all"}
-						render={props => {
 							return (
 								<Inventory
-									inventory={this.state.inventory}
+									inventory={activeInventory}
 									routerProps={props}
-									pager={<Pager meta={this.state.meta} routerProps={props} />}
+									handleSearch={this.handleSearch}
 								/>
 							)
 						}}
