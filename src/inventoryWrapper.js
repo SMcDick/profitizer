@@ -53,7 +53,7 @@ class InventoryWrapper extends Component {
 		// }
 		if (search.length) {
 			activeInventory = activeInventory.filter(
-				item => item.Description.toLowerCase().indexOf(search.toLowerCase()) > -1
+				item => item.Item.toLowerCase().indexOf(search.toLowerCase()) > -1
 			)
 		}
 		return (

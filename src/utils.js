@@ -15,6 +15,9 @@ const util = {
 		} else {
 			return "-$" + (0 - val).toFixed(2)
 		}
+	},
+	totaler: function (sale, field){
+		return sale.reduce((total, value) => total + value[field], 0)
 	}
 }
 

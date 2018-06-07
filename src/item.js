@@ -26,17 +26,15 @@ class Item extends Component {
 		} else if (!this.state.item.hasOwnProperty("Item_Id")) {
 			return <div>{"Item not found. Figure our some way to make a new request or if item doesn't exist."}</div>
 		}
-		let totaler = (sale, field) => {
-			return sale.reduce((total, value) => total + value[field], 0)
-		}
+
 		const { item } = this.state
 		let totals = {
-			sales: totaler(item.sales, "Total_Sold_Price"),
-			return: totaler(item.sales, "Return_calc"),
-			realizedProfit: totaler(item.sales, "Profit_calc")
+			sales: util.totaler(item.sales, "Total_Sold_Price"),
+			return: util.totaler(item.sales, "Return_calc"),
+			realizedProfit: util.totaler(item.sales, "Profit_calc")
 		}
 		totals.overallProfit = totals.return - item.Total_Cost
-		console.log(item.sales, totals)
+		totals.averagePerItem = totals.realizedProfit / item.Num_Sold
 		return (
 			<section>
 				<h1>Item#: {this.state.item.Item_Id}</h1>
@@ -55,12 +53,15 @@ class Item extends Component {
 					Realized Profit: {util.formatMoney(totals.realizedProfit)}
 					<br />
 					Overall Profit: {util.formatMoney(totals.overallProfit)}
+					<br />
+					Average Profit per Item sold: {util.formatMoney(totals.averagePerItem)}
 				</div>
 				<div className="item-wrapper item__grid">
 					<div className="item__row item__row--header">
 						<span className="item__detail">Order Id</span>
 						<span className="item__detail">Profit</span>
 						<span className="item__detail item__detail--date">Sold Date</span>
+						<span className="item__detail item__detail--desc">Description</span>
 					</div>
 					{this.state.item.sales.map(sale => {
 						return (
@@ -68,6 +69,7 @@ class Item extends Component {
 								<span className="item__detail">#{sale.Order_Id}</span>
 								<span className="item__detail">${sale.Profit_calc.toFixed(2)}</span>
 								<span className="item__detail item__detail--date">{sale.Sold_Date}</span>
+								<span className="item__detail item__detail--desc">{sale.Description}</span>
 							</Link>
 						)
 					})}
