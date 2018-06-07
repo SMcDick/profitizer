@@ -99,7 +99,6 @@ class OrderWrapper extends Component {
 									<h1>Create a New Order</h1>
 									<Form
 										details={{ Marketplace: "Poshmark" }}
-										edit={true}
 										routerProps={props}
 										create={true}
 										handleOrderUpdates={this.handleOrderUpdates}

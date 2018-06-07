@@ -108,29 +108,18 @@ class OrderForm extends Component {
 				alert(e.response.data.body)
 			})
 	}
-	static createFields(props) {
-		let readonly = !props.edit
+	static createFields() {
 		return [
-			{ name: "Description", readonly: readonly, type: "text" },
-			{ name: "Total_Sold_Price", readonly: readonly, required: true },
+			{ name: "Description", type: "text" },
+			{ name: "Total_Sold_Price", required: true },
 			{ name: "Transaction_Fee" },
 			{ name: "Marketplace_Fee" },
 			{ name: "Shipping" },
 			{ name: "Tax", label: "Tax" },
-			{
-				name: "Platform_Order_Id",
-				readonly: readonly,
-				type: "text",
-				required: true
-			},
+			{ name: "Platform_Order_Id", type: "text", required: true },
 			{ name: "Order_Id", readonly: true, type: "text" },
-			{
-				name: "Sold_Date",
-				readonly: readonly,
-				type: "date",
-				required: true
-			},
-			{ name: "Marketplace", readonly: readonly, type: "text" },
+			{ name: "Sold_Date", type: "date", required: true },
+			{ name: "Marketplace", type: "text" },
 			{ name: "Completed", type: "checkbox" }
 		]
 	}
@@ -194,7 +183,7 @@ class OrderForm extends Component {
 	static getDerivedStateFromProps(nextProps) {
 		let details = {}
 		let items = {}
-		for (const key of OrderForm.createFields(nextProps)) {
+		for (const key of OrderForm.createFields()) {
 			details[key.name] = nextProps.details[key.name]
 		}
 		// TODO would not be surprised if this breaks the new order item functionality. Make sure to test
@@ -272,7 +261,7 @@ class OrderForm extends Component {
 				)}
 				{(!this.props.create || this.itemFields) && (
 					<div>
-						{OrderForm.createFields(this.props).map(field => this.renderInput("details", field, fees))}
+						{OrderForm.createFields().map(field => this.renderInput("details", field, fees))}
 						{!this.props.create && (
 							<div className="item-wrapper">
 								<div className="item-field-wrapper">

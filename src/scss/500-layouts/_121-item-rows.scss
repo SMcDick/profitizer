@@ -1,47 +1,63 @@
+.item__grid {
+	margin: 0 -20px;
+}
 .item__row {
-    display: flex;
-    &:nth-child( even ){
-        background: $light-gray;
-    }
-    &--header {
-        background: none;
-        font-weight: bold;
-        border-bottom: 2px solid $dark-gray;
-    }
+	display: flex;
+	&:nth-child(even) {
+		background: $light-gray;
+	}
+	&--header {
+		background: none;
+		font-weight: bold;
+		border-bottom: 2px solid $dark-gray;
+	}
 }
 .item__detail {
-    padding: 4px;
-    flex: 0 0 auto;
-    width: 70px;
-    text-align: right;
-    &--desc {
-        text-align: left;
-        width: auto;
-        flex: 1 1 auto;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
-    &--date {
-        width: 100px;
-    }
-    &--icon {
-        width: 16px;
-        width: 16px;
-        display: flex;
-        flex-flow: column;
-        justify-content: center;
-        .icon--check {
-            &:before,
-            &:after {
-                background: $positive;
-            }
-        }
-        .icon--bang {
-            &:before,
-            &:after {
-                background: $negative;
-            }
-        }
-    }
+	padding: 4px;
+	flex: 0 0 auto;
+
+	text-align: right;
+	width: 60px;
+	@include large-phone {
+		width: 70px;
+	}
+	&--desc {
+		text-align: left;
+		width: auto;
+		flex: 1 1 auto;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+	&--date {
+		width: 90px;
+		@include large-phone {
+			width: 100px;
+		}
+	}
+	&--icon {
+		width: 16px;
+		width: 16px;
+		display: flex;
+		flex-flow: column;
+		justify-content: center;
+		.icon--check {
+			&:before,
+			&:after {
+				background: $positive;
+			}
+		}
+		.icon--bang {
+			&:before,
+			&:after {
+				background: $negative;
+			}
+		}
+	}
+	&--minor {
+		display: none;
+		@include large-phone {
+			display: block;
+		}
+	}
 }

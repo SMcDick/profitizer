@@ -1146,6 +1146,9 @@ em {
   .page-size--active:hover {
     color: #696969; }
 
+.item__grid {
+  margin: 0 -20px; }
+
 .item__row {
   display: flex; }
   .item__row:nth-child(even) {
@@ -1158,8 +1161,11 @@ em {
 .item__detail {
   padding: 4px;
   flex: 0 0 auto;
-  width: 70px;
-  text-align: right; }
+  text-align: right;
+  width: 60px; }
+  @media (min-width: 600px) {
+    .item__detail {
+      width: 70px; } }
   .item__detail--desc {
     text-align: left;
     width: auto;
@@ -1168,7 +1174,10 @@ em {
     text-overflow: ellipsis;
     overflow: hidden; }
   .item__detail--date {
-    width: 100px; }
+    width: 90px; }
+    @media (min-width: 600px) {
+      .item__detail--date {
+        width: 100px; } }
   .item__detail--icon {
     width: 16px;
     width: 16px;
@@ -1179,6 +1188,11 @@ em {
       background: #3FC380; }
     .item__detail--icon .icon--bang:before, .item__detail--icon .icon--bang:after {
       background: #F18467; }
+  .item__detail--minor {
+    display: none; }
+    @media (min-width: 600px) {
+      .item__detail--minor {
+        display: block; } }
 
 .react-select-override.Select--multi .Select-value {
   display: flex; }
