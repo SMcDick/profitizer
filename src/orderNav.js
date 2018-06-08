@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Link, NavLink } from "react-router-dom"
+import { Link } from "react-router-dom"
 import PropTypes from "prop-types"
 
 class OrderNav extends Component {
@@ -17,7 +17,7 @@ class OrderNav extends Component {
 		]
 	}
 	checkFilter(val) {
-		if (this.props.routerProps.location.search.indexOf(val) > -1) {
+		if (this.props.location.search.indexOf(val) > -1) {
 			return " btn--neutral"
 		}
 		return ""
@@ -47,7 +47,7 @@ class OrderNav extends Component {
 }
 
 OrderNav.propTypes = {
-	routerProps: PropTypes.object
+	location: PropTypes.object
 }
 
 export default OrderNav

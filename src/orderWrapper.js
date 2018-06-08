@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import axios from "axios"
+// import axios from "axios"
 import PropType from "prop-types"
 import { Route, Switch } from "react-router-dom"
 import Moment from "moment"
@@ -8,13 +8,12 @@ import Order from "./order"
 import Form from "./form"
 
 import util from "./utils"
-import { API_ROOT } from "./config"
+// import { API_ROOT } from "./config"
 
 class OrderWrapper extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			orders: [],
 			query: util.queryParams(props.location.search),
 			filters: {},
 			search: ""
@@ -25,35 +24,26 @@ class OrderWrapper extends Component {
 		let query = util.queryParams(props.location.search)
 		return { query: query, filters: query.filters ? query.filters : {} }
 	}
-	componentDidMount() {
-		console.log("order wrapper mounted (Post initial render)")
-		axios.get(API_ROOT + "sales/all").then(result => {
-			let data = result.data.data
-			this.setState({
-				orders: data
-			})
-		})
-	}
 	handleOrderUpdates(val) {
-		this.setState(prevState => {
-			let orders = [...prevState.orders]
-			let current = orders.find(order => order.Order_Id === val.Order_Id)
-			if (current) {
-				if (val.Completed) {
-					orders.splice(orders.indexOf(current), 1)
-				} else {
-					Object.assign(current, val)
-				}
-			} else {
-				if (!val.Completed) {
-					orders.unshift(val)
-				}
-			}
-			orders.sort((a, b) => {
-				return a.Date_Sold - b.Date_Sold
-			})
-			return { orders: orders }
-		})
+		// this.setState(prevState => {
+		// 	let orders = [...prevState.orders]
+		// 	let current = orders.find(order => order.Order_Id === val.Order_Id)
+		// 	if (current) {
+		// 		if (val.Completed) {
+		// 			orders.splice(orders.indexOf(current), 1)
+		// 		} else {
+		// 			Object.assign(current, val)
+		// 		}
+		// 	} else {
+		// 		if (!val.Completed) {
+		// 			orders.unshift(val)
+		// 		}
+		// 	}
+		// 	orders.sort((a, b) => {
+		// 		return a.Date_Sold - b.Date_Sold
+		// 	})
+		// 	return { orders: orders }
+		// })
 	}
 	handleSearch = e => {
 		e.preventDefault()
@@ -66,7 +56,8 @@ class OrderWrapper extends Component {
 	}
 	render() {
 		console.log("order wrapper rendered")
-		let activeOrders = this.state.orders
+		let activeOrders = this.props.orders
+		const { match } = this.props
 		const { filters, search } = this.state
 		if (filters.incomplete === "true") {
 			activeOrders = activeOrders.filter(order => order.Completed === 0)
@@ -120,37 +111,32 @@ class OrderWrapper extends Component {
 				<Switch>
 					<Route
 						exact
-						path={this.props.match.url}
+						path={match.url}
 						render={props => {
-							return <Orders orders={activeOrders} routerProps={props} handleSearch={this.handleSearch} />
+							return <Orders {...props} orders={activeOrders} handleSearch={this.handleSearch} />
 						}}
 					/>
 					<Route
 						exact
-						path={this.props.match.url + "/create"}
+						path={match.url + "/create"}
 						render={props => {
 							return (
 								<div>
 									<h1>Create a New Order</h1>
 									<Form
 										details={{ Marketplace: "Poshmark" }}
-										routerProps={props}
 										create={true}
-										handleOrderUpdates={this.handleOrderUpdates}
+										handleOrderUpdates={this.props.handleUpdate}
 									/>
 								</div>
 							)
 						}}
 					/>
 					<Route
-						path={this.props.match.url + "/:id"}
+						path={match.url + "/:id"}
 						render={props => {
 							return (
-								<Order
-									orders={activeOrders}
-									routerProps={props}
-									handleOrderUpdates={this.handleOrderUpdates}
-								/>
+								<Order {...props} orders={activeOrders} handleOrderUpdates={this.handleOrderUpdates} />
 							)
 						}}
 					/>
@@ -164,7 +150,8 @@ OrderWrapper.propTypes = {
 	match: PropType.object,
 	location: PropType.object,
 	type: PropType.string,
-	query: PropType.object
+	query: PropType.object,
+	handleUpdate: PropType.func
 }
 
 export default OrderWrapper

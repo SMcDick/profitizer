@@ -1,4 +1,4 @@
-import React, { Component, Children } from "react"
+import React, { Component } from "react"
 import propTypes from "prop-types"
 import { Link } from "react-router-dom"
 import Moment from "moment"
@@ -10,10 +10,7 @@ import util from "./utils"
 
 class Orders extends Component {
 	render() {
-		const { children, routerProps, orders } = this.props
-		const childrenWithProps = Children.map(children, child =>
-			React.cloneElement(child, { routerProps: routerProps })
-		)
+		const { orders } = this.props
 		let totals = {
 			sales: util.formatMoney(util.totaler(orders, "Total_Sold_Price")),
 			return: util.formatMoney(util.totaler(orders, "Return_calc")),
@@ -24,8 +21,7 @@ class Orders extends Component {
 		return (
 			<section>
 				<h1>Orders</h1>
-				<OrderNav routerProps={routerProps} />
-				{childrenWithProps}
+				<OrderNav {...this.props} />
 				<Input
 					type="text"
 					name="Search"
