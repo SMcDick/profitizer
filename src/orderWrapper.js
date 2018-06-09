@@ -125,6 +125,7 @@ class OrderWrapper extends Component {
 									<h1>Create a New Order</h1>
 									<Form
 										details={{ Marketplace: "Poshmark" }}
+										inventory={this.props.inventory}
 										create={true}
 										handleOrderUpdates={this.props.handleUpdate}
 									/>
@@ -151,7 +152,8 @@ OrderWrapper.propTypes = {
 	location: PropType.object,
 	type: PropType.string,
 	query: PropType.object,
-	handleUpdate: PropType.func
+	handleUpdate: PropType.func,
+	inventory: PropType.array
 }
 
 export default OrderWrapper

@@ -18,7 +18,7 @@ class OrderForm extends Component {
 		this.state = {
 			details: {},
 			// TODO This might not be state?
-			inventory: [],
+			// inventory: [],
 			redirect: false
 		}
 	}
@@ -48,7 +48,7 @@ class OrderForm extends Component {
 			let itemQuantity = `${itemNumber}_Quantity`
 			let timestamp = "_" + Date.now()
 			let nameLabel = itemNumber + "_Name"
-			let name = this.state.inventory.find(inv => inv.Item_Id === item.value)
+			let name = this.props.inventory.find(inv => inv.Item_Id === item.value)
 			name = name ? name.Item : "Item Not Found - Something went wrong"
 			description.push(name)
 			details[itemNumber] = item.value.toString()
@@ -196,12 +196,15 @@ class OrderForm extends Component {
 		return { details, items }
 	}
 	mapper(collection) {
-		return collection.data.map(item => {
-			return {
-				value: item.Item_Id,
-				label: `${item.Item} ( ${item.Item_Id} ) - $${item.Final_Cost} (${item.Remaining})`
+		return collection.reduce((array, item) => {
+			if (item.Remaining > 0) {
+				return array.concat({
+					value: item.Item_Id,
+					label: `${item.Item} ( ${item.Item_Id} ) - $${item.Final_Cost} (${item.Remaining})`
+				})
 			}
-		})
+			return array
+		}, [])
 	}
 	renderInput(type, options, fees) {
 		const { details, items } = this.state
@@ -244,11 +247,9 @@ class OrderForm extends Component {
 				{this.props.create && (
 					<div className="item-wrapper">
 						<SelectWrapper
-							url={API_ROOT + "inventory/remaining"}
-							optionsMapper={this.mapper}
+							options={this.mapper(this.props.inventory)}
 							name="Items Sold"
 							reactSelectChange={this.handleReactSelectChange}
-							handleInventory={this.handleInventory}
 						/>
 						{this.itemFields && (
 							// TODO fix this so that the fields display correctly
@@ -285,7 +286,8 @@ OrderForm.propTypes = {
 	isCompleted: propType.bool,
 	handleCompleted: propType.func,
 	create: propType.bool,
-	handleOrderUpdates: propType.func
+	handleOrderUpdates: propType.func,
+	inventory: propType.array
 }
 
 export default OrderForm
