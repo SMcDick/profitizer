@@ -115,7 +115,10 @@ class OrderForm extends Component {
 			{ name: "Transaction_Fee" },
 			{ name: "Marketplace_Fee" },
 			{ name: "Shipping" },
-			{ name: "Tax", label: "Tax" },
+			{ name: "Tax_Pct", label: "Tax %" },
+			{ name: "Tax_Collected", label: "Tax Collected" },
+			{ name: "Tax_Calculated_Temp", label: "Old Taxes" },
+			{ name: "Tax_Calculated_Calc", labek: "Estimated Taxes" },
 			{ name: "Platform_Order_Id", type: "text", required: true },
 			{ name: "Order_Id", readonly: true, type: "text" },
 			{ name: "Sold_Date", type: "date", required: true },
@@ -209,9 +212,9 @@ class OrderForm extends Component {
 	renderInput(type, options, fees) {
 		const { details, items } = this.state
 		const name = options.name
+		// TODO this is getting ugly; rethink how this is implemented
 		let state = type === "details" ? details : items
-		let stateVal = state[name] !== undefined ? state[name] : ""
-
+		let stateVal = state[name] ? state[name] : ""
 		let value = options.value ? options.value : stateVal
 		let feeEstimate = ""
 		if (name === "Transaction_Fee") {
