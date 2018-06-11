@@ -333,7 +333,9 @@ class OrderForm extends Component {
 								</div>
 							</div>
 						)}
-						<input type="submit" className="btn" value="Submit" />
+						<div className="btn-container flex-child__100 pad10">
+							<input type="submit" className="btn" value="Submit" />
+						</div>
 					</div>
 				)}
 			</form>
