@@ -22,7 +22,7 @@ class Input extends Component {
 					className="input--text"
 					type={type}
 					value={value}
-					checked={checked}
+					defaultChecked={checked}
 					name={name}
 					readOnly={readonly}
 					autoComplete="off"
