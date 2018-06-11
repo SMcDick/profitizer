@@ -101,6 +101,12 @@ class OrderWrapper extends Component {
 				return Moment(order.Sold_Date).isBetween(lastStart, lastEnd, "year", [])
 			})
 		}
+		if (filters.taxes === "true") {
+			activeOrders = activeOrders.filter(order => order.Tax_Calculated_Temp > 0)
+		}
+		if (filters.refunds === "true") {
+			activeOrders = activeOrders.filter(order => order.Refund_Transaction || order.Refunded)
+		}
 		if (search.length) {
 			activeOrders = activeOrders.filter(
 				order => order.Description.toLowerCase().indexOf(search.toLowerCase()) > -1

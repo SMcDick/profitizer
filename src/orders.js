@@ -29,16 +29,18 @@ class Orders extends Component {
 					label="Search"
 					className="search__wrapper"
 				/>
-				<div className="item-wrapper">
-					<div className="pad10">
-						Details:<br />
-						Cost of Goods Sold: {totals.cost}
-						<br />
-						Total Sales: {totals.sales}
-						<br />
-						Total Return: {totals.return}
-						<br />
-						Total Profit: {totals.profit}
+				<div className="item-wrapper item__grid">
+					<div className="item__row item__row--header">
+						<span className="item__detail item__detail--date">COGS</span>
+						<span className="item__detail item__detail--date">Sales</span>
+						<span className="item__detail item__detail--date">Return</span>
+						<span className="item__detail item__detail--date">Profit</span>
+					</div>
+					<div className="item__row item__row--header">
+						<span className="item__detail item__detail--date">{totals.cost}</span>
+						<span className="item__detail positive-text item__detail--date">{totals.sales}</span>
+						<span className="item__detail item__detail--date">{totals.return}</span>
+						<span className="item__detail positive-text item__detail--date">{totals.profit}</span>
 					</div>
 				</div>
 				<div className="item__grid">
