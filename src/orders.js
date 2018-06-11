@@ -81,7 +81,6 @@ class Orders extends Component {
 Orders.propTypes = {
 	orders: propTypes.array,
 	pager: propTypes.element,
-	routerProps: propTypes.object,
 	children: propTypes.element,
 	handleSearch: propTypes.func
 }

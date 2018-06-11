@@ -78,6 +78,7 @@ class InventoryForm extends Component {
 		let label = options.label ? options.label : util.stringify(options.name)
 		return (
 			<Input
+				onChange={this.handleInputChange}
 				key={options.key ? options.key : name}
 				label={label}
 				name={name}
@@ -94,7 +95,7 @@ class InventoryForm extends Component {
 			return <Redirect exact={true} to="/inventory" />
 		}
 		return (
-			<form onSubmit={this.handleSubmit} onChange={this.handleInputChange}>
+			<form onSubmit={this.handleSubmit}>
 				{InventoryForm.createFields().map(field => this.renderInput(field))}
 				<input type="submit" value="Submit" className="btn" />
 			</form>

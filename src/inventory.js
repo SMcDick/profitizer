@@ -6,11 +6,11 @@ import Input from "./input"
 
 class Inventory extends Component {
 	render() {
-		const { inventory, routerProps, handleSearch } = this.props
+		const { inventory, handleSearch } = this.props
 		return (
 			<section>
-				<h1>{routerProps.match.path === "/inventory" ? "All" : "Remaining"} Inventory</h1>
-				<InventoryNav routerProps={routerProps} />
+				<h1>Inventory</h1>
+				<InventoryNav {...this.props} />
 				<Input type="text" name="Search" onChange={handleSearch} label="Search" className="search__wrapper" />
 				<div className="item__grid">
 					<div className="item__row item__row--header">
@@ -40,7 +40,6 @@ class Inventory extends Component {
 Inventory.propTypes = {
 	inventory: propTypes.array,
 	pager: propTypes.element,
-	routerProps: propTypes.object,
 	handleSearch: propTypes.func
 }
 

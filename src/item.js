@@ -16,7 +16,7 @@ class Item extends Component {
 		}
 	}
 	componentDidMount() {
-		axios.get(API_ROOT + "/item/" + this.props.routerProps.match.params.id).then(result => {
+		axios.get(API_ROOT + "/item/" + this.props.match.params.id).then(result => {
 			this.setState({ item: result.data.data, loading: false })
 		})
 	}
@@ -38,23 +38,36 @@ class Item extends Component {
 		return (
 			<section>
 				<h1>Item#: {this.state.item.Item_Id}</h1>
-				<a href="#" onClick={this.props.routerProps.history.goBack}>
+				<a href="#" onClick={this.props.history.goBack}>
 					Back
 				</a>
 				<Form details={this.state.item} />
-				<div className="pad10">
-					Details:<br />
-					Total Cost: {util.formatMoney(item.Total_Cost)}
-					<br />
-					Total Sales: {util.formatMoney(totals.sales)}
-					<br />
-					Total Return: {util.formatMoney(totals.return)}
-					<br />
-					Realized Profit: {util.formatMoney(totals.realizedProfit)}
-					<br />
-					Overall Profit: {util.formatMoney(totals.overallProfit)}
-					<br />
-					Average Profit per Item sold: {util.formatMoney(totals.averagePerItem)}
+
+				<div className="item-wrapper item__grid">
+					<div className="item__row item__row--header">
+						<span className="item__detail item__detail--date">Cost</span>
+						<span className="item__detail item__detail--date">Sales</span>
+						<span className="item__detail item__detail--date">Return</span>
+						<span className="item__detail item__detail--date">Realized Profit</span>
+						<span className="item__detail item__detail--date">Overall Profit</span>
+						<span className="item__detail item__detail--date">Avg Profit per Item Sold</span>
+					</div>
+					<div className="item__row item__row--header">
+						<span className="item__detail item__detail--date">{util.formatMoney(item.Total_Cost)}</span>
+						<span className="item__detail positive-text item__detail--date">
+							{util.formatMoney(totals.sales)}
+						</span>
+						<span className="item__detail item__detail--date">{util.formatMoney(totals.return)}</span>
+						<span className="item__detail positive-text item__detail--date">
+							{util.formatMoney(totals.realizedProfit)}
+						</span>
+						<span className="item__detail positive-text item__detail--date">
+							{util.formatMoney(totals.overallProfit)}
+						</span>
+						<span className="item__detail positive-text item__detail--date">
+							{util.formatMoney(totals.averagePerItem)}
+						</span>
+					</div>
 				</div>
 				<div className="item-wrapper item__grid">
 					<div className="item__row item__row--header">
@@ -80,7 +93,6 @@ class Item extends Component {
 }
 Item.propTypes = {
 	id: propTypes.string || propTypes.number,
-	routerProps: propTypes.object,
 	items: propTypes.array
 }
 
