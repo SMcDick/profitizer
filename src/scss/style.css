@@ -135,6 +135,9 @@ em {
   .nav__item .active {
     font-weight: bold; }
 
+.positive-text {
+  color: #3FC380; }
+
 .pad10 {
   padding: 10px; }
 

@@ -27,7 +27,9 @@ class Order extends Component {
 		}
 		return (
 			<section>
-				<h1>Order#: {order.Order_Id}</h1>
+				<h1>
+					Order#: {order.Order_Id} &bull; <span className="positive-text">${order.Profit_calc}</span>
+				</h1>
 				<a href="#" onClick={this.props.history.goBack}>
 					Back
 				</a>
