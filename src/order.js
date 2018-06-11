@@ -31,7 +31,11 @@ class Order extends Component {
 				<a href="#" onClick={this.props.history.goBack}>
 					Back
 				</a>
-				<Form details={order} handleOrderUpdates={this.props.handleOrderUpdates} />
+				<Form
+					details={order}
+					handleOrderUpdates={this.props.handleOrderUpdates}
+					inventory={this.props.inventory}
+				/>
 			</section>
 		)
 	}
@@ -42,7 +46,8 @@ Order.propTypes = {
 	match: propTypes.object,
 	history: propTypes.object,
 	orders: propTypes.array,
-	handleOrderUpdates: propTypes.func
+	handleOrderUpdates: propTypes.func,
+	inventory: propTypes.array
 }
 
 export default Order

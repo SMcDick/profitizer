@@ -17,9 +17,18 @@ class OrderForm extends Component {
 
 		this.state = {
 			details: {},
-			// TODO This might not be state?
-			// inventory: [],
 			redirect: false
+		}
+		this.createdItems = []
+		if (!props.create) {
+			this.createdItems = [1, 2, 3, 4, 5].reduce((array, item) => {
+				let itemNumber = `Item_${item}`
+
+				if (props.details[itemNumber]) {
+					return array.concat(item)
+				}
+				return array
+			}, [])
 		}
 	}
 	handleInputChange(event) {
@@ -31,58 +40,50 @@ class OrderForm extends Component {
 		}
 		const state = { ...this.state.details }
 		state[name] = value
+		if (name.indexOf("_Quantity") > -1) {
+			let totalCost = [1, 2, 3, 4, 5].reduce((total, item) => {
+				let itemNumber = `Item_${item}`
+				let itemId = state[itemNumber]
+				let inventoryItem = this.props.inventory.find(itm => itm.Item_Id === itemId)
+				if (itemId) {
+					return total + parseInt(state[itemNumber + "_Quantity"]) * parseFloat(inventoryItem.Final_Cost, 10)
+				}
+				return total
+			}, 0)
+			state.Total_Cost_calc = totalCost
+		}
 		this.setState({
 			details: state
 		})
 	}
 	// Probably only used on the Create page
 	handleReactSelectChange = val => {
-		const details = { ...this.state.details }
-		let description = []
+		let details = { ...this.state.details }
 		for (var i = 1; i <= 5; i++) {
 			delete details["Item_" + i]
 			delete details["Item_" + i + "_Quantity"]
 		}
-		this.itemGroups = val.map((item, idx) => {
-			let itemNumber = `Item_${idx + 1}`
-			let itemQuantity = `${itemNumber}_Quantity`
-			let timestamp = "_" + Date.now()
-			let nameLabel = itemNumber + "_Name"
-			let name = this.props.inventory.find(inv => inv.Item_Id === item.value)
-			name = name ? name.Item : "Item Not Found - Something went wrong"
-			description.push(name)
-			details[itemNumber] = item.value.toString()
-			details[itemQuantity] = "1"
-			return [
-				{
-					name: nameLabel,
-					key: nameLabel + timestamp,
-					readonly: true,
-					value: name,
-					type: "text"
-				},
-				{
-					name: itemNumber,
-					readonly: true,
-					key: itemNumber + timestamp,
-					type: "text"
-				},
-				{
-					name: itemQuantity,
-					readonly: false,
-					key: itemQuantity + timestamp,
-					int: true
-				}
-			]
+		let desc = []
+		let cost = 0
+		this.createdItems = val.map((item, idx) => {
+			let number = idx + 1
+			let string = `Item_${number}`
+			// Set item values to be saved
+			details[string] = item.value
+			details[string + "_Quantity"] = "1"
+
+			// Get inventory item name
+			let inventoryItem = this.props.inventory.find(itm => itm.Item_Id === item.value)
+			if (inventoryItem) {
+				desc.push(inventoryItem.Item)
+				cost += inventoryItem.Final_Cost
+			} else {
+				desc.push(item.label)
+			}
+			return number
 		})
-		this.itemFields = this.itemGroups.reduce((items, groups) => items.concat(groups), [])
-		if (!this.itemGroups.length) {
-			this.itemFields = undefined
-		}
-		// TODO this doesn't quite work as expected.
-		// It doesn't update the default value and it doesn't clear out the updated value when
-		// choosing a second item. Leaving for now and might revisit later
-		details.Description = description.join("; ")
+		details.Description = desc.join("; ")
+		details.Total_Cost_calc = cost
 		this.setState({ details })
 	}
 	handleSubmit(e) {
@@ -94,6 +95,16 @@ class OrderForm extends Component {
 			url = API_ROOT + "createSale"
 			method = "post"
 		}
+		let saveDetails = { ...this.state.details }
+		for (var i = 1; i <= 5; i++) {
+			delete saveDetails[`Item_${i}_Name`]
+			delete saveDetails[`Item_${i}_Cost`]
+		}
+		delete saveDetails.Tax_Calculated_Calc
+		delete saveDetails.Tax_Calculated_Temp
+		delete saveDetails.Total_Cost_calc
+		console.log(saveDetails)
+		return
 
 		axios[method](url, this.state.details)
 			.then(results => {
@@ -118,7 +129,7 @@ class OrderForm extends Component {
 			{ name: "Tax_Pct", label: "Tax %" },
 			{ name: "Tax_Collected", label: "Tax Collected" },
 			{ name: "Tax_Calculated_Temp", label: "Old Taxes" },
-			{ name: "Tax_Calculated_Calc", labek: "Estimated Taxes" },
+			{ name: "Tax_Calculated_Calc", label: "Estimated Taxes" },
 			{ name: "Platform_Order_Id", type: "text", required: true },
 			{ name: "Order_Id", readonly: true, type: "text" },
 			{ name: "Sold_Date", type: "date", required: true },
@@ -126,42 +137,44 @@ class OrderForm extends Component {
 			{ name: "Completed", type: "checkbox" }
 		]
 	}
-	static createItems(props) {
-		let items = []
-		for (var i = 1; i <= 5; i++) {
-			let itemNumber = `Item_${i}`
+	static createItems(itemArray, props) {
+		let items = itemArray.reduce((array, item) => {
+			let itemNumber = `Item_${item}`
 			let itemQuantity = `${itemNumber}_Quantity`
-			let timestamp = "_" + Date.now()
 			let nameLabel = itemNumber + "_Name"
-
-			if (props.details[itemQuantity] > 0) {
-				items.push(
-					{
-						name: nameLabel,
-						key: nameLabel + timestamp,
-						readonly: true,
-						type: "text"
-					},
-					{
-						name: itemNumber,
-						readonly: true,
-						key: itemNumber + timestamp,
-						type: "text"
-					},
-					{
-						name: itemQuantity,
-						readonly: true,
-						key: itemQuantity + timestamp,
-						int: true
-					},
-					{
-						name: itemNumber + "_Cost",
-						readonly: true,
-						key: itemNumber + "_Cost" + timestamp
-					}
-				)
-			}
-		}
+			let itemFields = [
+				{
+					name: itemNumber,
+					readonly: true,
+					key: itemNumber + "_" + itemArray.length,
+					type: "text"
+				},
+				{
+					name: itemQuantity,
+					key: itemQuantity + "_" + itemArray.length,
+					int: true,
+					readonly: !props.create
+				},
+				{
+					name: nameLabel,
+					key: nameLabel + "_" + itemArray.length,
+					readonly: true,
+					type: "text",
+					fromInventory: true,
+					parent: itemNumber,
+					fieldType: "name"
+				},
+				{
+					name: itemNumber + "_Cost",
+					readonly: true,
+					key: itemNumber + "_Cost" + "_" + itemArray.length,
+					fromInventory: true,
+					parent: itemNumber,
+					fieldType: "cost"
+				}
+			]
+			return array.concat(itemFields)
+		}, [])
 		items.push({
 			name: "Total_Cost_calc",
 			label: "Total Cost",
@@ -185,18 +198,23 @@ class OrderForm extends Component {
 	}
 	static getDerivedStateFromProps(nextProps) {
 		let details = {}
-		let items = {}
 		for (const key of OrderForm.createFields()) {
 			details[key.name] = nextProps.details[key.name]
 		}
-		// TODO would not be surprised if this breaks the new order item functionality. Make sure to test
-		for (const key of OrderForm.createItems(nextProps)) {
-			items[key.name] = nextProps.details[key.name]
+		let itemArray = [1, 2, 3, 4, 5].reduce((array, item) => {
+			if (nextProps.details[`Item_${item}`]) {
+				return array.concat(item)
+			}
+			return array
+		}, [])
+
+		for (const key of OrderForm.createItems(itemArray, nextProps)) {
+			details[key.name] = nextProps.details[key.name]
 		}
 		if (!details.Sold_Date) {
 			details.Sold_Date = new Date().toISOString().split("T")[0]
 		}
-		return { details, items }
+		return { details }
 	}
 	mapper(collection) {
 		return collection.reduce((array, item) => {
@@ -209,36 +227,69 @@ class OrderForm extends Component {
 			return array
 		}, [])
 	}
-	renderInput(type, options, fees) {
-		const { details, items } = this.state
+	getFormValues = (options, fees) => {
+		const { details } = this.state
 		const name = options.name
-		// TODO this is getting ugly; rethink how this is implemented
-		let state = type === "details" ? details : items
-		let stateVal = state[name] ? state[name] : ""
-		let value = options.value ? options.value : stateVal
-		let feeEstimate = ""
-		if (name === "Transaction_Fee") {
-			feeEstimate = fees.transactionFee
-		} else if (name === "Marketplace_Fee") {
-			feeEstimate = fees.marketplaceFee
+
+		let value = details[name] ? details[name] : ""
+		if (this.props.create && options.parent) {
+			let parentId = parseInt(details[options.parent], 10)
+			let inventoryItem = this.props.inventory.find(itm => itm.Item_Id === parentId)
+			if (options.fieldType === "name") {
+				value = inventoryItem ? inventoryItem.Item : "No Name Found. Something went wrong"
+			}
+			if (options.fieldType === "cost") {
+				value = inventoryItem ? inventoryItem.Final_Cost : "No Cost Found. Something went wrong"
+			}
 		}
 		let label = options.label ? options.label : util.stringify(options.name)
+		let feeEstimate = ""
+		if (options.name === "Transaction_Fee") {
+			feeEstimate = ` (estimate: $${fees.transactionFee})`
+		} else if (options.name === "Marketplace_Fee") {
+			feeEstimate = ` (estimate: $${fees.marketplaceFee})`
+		}
+		label = label + feeEstimate
+		options.label = label
+		options.type = options.type ? options.type : "number"
+		options.value = value
+		return options
+	}
+	validate = val => {
+		const target = val.target
+		const { details } = this.state
+		let { name, type, value, step } = target
+		if (type === "number") {
+			details[name] = Number(value).toFixed(step === "1" ? 0 : 2)
+			this.setState({ details })
+		}
+	}
+	focus = val => {
+		const target = val.target
+		const { details } = this.state
+		let { name, type, value } = target
+		if (type === "number") {
+			details[name] = Number(value)
+			this.setState({ details })
+		}
+	}
+	renderInput(options, fees) {
+		options = this.getFormValues(options, fees)
 		return (
 			<Input
-				key={options.key ? options.key : name}
-				label={label}
-				feeEstimate={feeEstimate.toString()}
+				onFocus={this.focus}
+				onBlur={this.validate}
+				onChange={this.handleInputChange}
+				key={options.key ? options.key : options.name}
+				label={options.label}
 				name={options.name}
-				value={value.toString()}
+				value={options.value.toString()}
 				readonly={options.readonly}
-				type={options.type ? options.type : "number"}
+				type={options.type}
 				int={options.int}
 				required={options.required}
 			/>
 		)
-	}
-	handleInventory = val => {
-		this.setState({ inventory: val })
 	}
 	render() {
 		if (this.state.redirect) {
@@ -246,7 +297,7 @@ class OrderForm extends Component {
 		}
 		let fees = this.computeDefaultFees(this.state.details)
 		return (
-			<form onSubmit={this.handleSubmit} onChange={this.handleInputChange}>
+			<form onSubmit={this.handleSubmit}>
 				{this.props.create && (
 					<div className="item-wrapper">
 						<SelectWrapper
@@ -254,25 +305,27 @@ class OrderForm extends Component {
 							name="Items Sold"
 							reactSelectChange={this.handleReactSelectChange}
 						/>
-						{this.itemFields && (
+						{this.createdItems.length > 0 && (
 							// TODO fix this so that the fields display correctly
 							<div className="item-field-wrapperx">
 								<h3>Item Details</h3>
-								{this.itemFields.map(field => this.renderInput("items", field, null))}
+								{OrderForm.createItems(this.createdItems, this.props).map(field =>
+									this.renderInput(field)
+								)}
 							</div>
 						)}
 					</div>
 				)}
-				{(!this.props.create || this.itemFields) && (
+				{(!this.props.create || this.createdItems.length > 0) && (
 					<div>
-						{OrderForm.createFields().map(field => this.renderInput("details", field, fees))}
+						{OrderForm.createFields().map(field => this.renderInput(field, fees))}
 						{!this.props.create && (
 							<div className="item-wrapper">
 								<div className="item-field-wrapper">
 									<h3>Item Details</h3>
-									{OrderForm.createItems(this.props).map(field =>
-										this.renderInput("items", field, null)
-									)}
+									{OrderForm.createItems(this.createdItems, this.props).map(field => {
+										return this.renderInput(field)
+									})}
 								</div>
 							</div>
 						)}

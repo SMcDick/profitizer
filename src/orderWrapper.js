@@ -137,7 +137,12 @@ class OrderWrapper extends Component {
 						path={match.url + "/:id"}
 						render={props => {
 							return (
-								<Order {...props} orders={activeOrders} handleOrderUpdates={this.handleOrderUpdates} />
+								<Order
+									{...props}
+									orders={activeOrders}
+									inventory={this.props.inventory}
+									handleOrderUpdates={this.handleOrderUpdates}
+								/>
 							)
 						}}
 					/>
