@@ -1008,10 +1008,32 @@ em {
   .item-field-wrapper h3 {
     flex: 1 1 100%; }
   .item-field-wrapper .input__wrapper {
-    flex: 1 1 calc( 33.333% - 20px);
+    flex: 1 1 calc(33.333% - 20px);
     margin: 0 10px; }
-    .item-field-wrapper .input__wrapper:nth-of-type(4n + 1) {
+    .item-field-wrapper .input__wrapper.item-name {
+      margin-top: 20px;
       flex: 1 1 100%; }
+    .item-field-wrapper .input__wrapper.item-total {
+      margin-top: 20px;
+      font-weight: bold; }
+
+.order-form {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+  align-items: flex-end; }
+  .order-form .input__wrapper {
+    flex: 0 0 33.333%;
+    padding: 10px;
+    margin: 0;
+    box-sizing: border-box; }
+    .order-form .input__wrapper:first-child {
+      flex: 1 1 100%; }
+    .order-form .input__wrapper label > span {
+      display: block; }
+
+.select-wrapper h3 {
+  margin-top: 10px; }
 
 .alert {
   opacity: 0;

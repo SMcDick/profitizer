@@ -46,7 +46,9 @@ class OrderForm extends Component {
 				let itemId = state[itemNumber]
 				let inventoryItem = this.props.inventory.find(itm => itm.Item_Id === itemId)
 				if (itemId) {
-					return total + parseInt(state[itemNumber + "_Quantity"]) * parseFloat(inventoryItem.Final_Cost, 10)
+					return (
+						total + parseInt(state[itemNumber + "_Quantity"], 10) * parseFloat(inventoryItem.Final_Cost, 10)
+					)
 				}
 				return total
 			}, 0)
@@ -103,10 +105,8 @@ class OrderForm extends Component {
 		delete saveDetails.Tax_Calculated_Calc
 		delete saveDetails.Tax_Calculated_Temp
 		delete saveDetails.Total_Cost_calc
-		console.log(saveDetails)
-		return
 
-		axios[method](url, this.state.details)
+		axios[method](url, saveDetails)
 			.then(results => {
 				let data = results.data
 				if (create) {
@@ -122,6 +122,9 @@ class OrderForm extends Component {
 	static createFields() {
 		return [
 			{ name: "Description", type: "text" },
+			{ name: "Platform_Order_Id", type: "text", required: true },
+			{ name: "Marketplace", type: "text" },
+			{ name: "Sold_Date", type: "date", required: true },
 			{ name: "Total_Sold_Price", required: true },
 			{ name: "Transaction_Fee" },
 			{ name: "Marketplace_Fee" },
@@ -130,10 +133,7 @@ class OrderForm extends Component {
 			{ name: "Tax_Collected", label: "Tax Collected" },
 			{ name: "Tax_Calculated_Temp", label: "Old Taxes" },
 			{ name: "Tax_Calculated_Calc", label: "Estimated Taxes" },
-			{ name: "Platform_Order_Id", type: "text", required: true },
 			{ name: "Order_Id", readonly: true, type: "text" },
-			{ name: "Sold_Date", type: "date", required: true },
-			{ name: "Marketplace", type: "text" },
 			{ name: "Completed", type: "checkbox" }
 		]
 	}
@@ -144,33 +144,35 @@ class OrderForm extends Component {
 			let nameLabel = itemNumber + "_Name"
 			let itemFields = [
 				{
-					name: itemNumber,
+					name: nameLabel,
+					key: nameLabel + "_" + itemArray.length,
 					readonly: true,
-					key: itemNumber + "_" + itemArray.length,
-					type: "text"
+					type: "text",
+					parent: itemNumber,
+					fieldType: "name",
+					className: "item-name"
 				},
 				{
 					name: itemQuantity,
 					key: itemQuantity + "_" + itemArray.length,
 					int: true,
-					readonly: !props.create
-				},
-				{
-					name: nameLabel,
-					key: nameLabel + "_" + itemArray.length,
-					readonly: true,
-					type: "text",
-					fromInventory: true,
-					parent: itemNumber,
-					fieldType: "name"
+					readonly: !props.create,
+					className: "item-qty"
 				},
 				{
 					name: itemNumber + "_Cost",
 					readonly: true,
-					key: itemNumber + "_Cost" + "_" + itemArray.length,
-					fromInventory: true,
+					key: itemNumber + "_Cost_" + itemArray.length,
 					parent: itemNumber,
-					fieldType: "cost"
+					fieldType: "cost",
+					className: "item-cost"
+				},
+				{
+					name: itemNumber,
+					readonly: true,
+					key: itemNumber + "_" + itemArray.length,
+					type: "text",
+					className: "item-number"
 				}
 			]
 			return array.concat(itemFields)
@@ -179,7 +181,8 @@ class OrderForm extends Component {
 			name: "Total_Cost_calc",
 			label: "Total Cost",
 			readonly: true,
-			key: "Total_Cost"
+			key: "Total_Cost",
+			className: "item-total"
 		})
 		return items
 	}
@@ -245,9 +248,9 @@ class OrderForm extends Component {
 		let label = options.label ? options.label : util.stringify(options.name)
 		let feeEstimate = ""
 		if (options.name === "Transaction_Fee") {
-			feeEstimate = ` (estimate: $${fees.transactionFee})`
+			feeEstimate = ` ($${fees.transactionFee})`
 		} else if (options.name === "Marketplace_Fee") {
-			feeEstimate = ` (estimate: $${fees.marketplaceFee})`
+			feeEstimate = ` ($${fees.marketplaceFee})`
 		}
 		label = label + feeEstimate
 		options.label = label
@@ -281,6 +284,7 @@ class OrderForm extends Component {
 				onBlur={this.validate}
 				onChange={this.handleInputChange}
 				key={options.key ? options.key : options.name}
+				className={options.className}
 				label={options.label}
 				name={options.name}
 				value={options.value.toString()}
@@ -299,7 +303,7 @@ class OrderForm extends Component {
 		return (
 			<form onSubmit={this.handleSubmit}>
 				{this.props.create && (
-					<div className="item-wrapper">
+					<div className="item-wrapper select-wrapper">
 						<SelectWrapper
 							options={this.mapper(this.props.inventory)}
 							name="Items Sold"
@@ -307,7 +311,7 @@ class OrderForm extends Component {
 						/>
 						{this.createdItems.length > 0 && (
 							// TODO fix this so that the fields display correctly
-							<div className="item-field-wrapperx">
+							<div className="item-field-wrapper">
 								<h3>Item Details</h3>
 								{OrderForm.createItems(this.createdItems, this.props).map(field =>
 									this.renderInput(field)
@@ -317,7 +321,7 @@ class OrderForm extends Component {
 					</div>
 				)}
 				{(!this.props.create || this.createdItems.length > 0) && (
-					<div>
+					<div className="order-form">
 						{OrderForm.createFields().map(field => this.renderInput(field, fees))}
 						{!this.props.create && (
 							<div className="item-wrapper">
