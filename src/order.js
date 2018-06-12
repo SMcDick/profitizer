@@ -44,11 +44,13 @@ class Order extends Component {
 				<a href="#" onClick={this.props.history.goBack}>
 					Back
 				</a>
-				<Form
-					details={order}
-					handleOrderUpdates={this.props.handleOrderUpdates}
-					inventory={this.props.inventory}
-				/>
+				<section>
+					<Form
+						details={order}
+						handleOrderUpdates={this.props.handleOrderUpdates}
+						inventory={this.props.inventory}
+					/>
+				</section>
 			</section>
 		)
 	}

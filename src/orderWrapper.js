@@ -127,15 +127,15 @@ class OrderWrapper extends Component {
 						path={match.url + "/create"}
 						render={props => {
 							return (
-								<div>
+								<section>
 									<h1>Create a New Order</h1>
 									<Form
-										details={{ Marketplace: "Poshmark" }}
+										details={{ Marketplace: this.props.source || "Poshmark" }}
 										inventory={this.props.inventory}
 										create={true}
 										handleOrderUpdates={this.props.handleUpdate}
 									/>
-								</div>
+								</section>
 							)
 						}}
 					/>

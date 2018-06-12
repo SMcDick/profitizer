@@ -1,10 +1,44 @@
 import React, { Component } from "react"
-import { BrowserRouter as Router, Route, NavLink } from "react-router-dom"
+import { BrowserRouter as Router, Switch, Route, NavLink, Link, Redirect } from "react-router-dom"
 import axios from "axios"
 import OrderWrapper from "./orderWrapper"
 import InventoryWrapper from "./inventoryWrapper"
 
 import { API_ROOT } from "./config"
+
+const Home = () => {
+	return (
+		<section>
+			<div className="padBot20 flex-parent__center-both">
+				<Link to="/orders/create" className="btn">
+					Create an Order
+				</Link>
+			</div>
+			<div className="padBot20 flex-parent__center-both">
+				<Link to="/orders?filter={incomplete:true}" className="btn">
+					View Incomplete Orders
+				</Link>
+			</div>
+			<div className="padBot20 flex-parent__center-both">
+				<Link to="/inventory" className="btn">
+					View Inventory
+				</Link>
+			</div>
+			<div className="padBot20 flex-parent__center-both">
+				<Link to="/inventory/create" className="btn">
+					Add Inventory Item
+				</Link>
+			</div>
+		</section>
+	)
+}
+const NotFound = () => {
+	return (
+		<section>
+			<h1>Page not found</h1>
+		</section>
+	)
+}
 
 class App extends Component {
 	constructor(props) {
@@ -33,31 +67,62 @@ class App extends Component {
 				<div className="App width-wrapper">
 					<ul className="flex-parent nav">
 						<li className="flex-child nav__item">
+							<NavLink exact to="/">
+								Home
+							</NavLink>
+						</li>
+						<li className="flex-child nav__item">
 							<NavLink to="/inventory">Inventory</NavLink>
 						</li>
 						<li className="flex-child nav__item">
 							<NavLink to="/orders">Orders</NavLink>
 						</li>
 					</ul>
-					<Route
-						path="/inventory"
-						render={props => {
-							return <InventoryWrapper {...props} handleUpdate={handleUpdate} inventory={inventory} />
-						}}
-					/>
-					<Route
-						path="/orders"
-						render={props => {
-							return (
-								<OrderWrapper
-									{...props}
-									handleUpdate={handleUpdate}
-									orders={orders}
-									inventory={inventory}
-								/>
-							)
-						}}
-					/>
+					<Switch>
+						<Route path="/" exact component={Home} />
+						<Route
+							path="/inventory"
+							render={props => {
+								return (
+									<InventoryWrapper
+										{...props}
+										handleUpdate={handleUpdate}
+										inventory={inventory}
+										source={this.source}
+									/>
+								)
+							}}
+						/>
+						<Route
+							path="/orders"
+							render={props => {
+								return (
+									<OrderWrapper
+										{...props}
+										handleUpdate={handleUpdate}
+										orders={orders}
+										inventory={inventory}
+										source={this.source}
+									/>
+								)
+							}}
+						/>
+						<Route
+							path="/ebay"
+							render={() => {
+								this.source = "eBay"
+								return <Redirect to="/" />
+							}}
+						/>
+						<Route
+							path="/poshmark"
+							render={() => {
+								this.source = "Poshmark"
+								return <Redirect to="/" />
+							}}
+						/>
+						<Route path="/*" component={NotFound} />
+					</Switch>
 				</div>
 			</Router>
 		)

@@ -59,7 +59,7 @@ class Orders extends Component {
 									<span className={order.Completed ? "icon--check" : "icon--bang"} />
 								</span>
 								<span className="item__detail item__detail--desc">{order.Description}</span>
-								<span className="item__detail item__detail--minor">
+								<span className="item__detail item__detail--minor" title={order.Platform_Order_Id}>
 									{order.Platform_Order_Id.substr(0, 6)}
 								</span>
 								<span className="item__detail item__detail--minor">
