@@ -129,10 +129,11 @@ class OrderForm extends Component {
 			{ name: "Transaction_Fee" },
 			{ name: "Marketplace_Fee" },
 			{ name: "Shipping" },
+			{ name: "Tax_County", type: "text" },
 			{ name: "Tax_Pct", label: "Tax %" },
-			{ name: "Tax_Collected", label: "Tax Collected" },
+			{ name: "Tax_Collected" },
 			{ name: "Tax_Calculated_Temp", label: "Old Taxes" },
-			{ name: "Tax_Calculated_Calc", label: "Estimated Taxes" },
+			{ name: "Tax_Calculated_Calc", label: "Estimated Taxes", readonly: true },
 			{ name: "Order_Id", readonly: true, type: "text" },
 			{ name: "Completed", type: "checkbox" }
 		]

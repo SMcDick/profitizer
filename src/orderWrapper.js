@@ -102,7 +102,7 @@ class OrderWrapper extends Component {
 			})
 		}
 		if (filters.taxes === "true") {
-			activeOrders = activeOrders.filter(order => order.Tax_Calculated_Temp > 0)
+			activeOrders = activeOrders.filter(order => order.Tax_Calculated_Calc > 0 || order.Tax_Calculated_Temp > 0)
 		}
 		if (filters.refunds === "true") {
 			activeOrders = activeOrders.filter(order => order.Refund_Transaction || order.Refunded)

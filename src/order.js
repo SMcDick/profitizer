@@ -3,6 +3,7 @@ import propTypes from "prop-types"
 import Form from "./form"
 import axios from "axios"
 
+import util from "./utils"
 import { API_ROOT } from "./config"
 
 class Order extends Component {
@@ -25,10 +26,20 @@ class Order extends Component {
 		} else if (!order.hasOwnProperty("Order_Id")) {
 			return <div>{"Order not found. Figure our some way to make a new request or if order doesn't exist."}</div>
 		}
+		// TODO come back to this later
+		let profitDisplay = order.Profit_calc
+		// if (!order.Completed) {
+		// 	profitDisplay =
+		// 		parseFloat(order.Total_Sold_Price, 10) -
+		// 		parseFloat(order.Transaction_Fee, 10) -
+		// 		parseFloat(order.Marketplace_Fee, 10) -
+		// 		parseFloat(order.Shipping, 10)
+		// }
+		profitDisplay = util.formatMoney(profitDisplay)
 		return (
 			<section>
 				<h1>
-					Order#: {order.Order_Id} &bull; <span className="positive-text">${order.Profit_calc}</span>
+					Order#: {order.Order_Id} &bull; <span className="positive-text">{profitDisplay}</span>
 				</h1>
 				<a href="#" onClick={this.props.history.goBack}>
 					Back

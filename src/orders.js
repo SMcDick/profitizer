@@ -47,8 +47,8 @@ class Orders extends Component {
 					<div className="item__row item__row--header">
 						<span className="item__detail item__detail--icon item__detail--minor" />
 						<span className="item__detail item__detail--desc">Description</span>
-						<span className="item__detail item__detail--minor">Cost</span>
-						<span className="item__detail item__detail--minor">Fees</span>
+						<span className="item__detail item__detail--minor">Id</span>
+						<span className="item__detail item__detail--minor">Sale</span>
 						<span className="item__detail">Profit</span>
 						<span className="item__detail item__detail--date">Sold Date</span>
 					</div>
@@ -60,10 +60,10 @@ class Orders extends Component {
 								</span>
 								<span className="item__detail item__detail--desc">{order.Description}</span>
 								<span className="item__detail item__detail--minor">
-									${order.Total_Cost_calc.toFixed(2)}
+									{order.Platform_Order_Id.substr(0, 6)}
 								</span>
 								<span className="item__detail item__detail--minor">
-									${(order.Marketplace_Fee + order.Transaction_Fee + order.Shipping).toFixed(2)}
+									{util.formatMoney(order.Total_Sold_Price)}
 								</span>
 								<span className="item__detail">${order.Profit_calc.toFixed(2)}</span>
 								<span className="item__detail item__detail--date">
