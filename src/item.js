@@ -35,58 +35,65 @@ class Item extends Component {
 		}
 		totals.overallProfit = totals.return - item.Total_Cost
 		totals.averagePerItem = totals.realizedProfit / item.Num_Sold
+		const saleAvailable = item.Num_Sold > 0
 		return (
 			<section>
-				<h1>Item#: {this.state.item.Item_Id}</h1>
-				<a href="#" onClick={this.props.history.goBack}>
-					Back
-				</a>
-				<Form details={this.state.item} />
-
-				<div className="item-wrapper item__grid">
-					<div className="item__row item__row--header">
-						<span className="item__detail item__detail--date">Cost</span>
-						<span className="item__detail item__detail--date">Sales</span>
-						<span className="item__detail item__detail--date">Return</span>
-						<span className="item__detail item__detail--date">Realized Profit</span>
-						<span className="item__detail item__detail--date">Overall Profit</span>
-						<span className="item__detail item__detail--date">Avg Profit per Item Sold</span>
+				<h1>
+					Item#: {item.Item_Id} &bull; {item.Item} &bull;
+					<span className="negative-text">{util.formatMoney(item.Final_Cost)}</span>/each
+				</h1>
+				<Link to="/inventory">Back</Link>
+				<Form details={item} />
+				<br />
+				{!saleAvailable && (
+					<div className="item-wrapper">
+						<strong>Total Cost: {util.formatMoney(item.Total_Cost)}</strong>
 					</div>
-					<div className="item__row item__row--header">
-						<span className="item__detail item__detail--date">{util.formatMoney(item.Total_Cost)}</span>
-						<span className="item__detail positive-text item__detail--date">
-							{util.formatMoney(totals.sales)}
-						</span>
-						<span className="item__detail item__detail--date">{util.formatMoney(totals.return)}</span>
-						<span className="item__detail positive-text item__detail--date">
-							{util.formatMoney(totals.realizedProfit)}
-						</span>
-						<span className="item__detail positive-text item__detail--date">
-							{util.formatMoney(totals.overallProfit)}
-						</span>
-						<span className="item__detail positive-text item__detail--date">
-							{util.formatMoney(totals.averagePerItem)}
-						</span>
+				)}
+				{saleAvailable && (
+					<div className="item-wrapper item__grid">
+						<div className="item__row item__row--header profits-for-item">
+							<span className="item__detail">Total Cost</span>
+							<span className="item__detail">Sales</span>
+							<span className="item__detail">Return</span>
+							<span className="item__detail">Realized Profit</span>
+							<span className="item__detail">Overall Profit</span>
+							<span className="item__detail">Avg Profit per Item Sold</span>
+						</div>
+						<div className="item__row item__row--header profits-for-item">
+							<span className="item__detail">{util.formatMoney(item.Total_Cost)}</span>
+							<span className="item__detail positive-text">{util.formatMoney(totals.sales)}</span>
+							<span className="item__detail item__detail--date">{util.formatMoney(totals.return)}</span>
+							<span className="item__detail positive-text">
+								{util.formatMoney(totals.realizedProfit)}
+							</span>
+							<span className="item__detail positive-text">{util.formatMoney(totals.overallProfit)}</span>
+							<span className="item__detail positive-text">
+								{util.formatMoney(totals.averagePerItem)}
+							</span>
+						</div>
 					</div>
-				</div>
-				<div className="item-wrapper item__grid">
-					<div className="item__row item__row--header">
-						<span className="item__detail">Order Id</span>
-						<span className="item__detail">Profit</span>
-						<span className="item__detail item__detail--date">Sold Date</span>
-						<span className="item__detail item__detail--desc">Description</span>
+				)}
+				{saleAvailable && (
+					<div className="item-wrapper item__grid">
+						<div className="item__row item__row--header">
+							<span className="item__detail">Order Id</span>
+							<span className="item__detail">Profit</span>
+							<span className="item__detail item__detail--date">Sold Date</span>
+							<span className="item__detail item__detail--desc">Description</span>
+						</div>
+						{this.state.item.sales.map(sale => {
+							return (
+								<Link to={"/orders/" + sale.Order_Id} key={sale.Order_Id} className="item__row">
+									<span className="item__detail">#{sale.Order_Id}</span>
+									<span className="item__detail">${sale.Profit_calc.toFixed(2)}</span>
+									<span className="item__detail item__detail--date">{sale.Sold_Date}</span>
+									<span className="item__detail item__detail--desc">{sale.Description}</span>
+								</Link>
+							)
+						})}
 					</div>
-					{this.state.item.sales.map(sale => {
-						return (
-							<Link to={"/orders/" + sale.Order_Id} key={sale.Order_Id} className="item__row">
-								<span className="item__detail">#{sale.Order_Id}</span>
-								<span className="item__detail">${sale.Profit_calc.toFixed(2)}</span>
-								<span className="item__detail item__detail--date">{sale.Sold_Date}</span>
-								<span className="item__detail item__detail--desc">{sale.Description}</span>
-							</Link>
-						)
-					})}
-				</div>
+				)}
 			</section>
 		)
 	}

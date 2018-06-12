@@ -138,6 +138,9 @@ em {
 .positive-text {
   color: #3FC380; }
 
+.negative-text {
+  color: #F18467; }
+
 .pad10 {
   padding: 10px; }
 
@@ -1218,6 +1221,10 @@ em {
     @media (min-width: 600px) {
       .item__detail--minor {
         display: block; } }
+  .profits-for-item .item__detail {
+    flex: 0 0 16.6667%;
+    box-sizing: border-box;
+    text-align: left; }
 
 .react-select-override.Select--multi .Select-value {
   display: flex; }

@@ -95,9 +95,11 @@ class InventoryForm extends Component {
 			return <Redirect exact={true} to="/inventory" />
 		}
 		return (
-			<form onSubmit={this.handleSubmit}>
+			<form onSubmit={this.handleSubmit} className="order-form">
 				{InventoryForm.createFields().map(field => this.renderInput(field))}
-				<input type="submit" value="Submit" className="btn" />
+				<div className="btn-container flex-child__100 pad10">
+					<input type="submit" value="Submit" className="btn" />
+				</div>
 			</form>
 		)
 	}
