@@ -4,7 +4,7 @@ import { Route, Switch } from "react-router-dom"
 import Orders from "./orders"
 import Order from "./order"
 import Form from "./form"
-import OrderFilter from "./orderFilter"
+import Filter from "./orderFilter"
 
 import util from "./utils"
 
@@ -67,9 +67,9 @@ class OrderWrapper extends Component {
 						path={match.url}
 						render={props => {
 							return (
-								<OrderFilter filters={filters} search={search} orders={orders}>
+								<Filter filters={filters} search={search} items={orders}>
 									<Orders {...props} handleSearch={this.handleSearch} />
-								</OrderFilter>
+								</Filter>
 							)
 						}}
 					/>

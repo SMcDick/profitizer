@@ -10,7 +10,8 @@ import util from "./utils"
 
 class Orders extends Component {
 	render() {
-		const { orders } = this.props
+		const { items } = this.props
+		const orders = items
 		let totals = {
 			sales: util.formatMoney(util.totaler(orders, "Total_Sold_Price")),
 			return: util.formatMoney(util.totaler(orders, "Return_calc")),
@@ -79,7 +80,7 @@ class Orders extends Component {
 	}
 }
 Orders.propTypes = {
-	orders: propTypes.array,
+	items: propTypes.array,
 	pager: propTypes.element,
 	children: propTypes.element,
 	handleSearch: propTypes.func
