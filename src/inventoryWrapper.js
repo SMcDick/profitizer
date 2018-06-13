@@ -15,6 +15,10 @@ class InventoryWrapper extends Component {
 			filters: {},
 			search: ""
 		}
+		this.debounceSearch = util.debounce(this.debounceSearch, 250)
+	}
+	debounceSearch(val) {
+		this.setState(val)
 	}
 	static getDerivedStateFromProps(props) {
 		let query = util.queryParams(props.location.search)
@@ -27,8 +31,8 @@ class InventoryWrapper extends Component {
 	handleSearch = e => {
 		e.preventDefault()
 		const target = e.target
-		const value = target.value
-		this.setState({ search: value })
+		const search = target.value
+		this.debounceSearch({ search })
 	}
 	render() {
 		console.log("inventory wrapper rendered")

@@ -19,6 +19,10 @@ class OrderWrapper extends Component {
 			search: ""
 		}
 		this.handleOrderUpdates = this.handleOrderUpdates.bind(this)
+		this.debounceSearch = util.debounce(this.debounceSearch, 250)
+	}
+	debounceSearch(val) {
+		this.setState(val)
 	}
 	static getDerivedStateFromProps(props) {
 		let query = util.queryParams(props.location.search)
@@ -48,8 +52,8 @@ class OrderWrapper extends Component {
 	handleSearch = e => {
 		e.preventDefault()
 		const target = e.target
-		const value = target.value
-		this.setState({ search: value })
+		const search = target.value
+		this.debounceSearch({ search })
 	}
 	componentWillUnmount() {
 		console.log("order wrapper unmounted")
