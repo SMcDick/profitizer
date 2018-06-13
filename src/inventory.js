@@ -6,7 +6,8 @@ import Input from "./input"
 
 class Inventory extends Component {
 	render() {
-		const { inventory, handleSearch } = this.props
+		const { handleSearch, items } = this.props
+		const inventory = items
 		return (
 			<section>
 				<h1>Inventory</h1>
@@ -38,8 +39,7 @@ class Inventory extends Component {
 	}
 }
 Inventory.propTypes = {
-	inventory: propTypes.array,
-	pager: propTypes.element,
+	items: propTypes.array,
 	handleSearch: propTypes.func
 }
 

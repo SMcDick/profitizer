@@ -5,47 +5,20 @@ import Inventory from "./inventory"
 import Item from "./item"
 import Form from "./inventoryForm"
 
-import util from "./utils"
+import Filter from "./filter"
+
+// import util from "./utils"
 
 class InventoryWrapper extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			query: util.queryParams(props.location.search),
-			filters: {},
-			search: ""
-		}
-		this.debounceSearch = util.debounce(this.debounceSearch, 250)
 	}
-	debounceSearch(val) {
-		this.setState(val)
-	}
-	static getDerivedStateFromProps(props) {
-		let query = util.queryParams(props.location.search)
-		return { query: query, filters: query.filters ? query.filters : {} }
-	}
-
 	componentWillUnmount() {
 		console.log("inventory wrapper unmounted")
 	}
-	handleSearch = e => {
-		e.preventDefault()
-		const target = e.target
-		const search = target.value
-		this.debounceSearch({ search })
-	}
 	render() {
 		console.log("inventory wrapper rendered")
-
-		let activeInventory = this.props.inventory
-		const { filters, search } = this.state
-		const { match } = this.props
-		if (filters.remaining === "true") {
-			activeInventory = activeInventory.filter(inventory => inventory.Remaining > 0)
-		}
-		if (search.length) {
-			activeInventory = activeInventory.filter(item => item.Item.toLowerCase().indexOf(search.toLowerCase()) > -1)
-		}
+		const { match, inventory } = this.props
 		return (
 			<div>
 				<Switch>
@@ -53,7 +26,11 @@ class InventoryWrapper extends Component {
 						exact
 						path={match.url}
 						render={props => {
-							return <Inventory inventory={activeInventory} {...props} handleSearch={this.handleSearch} />
+							return (
+								<Filter {...props} items={inventory}>
+									<Inventory {...props} />
+								</Filter>
+							)
 						}}
 					/>
 					<Route
@@ -80,7 +57,7 @@ class InventoryWrapper extends Component {
 					<Route
 						path={match.url + "/:id"}
 						render={props => {
-							return <Item inventory={this.props.inventory} {...props} />
+							return <Item inventory={inventory} {...props} />
 						}}
 					/>
 				</Switch>

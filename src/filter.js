@@ -27,6 +27,10 @@ class Filter extends Component {
 		const { filters, search } = this.state
 		const { items } = this.props
 		let activeItems = items
+
+		/*****************/
+		/* Order Filters */
+		/*****************/
 		if (filters.incomplete === "true") {
 			activeItems = activeItems.filter(item => item.Completed === 0)
 		}
@@ -75,8 +79,22 @@ class Filter extends Component {
 		if (filters.refunds === "true") {
 			activeItems = activeItems.filter(item => item.Refund_Transaction || item.Refunded)
 		}
+
+		/*********************/
+		/* Inventory Filters */
+		/*********************/
+		if (filters.remaining === "true") {
+			activeItems = activeItems.filter(item => item.Remaining > 0)
+		}
+
+		/**********/
+		/* Search */
+		/**********/
 		if (search.length) {
-			activeItems = activeItems.filter(item => item.Description.toLowerCase().indexOf(search.toLowerCase()) > -1)
+			activeItems = activeItems.filter(item => {
+				let stringToSearch = item.Item ? item.Item : item.Description
+				return stringToSearch.toLowerCase().indexOf(search.toLowerCase()) > -1
+			})
 		}
 		return activeItems
 	}
