@@ -2,15 +2,30 @@ import React, { Component, Children } from "react"
 import PropType from "prop-types"
 import Moment from "moment"
 
+import util from "./utils"
+
 class Filter extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			activeItems: props.items
+			query: util.queryParams(props.location.search),
+			filters: {},
+			search: ""
 		}
+		this.debounceSearch = util.debounce(this.debounceSearch, 250)
 	}
-	static getDerivedStateFromProps(props) {
-		const { filters, search, items } = props
+	debounceSearch(search) {
+		this.setState({ search })
+	}
+	handleSearch = e => {
+		e.preventDefault()
+		const target = e.target
+		const search = target.value
+		this.debounceSearch(search)
+	}
+	processFilters() {
+		const { filters, search } = this.state
+		const { items } = this.props
 		let activeItems = items
 		if (filters.incomplete === "true") {
 			activeItems = activeItems.filter(item => item.Completed === 0)
@@ -63,12 +78,20 @@ class Filter extends Component {
 		if (search.length) {
 			activeItems = activeItems.filter(item => item.Description.toLowerCase().indexOf(search.toLowerCase()) > -1)
 		}
-		return { activeItems }
+		return activeItems
+	}
+	static getDerivedStateFromProps(props) {
+		let query = util.queryParams(props.location.search)
+		let filters = query.filters ? query.filters : {}
+		return { filters, query }
 	}
 
 	renderChildren() {
 		return Children.map(this.props.children, child => {
-			return React.cloneElement(child, { items: this.state.activeItems })
+			return React.cloneElement(child, {
+				items: this.processFilters(),
+				handleSearch: this.handleSearch
+			})
 		})
 	}
 	render() {
@@ -79,7 +102,8 @@ Filter.propTypes = {
 	children: PropType.element,
 	filters: PropType.object,
 	search: PropType.string,
-	items: PropType.array
+	items: PropType.array,
+	location: PropType.object
 }
 
 export default Filter

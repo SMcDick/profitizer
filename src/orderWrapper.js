@@ -11,54 +11,14 @@ import util from "./utils"
 class OrderWrapper extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			query: util.queryParams(props.location.search),
-			filters: {},
-			search: ""
-		}
 		this.handleOrderUpdates = this.handleOrderUpdates.bind(this)
-		this.debounceSearch = util.debounce(this.debounceSearch, 250)
 	}
-	debounceSearch(val) {
-		this.setState(val)
-	}
-	static getDerivedStateFromProps(props) {
-		let query = util.queryParams(props.location.search)
-		return { query: query, filters: query.filters ? query.filters : {} }
-	}
-	handleOrderUpdates(val) {
-		// this.setState(prevState => {
-		// 	let orders = [...prevState.orders]
-		// 	let current = orders.find(order => order.Order_Id === val.Order_Id)
-		// 	if (current) {
-		// 		if (val.Completed) {
-		// 			orders.splice(orders.indexOf(current), 1)
-		// 		} else {
-		// 			Object.assign(current, val)
-		// 		}
-		// 	} else {
-		// 		if (!val.Completed) {
-		// 			orders.unshift(val)
-		// 		}
-		// 	}
-		// 	orders.sort((a, b) => {
-		// 		return a.Date_Sold - b.Date_Sold
-		// 	})
-		// 	return { orders: orders }
-		// })
-	}
-	handleSearch = e => {
-		e.preventDefault()
-		const target = e.target
-		const search = target.value
-		this.debounceSearch({ search })
-	}
+	handleOrderUpdates(val) {}
 	componentWillUnmount() {
 		// console.log("order wrapper unmounted")
 	}
 	render() {
 		const { match, orders, inventory, source } = this.props
-		const { filters, search } = this.state
 		return (
 			<div>
 				<Switch>
@@ -67,8 +27,8 @@ class OrderWrapper extends Component {
 						path={match.url}
 						render={props => {
 							return (
-								<Filter filters={filters} search={search} items={orders}>
-									<Orders {...props} handleSearch={this.handleSearch} />
+								<Filter {...props} items={orders}>
+									<Orders {...props} />
 								</Filter>
 							)
 						}}
