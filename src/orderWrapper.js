@@ -1,12 +1,11 @@
 import React, { Component } from "react"
 import PropType from "prop-types"
 import { Route, Switch } from "react-router-dom"
+
 import Orders from "./orders"
 import Order from "./order"
 import Form from "./form"
-import Filter from "./orderFilter"
-
-import util from "./utils"
+import Filter from "./filter"
 
 class OrderWrapper extends Component {
 	constructor(props) {
