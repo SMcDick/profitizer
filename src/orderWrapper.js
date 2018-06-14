@@ -44,7 +44,8 @@ class OrderWrapper extends Component {
 										details={{ Marketplace: source || "Poshmark" }}
 										inventory={inventory}
 										create={true}
-										handleOrderUpdates={this.props.handleUpdate}
+										handleUpdates={this.props.handleUpdate}
+										orders={orders}
 									/>
 								</section>
 							)
@@ -58,7 +59,7 @@ class OrderWrapper extends Component {
 									{...props}
 									orders={orders}
 									inventory={inventory}
-									handleOrderUpdates={this.handleOrderUpdates}
+									handleUpdates={this.handleOrderUpdates}
 								/>
 							)
 						}}

@@ -21,6 +21,7 @@ class Order extends Component {
 	}
 	render() {
 		const { order } = this.state
+		const { orders } = this.props
 		if (this.state.loading) {
 			return <div>Loading...</div>
 		} else if (!order.hasOwnProperty("Order_Id")) {
@@ -49,6 +50,7 @@ class Order extends Component {
 						details={order}
 						handleOrderUpdates={this.props.handleOrderUpdates}
 						inventory={this.props.inventory}
+						orders={orders}
 					/>
 				</section>
 			</section>

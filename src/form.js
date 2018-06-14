@@ -88,8 +88,18 @@ class OrderForm extends Component {
 		details.Total_Cost_calc = cost
 		this.setState({ details })
 	}
+	handleUpdate = val => {
+		let orders = [...this.props.orders]
+		let current = orders.find(item => item.Order_Id === val.Order_Id)
+		if (current) {
+			current = val
+		} else {
+			orders = [val, ...orders]
+		}
+		this.props.handleUpdates({ orders })
+	}
 	handleSubmit(e) {
-		const { create, details, handleOrderUpdates } = this.props
+		const { create, details } = this.props
 		e.preventDefault()
 		let url = API_ROOT + "sale/" + details.Order_Id
 		let method = "put"
@@ -112,7 +122,7 @@ class OrderForm extends Component {
 				if (create) {
 					data = data.sale
 				}
-				handleOrderUpdates(data)
+				this.handleUpdate(data)
 				this.setState({ redirect: true })
 			})
 			.catch(e => {
@@ -345,12 +355,10 @@ class OrderForm extends Component {
 }
 OrderForm.propTypes = {
 	details: propType.object,
-	edit: propType.bool,
-	isCompleted: propType.bool,
-	handleCompleted: propType.func,
 	create: propType.bool,
-	handleOrderUpdates: propType.func,
-	inventory: propType.array
+	handleUpdates: propType.func,
+	inventory: propType.array,
+	orders: propType.array
 }
 
 export default OrderForm
