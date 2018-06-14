@@ -1,0 +1,18 @@
+Commands to run
+
+cd /home/protected/node-mysql && git pull --rebase
+rm -rf ./pubilc/static
+
+then
+
+cd ../profitizer && git pull --rebase
+
+then
+
+npm run build
+
+then
+
+cp -r /home/protected/profitizer/. /home/protected/node-mysql/public/
+
+npm run migrate && node index.js
