@@ -3,8 +3,8 @@ let backendHost
 
 const hostname = window && window.location && window.location.hostname
 
-if (hostname === "profitizer.nfshost.com") {
-	backendHost = "https://profitizer.nfshost.com"
+if (hostname === "profiteer.nfshost.com") {
+	backendHost = "https://profiteer.nfshost.com"
 } else if (hostname === "staging.realsite.com") {
 	backendHost = "https://staging.api.realsite.com"
 } else if (/^qa/.test(hostname)) {
