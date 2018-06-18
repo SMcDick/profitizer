@@ -11,7 +11,16 @@ import util from "./utils"
 class Orders extends Component {
 	render() {
 		const { items } = this.props
-		const orders = items
+		let orders = items
+
+		/***********/
+		/* Sorting */
+		/***********/
+		orders = util.sortBy(orders, "Order_Id", [{ name: "Sold_Date", desc: true }])
+
+		/**********/
+		/* Totals */
+		/**********/
 		let totals = {
 			sales: util.formatMoney(util.totaler(orders, "Total_Sold_Price")),
 			return: util.formatMoney(util.totaler(orders, "Return_calc")),

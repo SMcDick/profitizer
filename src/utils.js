@@ -57,6 +57,33 @@ const util = {
 				func.apply(context, args)
 			}
 		}
+	},
+	sortBy(collection, id, sorts) {
+		return collection.sort((a, b) => {
+			let sortsLength = sorts.length
+			let ret = 0
+			for (let i = 0; i < sortsLength; i++) {
+				let item = sorts[i]
+				let aVal = a[item.name]
+				let bVal = b[item.name]
+				if (aVal < bVal) {
+					ret = item.desc ? 1 : -1
+					break
+				} else if (aVal > bVal) {
+					ret = item.desc ? -1 : 1
+					break
+				} else {
+					if (sorts[sortsLength - 1].name !== id) {
+						if (a[id] < b[id]) {
+							ret = 1
+						} else if (a[id] > b[id]) {
+							ret = -1
+						}
+					}
+				}
+			}
+			return ret
+		})
 	}
 }
 
