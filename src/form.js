@@ -14,6 +14,7 @@ class OrderForm extends Component {
 
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+		this.handleUpdate = this.handleUpdate.bind(this)
 
 		this.state = {
 			details: {},
@@ -92,11 +93,11 @@ class OrderForm extends Component {
 		let orders = [...this.props.orders]
 		let current = orders.find(item => item.Order_Id === val.Order_Id)
 		if (current) {
-			current = val
+			orders[orders.indexOf(current)] = val
 		} else {
 			orders = [val, ...orders]
 		}
-		this.props.handleUpdates({ orders })
+		this.props.handleUpdate({ orders })
 	}
 	handleSubmit(e) {
 		const { create, details } = this.props
@@ -126,7 +127,8 @@ class OrderForm extends Component {
 				this.setState({ redirect: true })
 			})
 			.catch(e => {
-				alert(e.response.data.body)
+				let resp = e.response.data ? e.response.data.body : e.response
+				alert(resp)
 			})
 	}
 	static createFields() {
@@ -356,7 +358,7 @@ class OrderForm extends Component {
 OrderForm.propTypes = {
 	details: propType.object,
 	create: propType.bool,
-	handleUpdates: propType.func,
+	handleUpdate: propType.func,
 	inventory: propType.array,
 	orders: propType.array
 }

@@ -48,7 +48,7 @@ class Order extends Component {
 				<section>
 					<Form
 						details={order}
-						handleOrderUpdates={this.props.handleOrderUpdates}
+						handleUpdate={this.props.handleUpdate}
 						inventory={this.props.inventory}
 						orders={orders}
 					/>
@@ -63,7 +63,7 @@ Order.propTypes = {
 	match: propTypes.object,
 	history: propTypes.object,
 	orders: propTypes.array,
-	handleOrderUpdates: propTypes.func,
+	handleUpdate: propTypes.func,
 	inventory: propTypes.array
 }
 

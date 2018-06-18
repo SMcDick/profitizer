@@ -10,14 +10,12 @@ import Filter from "./filter"
 class OrderWrapper extends Component {
 	constructor(props) {
 		super(props)
-		this.handleOrderUpdates = this.handleOrderUpdates.bind(this)
 	}
-	handleOrderUpdates(val) {}
 	componentWillUnmount() {
 		// console.log("order wrapper unmounted")
 	}
 	render() {
-		const { match, orders, inventory, source } = this.props
+		const { match, orders, inventory, source, handleUpdate } = this.props
 		return (
 			<div>
 				<Switch>
@@ -44,7 +42,7 @@ class OrderWrapper extends Component {
 										details={{ Marketplace: source || "Poshmark" }}
 										inventory={inventory}
 										create={true}
-										handleUpdates={this.props.handleUpdate}
+										handleUpdate={handleUpdate}
 										orders={orders}
 									/>
 								</section>
@@ -55,12 +53,7 @@ class OrderWrapper extends Component {
 						path={match.url + "/:id"}
 						render={props => {
 							return (
-								<Order
-									{...props}
-									orders={orders}
-									inventory={inventory}
-									handleUpdates={this.handleOrderUpdates}
-								/>
+								<Order {...props} orders={orders} inventory={inventory} handleUpdate={handleUpdate} />
 							)
 						}}
 					/>
