@@ -50,6 +50,9 @@ class App extends Component {
 		this.handleUpdate = val => this.setState(val)
 	}
 	componentDidMount() {
+		this.fetchData()
+	}
+	fetchData = () => {
 		axios.all([axios.get(API_ROOT + "sales/all"), axios.get(API_ROOT + "inventory/all")]).then(
 			axios.spread((sales, inventory) => {
 				this.setState({
@@ -58,6 +61,10 @@ class App extends Component {
 				})
 			})
 		)
+	}
+	refreshData = e => {
+		e.preventDefault()
+		this.fetchData()
 	}
 	render() {
 		const { inventory, orders } = this.state
@@ -76,6 +83,11 @@ class App extends Component {
 						</li>
 						<li className="flex-child nav__item">
 							<NavLink to="/orders">Orders</NavLink>
+						</li>
+						<li className="flex-child nav__item">
+							<a href="/" onClick={this.refreshData}>
+								Refresh
+							</a>
 						</li>
 					</ul>
 					<Switch>
