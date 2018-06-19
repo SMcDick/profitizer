@@ -34,7 +34,8 @@ class InventoryForm extends Component {
 		const { create, details } = this.props
 		e.preventDefault()
 		let url = API_ROOT + "item/" + details.Item_Id
-		let method = "put"
+		// let method = "put"
+		let method = "post"
 		if (create) {
 			url = API_ROOT + "createItem"
 			method = "post"
