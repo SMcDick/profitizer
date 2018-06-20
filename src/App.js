@@ -33,6 +33,13 @@ const Home = () => {
 		</section>
 	)
 }
+const Loading = () => {
+	return (
+		<section>
+			<h1>The app is still loading...</h1>
+		</section>
+	)
+}
 const NotFound = () => {
 	return (
 		<section>
@@ -46,7 +53,8 @@ class App extends Component {
 		super(props)
 		this.state = {
 			inventory: [],
-			orders: []
+			orders: [],
+			loading: true
 		}
 		this.handleUpdate = val => this.setState(val)
 	}
@@ -58,17 +66,18 @@ class App extends Component {
 			axios.spread((sales, inventory) => {
 				this.setState({
 					orders: sales.data.data,
-					inventory: inventory.data.data
+					inventory: inventory.data.data,
+					loading: false
 				})
 			})
 		)
 	}
 	refreshData = e => {
 		e.preventDefault()
-		this.fetchData()
+		this.setState({ loading: true }, this.fetchData())
 	}
 	render() {
-		const { inventory, orders } = this.state
+		const { inventory, orders, loading } = this.state
 		const { handleUpdate } = this
 		return (
 			<Router>
@@ -95,6 +104,7 @@ class App extends Component {
 						</li>
 					</ul>
 					<Switch>
+						{loading && <Route path="/" component={Loading} />}
 						<Route path="/" exact component={Home} />
 						<Route
 							path="/inventory"
