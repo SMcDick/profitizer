@@ -72,7 +72,7 @@ class Taxes extends Component {
 						<span className="item__detail">Taxable Amount</span>
 						<span className="item__detail">Tax Collected</span>
 						<span className="item__detail">Estimated Tax Due</span>
-						<span className="item__detail item__detail--left">Orders</span>
+						<span className="item__detail">Orders</span>
 					</div>
 					{totals.length > 0 &&
 						totals.map(county => {
