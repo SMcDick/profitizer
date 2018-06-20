@@ -1230,6 +1230,8 @@ em {
         display: block; } }
   .item__detail--left {
     text-align: left; }
+  .item__detail--full {
+    flex: 1 1 100%; }
   .profits-for-item .item__detail {
     flex: 0 0 16.6667%;
     text-align: left; }

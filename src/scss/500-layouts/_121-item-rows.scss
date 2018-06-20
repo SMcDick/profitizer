@@ -66,6 +66,9 @@
 	&--left {
 		text-align: left;
 	}
+	&--full {
+		flex: 1 1 100%;
+	}
 	.profits-for-item & {
 		flex: 0 0 16.6667%;
 		text-align: left;

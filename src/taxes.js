@@ -3,6 +3,7 @@ import PropType from "prop-types"
 import Moment from "moment"
 import { NavLink, Link, Redirect } from "react-router-dom"
 
+import { Grid, GridRow, GridHeader, GridItem } from "./grid"
 import Util from "./utils"
 
 class Taxes extends Component {
@@ -66,36 +67,39 @@ class Taxes extends Component {
 						Two Months Ago
 					</NavLink>
 				</div>
-				<div className="item__grid">
-					<div className="item__row item__row--header col-5">
-						<span className="item__detail">County</span>
-						<span className="item__detail">Taxable Amount</span>
-						<span className="item__detail">Tax Collected</span>
-						<span className="item__detail">Estimated Tax Due</span>
-						<span className="item__detail">Orders</span>
-					</div>
-					{totals.length > 0 &&
-						totals.map(county => {
-							return (
-								<div className="item__row col-5" key={county.name}>
-									<span className="item__detail">{county.name}</span>
-									<span className="item__detail">{county.taxableAmount}</span>
-									<span className="item__detail">{county.collected}</span>
-									<span className="item__detail">{county.due}</span>
-									<span className="item__detail">
-										{county.orders.map(order => {
-											return (
-												<div key={order}>
-													<Link to={"/orders/" + order}>{order}</Link>
-												</div>
-											)
-										})}
-									</span>
-								</div>
-							)
-						})}
-					{totals.length === 0 && <div className="item__row">No sales tax due for this month</div>}
-				</div>
+				<Grid>
+					<GridHeader classes="col-5">
+						<GridItem>County</GridItem>
+						<GridItem>Taxable Amount</GridItem>
+						<GridItem>Tax Collected</GridItem>
+						<GridItem>Estimated Tax Due</GridItem>
+						<GridItem>Orders</GridItem>
+					</GridHeader>
+					{totals.map(county => {
+						return (
+							<GridRow classes="col-5" key={county.name}>
+								<GridItem>{county.name}</GridItem>
+								<GridItem>{county.taxableAmount}</GridItem>
+								<GridItem>{county.collected}</GridItem>
+								<GridItem>{county.due}</GridItem>
+								<GridItem>
+									{county.orders.map(order => {
+										return (
+											<div key={order}>
+												<Link to={"/orders/" + order}>{order}</Link>
+											</div>
+										)
+									})}
+								</GridItem>
+							</GridRow>
+						)
+					})}
+					{totals.length === 0 && (
+						<GridRow>
+							<GridItem classes="item__detail--full">No sales tax due for this month</GridItem>
+						</GridRow>
+					)}
+				</Grid>
 			</section>
 		)
 	}
