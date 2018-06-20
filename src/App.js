@@ -124,7 +124,7 @@ class App extends Component {
 							}}
 						/>
 						<Route
-							path="/taxes/:month"
+							path="/taxes/:month?"
 							render={props => {
 								return <Taxes {...props} orders={orders} />
 							}}
