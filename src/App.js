@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, NavLink, Link, Redirect } from 
 import axios from "axios"
 import OrderWrapper from "./orderWrapper"
 import InventoryWrapper from "./inventoryWrapper"
+import Taxes from "./taxes"
 
 import { API_ROOT } from "./config"
 
@@ -85,6 +86,9 @@ class App extends Component {
 							<NavLink to="/orders">Orders</NavLink>
 						</li>
 						<li className="flex-child nav__item">
+							<NavLink to="/taxes">Taxes</NavLink>
+						</li>
+						<li className="flex-child nav__item">
 							<a href="/" onClick={this.refreshData}>
 								Refresh
 							</a>
@@ -117,6 +121,12 @@ class App extends Component {
 										source={this.source}
 									/>
 								)
+							}}
+						/>
+						<Route
+							path="/taxes/:month"
+							render={props => {
+								return <Taxes {...props} orders={orders} />
 							}}
 						/>
 						<Route
