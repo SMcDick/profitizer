@@ -38,7 +38,7 @@ class InventoryWrapper extends Component {
 						path={match.url + "/create"}
 						render={props => {
 							return (
-								<div>
+								<section>
 									<h1>Create a New Inventory Item</h1>
 									<Form
 										details={{
@@ -50,7 +50,7 @@ class InventoryWrapper extends Component {
 										{...props}
 										create={true}
 									/>
-								</div>
+								</section>
 							)
 						}}
 					/>

@@ -56,8 +56,8 @@ class InventoryForm extends Component {
 	}
 	static createFields() {
 		return [
-			{ name: "Item_Id", label: "Item Id", readonly: true, type: "text" },
 			{ name: "Item", type: "text" },
+			{ name: "Item_Id", label: "Item Id", readonly: true, type: "text" },
 			{ name: "Quantity", int: true },
 			{ name: "Unit_Cost", label: "Unit Cost" },
 			{ name: "Tax" },
