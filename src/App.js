@@ -16,7 +16,7 @@ const Home = () => {
 				</Link>
 			</div>
 			<div className="padBot20 flex-parent__center-both">
-				<Link to="/orders?filter={incomplete:true}" className="btn">
+				<Link to="/orders?filters={incomplete:true}" className="btn">
 					View Incomplete Orders
 				</Link>
 			</div>
