@@ -55,6 +55,11 @@ class OrderForm extends Component {
 			}, 0)
 			state.Total_Cost_calc = totalCost
 		}
+		if (name === "Marketplace_Fee_Shipping" || name === "Marketplace_Fee_Base") {
+			let baseFee = Number(state.Marketplace_Fee_Base) || 0
+			let shipFee = Number(state.Marketplace_Fee_Shipping || 0)
+			state.Marketplace_Fee = shipFee + baseFee
+		}
 		this.setState({
 			details: state
 		})
@@ -116,6 +121,8 @@ class OrderForm extends Component {
 		delete saveDetails.Tax_Calculated_Calc
 		delete saveDetails.Tax_Calculated_Temp
 		delete saveDetails.Total_Cost_calc
+		delete saveDetails.Marketplace_Fee_Base
+		delete saveDetails.Marketplace_Fee_Shipping
 
 		axios[method](url, saveDetails)
 			.then(results => {
@@ -139,7 +146,9 @@ class OrderForm extends Component {
 			{ name: "Sold_Date", type: "date", required: true },
 			{ name: "Total_Sold_Price", required: true },
 			{ name: "Transaction_Fee" },
-			{ name: "Marketplace_Fee" },
+			{ name: "Marketplace_Fee_Shipping", label: "Shipping FVF" },
+			{ name: "Marketplace_Fee_Base", label: "Base FVF" },
+			{ name: "Marketplace_Fee", readonly: true },
 			{ name: "Shipping" },
 			{ name: "Tax_County", type: "text" },
 			{ name: "Tax_Pct", label: "Tax %" },
