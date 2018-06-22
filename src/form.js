@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import propType from "prop-types"
 import Input from "./input"
 import axios from "axios"
-import { Redirect } from "react-router-dom"
+import { Redirect, Link } from "react-router-dom"
 import SelectWrapper from "./select"
 
 import util from "./utils"
@@ -317,6 +317,13 @@ class OrderForm extends Component {
 			<form onSubmit={this.handleSubmit}>
 				{this.props.create && (
 					<div className="item-wrapper select-wrapper">
+						{this.createdItems.length === 0 && (
+							<div className="padBot20">
+								<Link className="btn" to="/inventory/create">
+									Add new item
+								</Link>
+							</div>
+						)}
 						<SelectWrapper
 							options={this.mapper(this.props.inventory)}
 							name="Items Sold"
