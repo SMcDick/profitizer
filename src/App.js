@@ -153,6 +153,12 @@ class App extends Component {
 								return <Redirect to="/" />
 							}}
 						/>
+						<Route
+							path="/paypal"
+							render={() => {
+								return <Redirect to="/orders?filters={incomplete:true}" />
+							}}
+						/>
 						<Route path="/*" component={NotFound} />
 					</Switch>
 				</div>
