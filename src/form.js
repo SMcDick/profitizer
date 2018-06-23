@@ -5,6 +5,7 @@ import axios from "axios"
 import { Redirect, Link } from "react-router-dom"
 import SelectWrapper from "./select"
 
+import TaxRates from "./taxRates"
 import util from "./utils"
 import { API_ROOT } from "./config"
 
@@ -39,30 +40,64 @@ class OrderForm extends Component {
 		if (name === "") {
 			return
 		}
-		const state = { ...this.state.details }
-		state[name] = value
+		const details = { ...this.state.details }
+		details[name] = value
+		if (name === "Zip_Code" && value.length === 5) {
+			axios
+				.get(
+					"http://api.zip-codes.com/ZipCodesAPI.svc/1.0/QuickGetZipCodeDetails/" +
+						value +
+						"?key=JGGQP7LC3URUS5PSVFGX"
+				)
+				.then(response => {
+					let data = response.data
+					let county = data.Error ? data.Error : data.County
+					if (!county) {
+						return this.setState({ details })
+					}
+					let city = ""
+					if (county.toLowerCase() === "fulton" || county.toLowerCase() === "dekalb") {
+						city = data.City
+						if (city.toLowerCase() === "atlanta") {
+							county = county + " (In Atlanta)"
+						} else {
+							county = county + " (Not Atlanta)"
+						}
+					}
+
+					details.Tax_County = county
+					let countyRate = TaxRates.find(item => item.name.toLowerCase() === county.toLowerCase())
+					if (countyRate) {
+						details.Tax_Pct = countyRate.value
+						details.Tax_Calculated_Calc =
+							((details.Total_Sold_Price - details.Tax_Collected) * details.Tax_Pct) / 100
+					}
+
+					this.setState({ details })
+				})
+		}
 		if (name.indexOf("_Quantity") > -1) {
 			let totalCost = [1, 2, 3, 4, 5].reduce((total, item) => {
 				let itemNumber = `Item_${item}`
-				let itemId = state[itemNumber]
+				let itemId = details[itemNumber]
 				let inventoryItem = this.props.inventory.find(itm => itm.Item_Id === itemId)
 				if (itemId) {
 					return (
-						total + parseInt(state[itemNumber + "_Quantity"], 10) * parseFloat(inventoryItem.Final_Cost, 10)
+						total +
+						parseInt(details[itemNumber + "_Quantity"], 10) * parseFloat(inventoryItem.Final_Cost, 10)
 					)
 				}
 				return total
 			}, 0)
-			state.Total_Cost_calc = totalCost
+			details.Total_Cost_calc = totalCost
 		}
 		if (name === "Marketplace_Fee_Shipping" || name === "Marketplace_Fee_Base") {
-			let baseFee = Number(state.Marketplace_Fee_Base) || 0
-			let shipFee = Number(state.Marketplace_Fee_Shipping || 0)
-			state.Marketplace_Fee = shipFee + baseFee
+			let baseFee = Number(details.Marketplace_Fee_Base) || 0
+			let shipFee = Number(details.Marketplace_Fee_Shipping || 0)
+			details.Marketplace_Fee = shipFee + baseFee
 		}
-		this.setState({
-			details: state
-		})
+
+		this.setState({ details })
 	}
 	// Probably only used on the Create page
 	handleReactSelectChange = val => {
@@ -123,6 +158,7 @@ class OrderForm extends Component {
 		delete saveDetails.Total_Cost_calc
 		delete saveDetails.Marketplace_Fee_Base
 		delete saveDetails.Marketplace_Fee_Shipping
+		delete saveDetails.Zip_Code
 
 		axios[method](url, saveDetails)
 			.then(results => {
@@ -150,6 +186,7 @@ class OrderForm extends Component {
 			{ name: "Marketplace_Fee_Base", label: "Base FVF" },
 			{ name: "Marketplace_Fee", readonly: true },
 			{ name: "Shipping" },
+			{ name: "Zip_Code", int: true },
 			{ name: "Tax_County", type: "text" },
 			{ name: "Tax_Pct", label: "Tax %" },
 			{ name: "Tax_Collected" },
