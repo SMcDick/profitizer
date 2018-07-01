@@ -4,6 +4,7 @@ import axios from "axios"
 import OrderWrapper from "./orderWrapper"
 import InventoryWrapper from "./inventoryWrapper"
 import Taxes from "./taxes"
+import RequestError from "./error"
 
 import { API_ROOT } from "./config"
 
@@ -54,7 +55,8 @@ class App extends Component {
 		this.state = {
 			inventory: [],
 			orders: [],
-			loading: true
+			loading: true,
+			error: false
 		}
 		this.handleUpdate = val => this.setState(val)
 	}
@@ -62,22 +64,29 @@ class App extends Component {
 		this.fetchData()
 	}
 	fetchData = () => {
-		axios.all([axios.get(API_ROOT + "sales/all"), axios.get(API_ROOT + "inventory/all")]).then(
-			axios.spread((sales, inventory) => {
-				this.setState({
-					orders: sales.data.data,
-					inventory: inventory.data.data,
-					loading: false
+		axios
+			.all([axios.get(API_ROOT + "sales/all"), axios.get(API_ROOT + "inventory/all")])
+			.then(
+				axios.spread((sales, inventory) => {
+					this.setState({
+						orders: sales.data.data,
+						inventory: inventory.data.data,
+						loading: false,
+						error: false
+					})
 				})
+			)
+			.catch(e => {
+				console.error(e.response)
+				this.setState({ error: true, loading: false })
 			})
-		)
 	}
 	refreshData = e => {
 		e.preventDefault()
-		this.setState({ loading: true }, this.fetchData())
+		this.setState({ loading: true, error: false }, this.fetchData())
 	}
 	render() {
-		const { inventory, orders, loading } = this.state
+		const { inventory, orders, loading, error } = this.state
 		const { handleUpdate } = this
 		return (
 			<Router>
@@ -105,6 +114,7 @@ class App extends Component {
 					</ul>
 					<Switch>
 						{loading && <Route path="/" component={Loading} />}
+						{error && <Route path="/*" component={RequestError} />}
 						<Route path="/" exact component={Home} />
 						<Route
 							path="/inventory"
