@@ -4,7 +4,9 @@ import axios from "axios"
 import OrderWrapper from "./orderWrapper"
 import InventoryWrapper from "./inventoryWrapper"
 import Taxes from "./taxes"
+import Restaurants from "./restaurants"
 import RequestError from "./error"
+import Loading from "./loading"
 
 import { API_ROOT } from "./config"
 
@@ -31,13 +33,6 @@ const Home = () => {
 					Add Inventory Item
 				</Link>
 			</div>
-		</section>
-	)
-}
-const Loading = () => {
-	return (
-		<section>
-			<h1>The app is still loading...</h1>
 		</section>
 	)
 }
@@ -147,6 +142,13 @@ class App extends Component {
 							path="/taxes/:month?"
 							render={props => {
 								return <Taxes {...props} orders={orders} />
+							}}
+						/>
+						<Route
+							path="/restaurants/:id?"
+							exact
+							render={props => {
+								return <Restaurants {...props} />
 							}}
 						/>
 						<Route
