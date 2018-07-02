@@ -18,6 +18,7 @@ class Restaurants extends Component {
 			loading: true,
 			error: false,
 			edit: 0,
+			create: 0,
 			details: {}
 		}
 		this.fields = [
@@ -57,7 +58,7 @@ class Restaurants extends Component {
 			}
 		}
 
-		// Allow continuation after successful save
+		// TODO Allow continuation after successful save
 		this.setState({ edit: id, details: newDetails })
 	}
 
@@ -83,27 +84,41 @@ class Restaurants extends Component {
 		if (e) {
 			e.preventDefault()
 		}
-		const { details } = this.state
-		const create = false
+		let { create } = this.state
+		let details = { ...this.state.details }
 		let url = API_ROOT + "restaurant/" + details.Id
 		let method = "post"
 		if (create) {
 			url = API_ROOT + "createRestaurant"
 			method = "post"
+			delete details.Id
 		}
 
 		axios[method](url, details)
-			.then(results => {
-				let data = results.data
-				this.setState({ edit: 0, details: {} }, this.fetchData())
+			.then(() => {
+				this.setState({ edit: 0, details: {}, create: 0 }, this.fetchData())
 			})
 			.catch(err => {
 				console.log(err.response)
 			})
 	}
+	createRestaurant = e => {
+		e.preventDefault()
+		let restaurants = [...this.state.restaurants]
+		const details = {
+			Amount: 0,
+			Date: Moment().format("YYYY-MM-DD"),
+			Restaurant: "",
+			Tip: 0,
+			Total: 0,
+			Id: "new"
+		}
+		restaurants.unshift(details)
+		this.setState({ create: "new", details, restaurants })
+	}
 
 	render() {
-		const { restaurants, loading, error } = this.state
+		const { restaurants, loading, error, create, edit, details } = this.state
 		if (loading) {
 			return <Loading />
 		}
@@ -112,7 +127,16 @@ class Restaurants extends Component {
 		}
 		return (
 			<section>
-				<h1>Restaurant Expenses</h1>
+				<div className="flex-parent__space-between">
+					<h1>Restaurant Expenses</h1>
+					{create !== "new" && (
+						<div className="flex-parent__center">
+							<button className="btn flex-child__auto" onClick={this.createRestaurant}>
+								Create Expense
+							</button>
+						</div>
+					)}
+				</div>
 				<Grid>
 					<GridHeader classes="col-5">
 						{this.fields.map(field => {
@@ -128,8 +152,7 @@ class Restaurants extends Component {
 									onClick={e => this.editItem(restaurant.Id)}>
 									{this.fields.map(field => {
 										let item = field.display(restaurant[field.name])
-										if (this.state.edit === restaurant.Id) {
-											const details = this.state.details
+										if (edit === restaurant.Id || create === restaurant.Id) {
 											item = (
 												<Input
 													type={field.type ? field.type : "number"}
