@@ -25,19 +25,31 @@ Grid.propTypes = {
 
 class GridHeader extends Grid {
 	render() {
-		return <div className={"item__row item__row--header" + this.getClasses()}>{this.renderChildren()}</div>
+		return (
+			<div {...this.props} className={"item__row item__row--header" + this.getClasses()}>
+				{this.renderChildren()}
+			</div>
+		)
 	}
 }
 
 class GridRow extends Grid {
 	render() {
-		return <div className={"item__row" + this.getClasses()}>{this.renderChildren()}</div>
+		return (
+			<div {...this.props} className={"item__row" + this.getClasses()}>
+				{this.renderChildren()}
+			</div>
+		)
 	}
 }
 
 class GridItem extends Grid {
 	render() {
-		return <span className={"item__detail" + this.getClasses()}>{this.props.children}</span>
+		return (
+			<span {...this.props} className={"item__detail" + this.getClasses()}>
+				{this.props.children}
+			</span>
+		)
 	}
 }
 

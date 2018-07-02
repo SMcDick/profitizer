@@ -3,7 +3,7 @@ import PropType from "prop-types"
 
 class Input extends Component {
 	render() {
-		const { type, int, label, onChange, name, readonly, required, onFocus, onBlur } = this.props
+		const { type, int, label, onChange, name, readonly, required, onFocus, onBlur, onKeyPress } = this.props
 		let { value, className } = this.props
 		let checked = type === "checkbox" && value === "1"
 		if (readonly && type === "number") {
@@ -19,6 +19,7 @@ class Input extends Component {
 					onFocus={onFocus}
 					onBlur={onBlur}
 					onChange={onChange}
+					onKeyPress={onKeyPress}
 					className="input--text"
 					type={type}
 					value={value}
