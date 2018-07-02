@@ -102,6 +102,12 @@ class App extends Component {
 							<NavLink to="/taxes">Taxes</NavLink>
 						</li>
 						<li className="flex-child nav__item">
+							<NavLink to="/expenses">Expenses</NavLink>
+						</li>
+						<li className="flex-child nav__item">
+							<NavLink to="/restaurants">Restaurants</NavLink>
+						</li>
+						<li className="flex-child nav__item">
 							<a href="/" onClick={this.refreshData}>
 								Refresh
 							</a>
@@ -109,7 +115,7 @@ class App extends Component {
 					</ul>
 					<Switch>
 						{loading && <Route path="/" component={Loading} />}
-						{error && <Route path="/*" component={RequestError} />}
+						{error && <Route path="/" component={RequestError} />}
 						<Route path="/" exact component={Home} />
 						<Route
 							path="/inventory"
@@ -145,7 +151,7 @@ class App extends Component {
 							}}
 						/>
 						<Route
-							path="/restaurants/:id?"
+							path="/restaurants"
 							exact
 							render={props => {
 								return <Restaurants {...props} />

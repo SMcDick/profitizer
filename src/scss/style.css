@@ -1178,9 +1178,6 @@ em {
   .page-size--active:hover {
     color: #696969; }
 
-.item__grid {
-  margin: 0 -20px; }
-
 .item__row {
   display: flex; }
   .item__row:nth-child(even) {
