@@ -129,8 +129,7 @@ em {
 
 .nav {
   border-bottom: 1px solid #696969;
-  flex-wrap: wrap;
-  background: red; }
+  flex-wrap: wrap; }
 
 .nav__item {
   padding: 10px; }
