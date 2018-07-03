@@ -1,10 +1,11 @@
 import React, { Component } from "react"
 import { BrowserRouter as Router, Switch, Route, NavLink, Link, Redirect } from "react-router-dom"
 import axios from "axios"
+
 import OrderWrapper from "./orderWrapper"
 import InventoryWrapper from "./inventoryWrapper"
 import Taxes from "./taxes"
-import Restaurants from "./restaurants"
+import Expenses from "./restaurants"
 import RequestError from "./error"
 import Loading from "./loading"
 
@@ -154,7 +155,38 @@ class App extends Component {
 							path="/restaurants"
 							exact
 							render={props => {
-								return <Restaurants {...props} />
+								let fields = [
+									{ name: "Date", type: "date" },
+									{ name: "Restaurant", type: "text" },
+									{ name: "Amount", type: "number" },
+									{ name: "Tip", type: "number" },
+									{ name: "Total", type: "number" }
+								]
+								let urls = {
+									getAll: "restaurants/all",
+									getOne: "restaurant/",
+									create: "createRestaurant"
+								}
+								return <Expenses {...props} fields={fields} urls={urls} textVal="Restaurant" />
+							}}
+						/>
+						<Route
+							path="/expenses"
+							exact
+							render={props => {
+								let fields = [
+									{ name: "Date", type: "date" },
+									{ name: "Vendor", type: "text" },
+									{ name: "Amount", type: "number" },
+									{ name: "Type", type: "text" },
+									{ name: "Notes", type: "text" }
+								]
+								let urls = {
+									getAll: "expenses/all",
+									getOne: "expense/",
+									create: "createExpense"
+								}
+								return <Expenses {...props} fields={fields} urls={urls} textVal="Business" />
 							}}
 						/>
 						<Route

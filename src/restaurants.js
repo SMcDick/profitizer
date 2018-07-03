@@ -10,34 +10,32 @@ import Input from "./input"
 import Util from "./utils"
 import { API_ROOT } from "./config"
 
-class Restaurants extends Component {
+class Expenses extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			restaurants: [],
+			expenses: [],
 			loading: true,
 			error: false,
 			edit: 0,
 			create: 0,
 			details: {}
 		}
-		this.fields = [
-			{ name: "Date", type: "date", display: val => Moment(val).format("M/D/YYYY") },
-			{ name: "Restaurant", type: "text", display: val => val },
-			{ name: "Amount", display: val => Util.formatMoney(val) },
-			{ name: "Tip", display: val => Util.formatMoney(val) },
-			{ name: "Total", display: val => Util.formatMoney(val) }
-		]
 	}
 	componentDidMount() {
 		this.fetchData()
 	}
+	componentDidUpdate(prevProps) {
+		if (prevProps.match.path !== this.props.match.path) {
+			this.setState({ expenses: [] }, this.fetchData())
+		}
+	}
 	fetchData() {
 		axios
-			.get(API_ROOT + "restaurants/all")
-			.then(restaurants => {
+			.get(API_ROOT + this.props.urls.getAll)
+			.then(expenses => {
 				this.setState({
-					restaurants: restaurants.data.data,
+					expenses: expenses.data.data,
 					loading: false,
 					error: false
 				})
@@ -48,11 +46,11 @@ class Restaurants extends Component {
 			})
 	}
 	editItem = id => {
-		const { restaurants, edit, details } = this.state
-		const newDetails = restaurants.find(rest => rest.Id === id)
-		const prevDetails = restaurants.find(rest => rest.Id === edit)
+		const { expenses, edit, details } = this.state
+		const newDetails = expenses.find(item => item.Id === id)
+		const prevDetails = expenses.find(item => item.Id === edit)
 		if (edit !== 0 && id !== edit && details !== prevDetails) {
-			const confirm = window.confirm("do you want to save the changes?")
+			const confirm = window.confirm("Do you want to save the changes?")
 			if (confirm) {
 				return this.handleSubmit()
 			}
@@ -85,11 +83,12 @@ class Restaurants extends Component {
 			e.preventDefault()
 		}
 		let { create } = this.state
+		let { urls } = this.props
 		let details = { ...this.state.details }
-		let url = API_ROOT + "restaurant/" + details.Id
+		let url = API_ROOT + urls.getOne + details.Id
 		let method = "post"
 		if (create) {
-			url = API_ROOT + "createRestaurant"
+			url = API_ROOT + urls.create
 			method = "post"
 			delete details.Id
 		}
@@ -102,23 +101,32 @@ class Restaurants extends Component {
 				console.log(err.response)
 			})
 	}
-	createRestaurant = e => {
+	createExpense = e => {
 		e.preventDefault()
-		let restaurants = [...this.state.restaurants]
-		const details = {
-			Amount: 0,
-			Date: Moment().format("YYYY-MM-DD"),
-			Restaurant: "",
-			Tip: 0,
-			Total: 0,
-			Id: "new"
+		let expenses = [...this.state.expenses]
+		let { fields } = this.props
+		const details = {}
+		for (const key of fields) {
+			details[key.name] = key.type === "number" ? 0 : key.type === "date" ? Moment().format("YYYY-MM-DD") : ""
 		}
-		restaurants.unshift(details)
-		this.setState({ create: "new", details, restaurants })
+		details.Id = "new"
+		expenses.unshift(details)
+		this.setState({ create: "new", details, expenses })
+	}
+	displayFields(val, type) {
+		if (type === "date") {
+			return Moment(val).format("M/D/YYYY")
+		}
+		if (type === "number") {
+			return Util.formatMoney(val)
+		}
+		return val
 	}
 
 	render() {
-		const { restaurants, loading, error, create, edit, details } = this.state
+		const { expenses, loading, error, create, edit, details } = this.state
+		const { fields, textVal } = this.props
+
 		if (loading) {
 			return <Loading />
 		}
@@ -128,10 +136,10 @@ class Restaurants extends Component {
 		return (
 			<section>
 				<div className="flex-parent__space-between">
-					<h1>Restaurant Expenses</h1>
+					<h1>{textVal} Expenses</h1>
 					{create !== "new" && (
 						<div className="flex-parent__center">
-							<button className="btn flex-child__auto" onClick={this.createRestaurant}>
+							<button className="btn flex-child__auto" onClick={this.createExpense}>
 								Create Expense
 							</button>
 						</div>
@@ -139,39 +147,37 @@ class Restaurants extends Component {
 				</div>
 				<Grid>
 					<GridHeader classes="col-5">
-						{this.fields.map(field => {
-							return <GridItem key={field.name}>{field.name}</GridItem>
-						})}
+						{fields.length > 0 &&
+							fields.map(field => {
+								return <GridItem key={field.name}>{field.name}</GridItem>
+							})}
 					</GridHeader>
-					{restaurants.length > 0 &&
-						restaurants.map(restaurant => {
+					{expenses.length > 0 &&
+						expenses.map(expense => {
 							return (
-								<GridRow
-									classes="col-5"
-									key={restaurant.Id}
-									onClick={e => this.editItem(restaurant.Id)}>
-									{this.fields.map(field => {
-										let item = field.display(restaurant[field.name])
-										if (edit === restaurant.Id || create === restaurant.Id) {
-											item = (
-												<Input
-													type={field.type ? field.type : "number"}
-													value={details[field.name].toString()}
-													onChange={this.handleInputChange}
-													name={field.name}
-													onKeyPress={this.handleEnter}
-													onBlur={this.onBlur}
-												/>
-											)
-										}
-										return <GridItem key={field.name}>{item}</GridItem>
-									})}
+								<GridRow classes="col-5" key={expense.Id} onClick={e => this.editItem(expense.Id)}>
+									{fields.length > 0 &&
+										fields.map(field => {
+											let item = this.displayFields(expense[field.name], field.type)
+											if (edit === expense.Id || create === expense.Id) {
+												item = (
+													<Input
+														type={field.type ? field.type : "number"}
+														value={details[field.name].toString()}
+														onChange={this.handleInputChange}
+														name={field.name}
+														onKeyPress={this.handleEnter}
+													/>
+												)
+											}
+											return <GridItem key={field.name}>{item}</GridItem>
+										})}
 								</GridRow>
 							)
 						})}
-					{restaurants.length === 0 && (
+					{expenses.length === 0 && (
 						<GridRow>
-							<GridItem classes="item__detail--full">No restaurants expenses</GridItem>
+							<GridItem classes="item__detail--full">No {textVal.toLowerCase()} expenses</GridItem>
 						</GridRow>
 					)}
 				</Grid>
@@ -180,8 +186,11 @@ class Restaurants extends Component {
 	}
 }
 
-Restaurants.propTypes = {
+Expenses.propTypes = {
+	fields: PropType.array,
+	urls: PropType.object,
+	textVal: PropType.string,
 	match: PropType.object
 }
 
-export default Restaurants
+export default Expenses
