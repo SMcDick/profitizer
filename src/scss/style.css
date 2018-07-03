@@ -128,7 +128,8 @@ em {
   color: #fff; }
 
 .nav {
-  border-bottom: 1px solid #696969; }
+  border-bottom: 1px solid #696969;
+  flex-wrap: wrap; }
 
 .nav__item {
   padding: 10px; }
@@ -1179,25 +1180,37 @@ em {
     color: #696969; }
 
 .item__row {
-  display: flex; }
+  display: block;
+  position: relative; }
   .item__row:nth-child(even) {
     background: #F4F5F7; }
   .item__row--header {
     background: none;
     font-weight: bold;
     border-bottom: 2px solid #696969; }
+  .item__row.dimmer {
+    opacity: 0.5; }
+  .item__row.active {
+    background: white;
+    border: 1px solid #696969; }
+  @media (min-width: 740px) {
+    .item__row {
+      display: flex; } }
 
 .item__detail {
   padding: 4px;
   flex: 0 0 auto;
   box-sizing: border-box;
   text-align: right;
-  width: 60px; }
+  display: block;
+  width: 100%;
+  text-align: left; }
   .item__detail:first-child {
     text-align: left; }
-  @media (min-width: 600px) {
+  @media (min-width: 740px) {
     .item__detail {
-      width: 70px; } }
+      width: 70px;
+      text-align: right; } }
   .item__detail--desc {
     text-align: left;
     width: auto;
@@ -1240,6 +1253,12 @@ em {
     flex: 0 0 calc(25% - 50px); }
     .col-5-with-large .item__detail--large {
       flex: 1 0 200px; }
+
+.inline-input-btns {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000; }
 
 .react-select-override.Select--multi .Select-value {
   display: flex; }

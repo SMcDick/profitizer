@@ -25,6 +25,7 @@ class Input extends Component {
 					value={value}
 					defaultChecked={checked}
 					name={name}
+					placeholder={name}
 					readOnly={readonly}
 					autoComplete="off"
 					data-lpignore="true"

@@ -52,6 +52,7 @@ em {
 
 .nav {
 	border-bottom: 1px solid $dark-gray;
+	flex-wrap: wrap;
 }
 .nav__item {
 	padding: 10px;

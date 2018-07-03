@@ -46,6 +46,7 @@ class Expenses extends Component {
 			})
 	}
 	editItem = id => {
+		// TODO also figure out how to disable edit when creating new item
 		const { expenses, edit, details } = this.state
 		const newDetails = expenses.find(item => item.Id === id)
 		const prevDetails = expenses.find(item => item.Id === edit)
@@ -78,7 +79,7 @@ class Expenses extends Component {
 		}
 	}
 
-	handleSubmit(e) {
+	handleSubmit = e => {
 		if (e) {
 			e.preventDefault()
 		}
@@ -100,6 +101,14 @@ class Expenses extends Component {
 			.catch(err => {
 				console.log(err.response)
 			})
+	}
+	cancel = e => {
+		e.stopPropagation()
+		let expenses = [...this.state.expenses]
+		if (this.state.create) {
+			expenses.shift()
+		}
+		this.setState({ edit: 0, details: {}, create: 0, expenses })
 	}
 	createExpense = e => {
 		e.preventDefault()
@@ -137,13 +146,14 @@ class Expenses extends Component {
 			<section>
 				<div className="flex-parent__space-between">
 					<h1>{textVal} Expenses</h1>
-					{create !== "new" && (
-						<div className="flex-parent__center">
-							<button className="btn flex-child__auto" onClick={this.createExpense}>
-								Create Expense
-							</button>
-						</div>
-					)}
+					{create !== "new" &&
+						edit === 0 && (
+							<div className="flex-parent__center">
+								<button className="btn flex-child__auto" onClick={this.createExpense}>
+									Create Expense
+								</button>
+							</div>
+						)}
 				</div>
 				<Grid>
 					<GridHeader classes="col-5">
@@ -154,12 +164,21 @@ class Expenses extends Component {
 					</GridHeader>
 					{expenses.length > 0 &&
 						expenses.map(expense => {
+							const active = edit === expense.Id || create === expense.Id
+							const editing = edit !== 0 || create !== 0
+							let dimmer = editing ? " dimmer" : ""
+							if (active) {
+								dimmer = " active"
+							}
 							return (
-								<GridRow classes="col-5" key={expense.Id} onClick={e => this.editItem(expense.Id)}>
+								<GridRow
+									classes={"col-5" + dimmer}
+									key={expense.Id}
+									onClick={e => this.editItem(expense.Id)}>
 									{fields.length > 0 &&
 										fields.map(field => {
 											let item = this.displayFields(expense[field.name], field.type)
-											if (edit === expense.Id || create === expense.Id) {
+											if (active) {
 												item = (
 													<Input
 														type={field.type ? field.type : "number"}
@@ -172,6 +191,16 @@ class Expenses extends Component {
 											}
 											return <GridItem key={field.name}>{item}</GridItem>
 										})}
+									{active && (
+										<div className="inline-input-btns">
+											<span className="btn btn--accent" onClick={this.cancel}>
+												Cancel
+											</span>
+											<span className="btn btn--positive" onClick={this.handleSubmit}>
+												Save
+											</span>
+										</div>
+									)}
 								</GridRow>
 							)
 						})}

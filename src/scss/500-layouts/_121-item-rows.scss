@@ -2,7 +2,8 @@
 	// margin: 0 -20px;
 }
 .item__row {
-	display: flex;
+	display: block;
+	position: relative;
 	&:nth-child(even) {
 		background: $light-gray;
 	}
@@ -10,6 +11,20 @@
 		background: none;
 		font-weight: bold;
 		border-bottom: 2px solid $dark-gray;
+		// display: none;
+		// @include tablet {
+		// 	display: flex;
+		// }
+	}
+	&.dimmer {
+		opacity: 0.5;
+	}
+	&.active {
+		background: white;
+		border: 1px solid $dark-gray;
+	}
+	@include tablet {
+		display: flex;
 	}
 }
 .item__detail {
@@ -17,12 +32,15 @@
 	flex: 0 0 auto;
 	box-sizing: border-box;
 	text-align: right;
-	width: 60px;
+	display: block;
+	width: 100%;
+	text-align: left;
 	&:first-child {
 		text-align: left;
 	}
-	@include large-phone {
+	@include tablet {
 		width: 70px;
+		text-align: right;
 	}
 	&--desc {
 		text-align: left;
@@ -85,4 +103,11 @@
 			flex: 1 0 200px;
 		}
 	}
+}
+
+.inline-input-btns {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	z-index: 1000;
 }
