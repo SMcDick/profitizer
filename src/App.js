@@ -167,7 +167,15 @@ class App extends Component {
 									getOne: "restaurant/",
 									create: "createRestaurant"
 								}
-								return <Expenses {...props} fields={fields} urls={urls} textVal="Restaurant" />
+								return (
+									<Expenses
+										{...props}
+										fields={fields}
+										urls={urls}
+										textVal="Restaurant"
+										totalField="Total"
+									/>
+								)
 							}}
 						/>
 						<Route
@@ -186,7 +194,15 @@ class App extends Component {
 									getOne: "expense/",
 									create: "createExpense"
 								}
-								return <Expenses {...props} fields={fields} urls={urls} textVal="Business" />
+								return (
+									<Expenses
+										{...props}
+										fields={fields}
+										urls={urls}
+										textVal="Business"
+										totalField="Amount"
+									/>
+								)
 							}}
 						/>
 						<Route

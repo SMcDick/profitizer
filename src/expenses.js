@@ -134,7 +134,7 @@ class Expenses extends Component {
 
 	render() {
 		const { expenses, loading, error, create, edit, details } = this.state
-		const { fields, textVal } = this.props
+		const { fields, textVal, totalField } = this.props
 
 		if (loading) {
 			return <Loading />
@@ -154,6 +154,9 @@ class Expenses extends Component {
 								</button>
 							</div>
 						)}
+				</div>
+				<div>
+					<strong>Total:</strong> {Util.formatMoney(Util.totaler(expenses, totalField))}
 				</div>
 				<Grid>
 					<GridHeader classes="col-5">
@@ -219,7 +222,8 @@ Expenses.propTypes = {
 	fields: PropType.array,
 	urls: PropType.object,
 	textVal: PropType.string,
-	match: PropType.object
+	match: PropType.object,
+	totalField: PropType.string
 }
 
 export default Expenses
