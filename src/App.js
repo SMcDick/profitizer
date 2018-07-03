@@ -5,7 +5,7 @@ import axios from "axios"
 import OrderWrapper from "./orderWrapper"
 import InventoryWrapper from "./inventoryWrapper"
 import Taxes from "./taxes"
-import Expenses from "./restaurants"
+import Expenses from "./expenses"
 import RequestError from "./error"
 import Loading from "./loading"
 
