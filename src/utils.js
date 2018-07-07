@@ -11,9 +11,9 @@ const util = {
 	},
 	formatMoney: function(val) {
 		if (Number(val) >= 0) {
-			return "$" + val.toFixed(2)
+			return "$" + Number(val).toFixed(2)
 		} else {
-			return "-$" + (0 - val).toFixed(2)
+			return "-$" + (0 - Number(val)).toFixed(2)
 		}
 	},
 	totaler: function(sale, field) {

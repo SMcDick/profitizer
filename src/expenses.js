@@ -64,7 +64,7 @@ class Expenses extends Component {
 	handleInputChange = event => {
 		const target = event.target
 		const value =
-			target.type === "checkbox" ? target.checked : target.type === "number" ? Number(target.value) : target.value
+			target.type === "checkbox" ? target.checked : target.value
 		const name = target.name
 		if (name === "") {
 			return
@@ -132,6 +132,25 @@ class Expenses extends Component {
 		return val
 	}
 
+	validate = val => {
+		const target = val.target
+		const { details } = this.state
+		let { name, type, value, step } = target
+		if (type === "number") {
+			details[name] = Number(value).toFixed(step === "1" ? 0 : 2)
+			this.setState({ details })
+		}
+	}
+	focus = val => {
+		const target = val.target
+		const { details } = this.state
+		let { name, type, value } = target
+		if (type === "number") {
+			details[name] = Number(value)
+			this.setState({ details })
+		}
+	}
+
 	render() {
 		const { expenses, loading, error, create, edit, details } = this.state
 		const { fields, textVal, totalField } = this.props
@@ -187,6 +206,8 @@ class Expenses extends Component {
 														type={field.type ? field.type : "number"}
 														value={details[field.name].toString()}
 														onChange={this.handleInputChange}
+														onFocus={this.focus}
+														onBlur={this.validate}
 														name={field.name}
 														onKeyPress={this.handleEnter}
 													/>
