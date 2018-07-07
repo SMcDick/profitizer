@@ -55,16 +55,15 @@ class Expenses extends Component {
 			if (confirm) {
 				return this.handleSubmit()
 			}
+		} else if (id !== edit) {
+			// TODO Allow continuation after successful save
+			this.setState({ edit: id, details: newDetails })
 		}
-
-		// TODO Allow continuation after successful save
-		this.setState({ edit: id, details: newDetails })
 	}
 
 	handleInputChange = event => {
 		const target = event.target
-		const value =
-			target.type === "checkbox" ? target.checked : target.value
+		const value = target.type === "checkbox" ? target.checked : target.value
 		const name = target.name
 		if (name === "") {
 			return
