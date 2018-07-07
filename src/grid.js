@@ -2,9 +2,6 @@ import React, { Component, Children } from "react"
 import PropType from "prop-types"
 
 class Grid extends Component {
-	constructor(props) {
-		super(props)
-	}
 	renderChildren() {
 		return Children.toArray(this.props.children).map(child => {
 			return React.cloneElement(child)

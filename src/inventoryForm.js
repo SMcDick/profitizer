@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import propType from "prop-types"
 import Input from "./input"
 import axios from "axios"
-import { Redirect, Link } from "react-router-dom"
+import { Redirect } from "react-router-dom"
 
 import util from "./utils"
 import { API_ROOT } from "./config"
@@ -43,7 +43,7 @@ class InventoryForm extends Component {
 
 		axios[method](url, this.state.details)
 			.then(results => {
-				let data = results.data
+				// let data = results.data
 				// if (create) {
 				// 	data = data.sale
 				// }

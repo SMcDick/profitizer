@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import propTypes from "prop-types"
 import Form from "./form"
 import axios from "axios"
+import { Link } from "react-router-dom"
 
 import util from "./utils"
 import { API_ROOT } from "./config"
@@ -42,9 +43,7 @@ class Order extends Component {
 				<h1>
 					Order#: {order.Order_Id} &bull; <span className="positive-text">{profitDisplay}</span>
 				</h1>
-				<a href="#" onClick={this.props.history.goBack}>
-					Back
-				</a>
+				<Link to="/orders">Back</Link>
 				<section>
 					<Form
 						details={order}

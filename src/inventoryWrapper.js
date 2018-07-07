@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React from "react"
 import PropType from "prop-types"
 import { Route, Switch } from "react-router-dom"
 import Inventory from "./inventory"
@@ -7,63 +7,52 @@ import Form from "./inventoryForm"
 
 import Filter from "./filter"
 
-// import util from "./utils"
-
-class InventoryWrapper extends Component {
-	constructor(props) {
-		super(props)
-	}
-	componentWillUnmount() {
-		console.log("inventory wrapper unmounted")
-	}
-	render() {
-		console.log("inventory wrapper rendered")
-		const { match, inventory } = this.props
-		return (
-			<div>
-				<Switch>
-					<Route
-						exact
-						path={match.url}
-						render={props => {
-							return (
-								<Filter {...props} items={inventory}>
-									<Inventory {...props} />
-								</Filter>
-							)
-						}}
-					/>
-					<Route
-						exact
-						path={match.url + "/create"}
-						render={props => {
-							return (
-								<section>
-									<h1>Create a New Inventory Item</h1>
-									<Form
-										details={{
-											Quantity: 1,
-											Tax: 0,
-											Num_Sold: 0
-										}}
-										edit={true}
-										{...props}
-										create={true}
-									/>
-								</section>
-							)
-						}}
-					/>
-					<Route
-						path={match.url + "/:id"}
-						render={props => {
-							return <Item inventory={inventory} {...props} />
-						}}
-					/>
-				</Switch>
-			</div>
-		)
-	}
+const InventoryWrapper = props => {
+	const { match, inventory } = props
+	return (
+		<div>
+			<Switch>
+				<Route
+					exact
+					path={match.url}
+					render={props => {
+						return (
+							<Filter {...props} items={inventory}>
+								<Inventory {...props} />
+							</Filter>
+						)
+					}}
+				/>
+				<Route
+					exact
+					path={match.url + "/create"}
+					render={props => {
+						return (
+							<section>
+								<h1>Create a New Inventory Item</h1>
+								<Form
+									details={{
+										Quantity: 1,
+										Tax: 0,
+										Num_Sold: 0
+									}}
+									edit={true}
+									{...props}
+									create={true}
+								/>
+							</section>
+						)
+					}}
+				/>
+				<Route
+					path={match.url + "/:id"}
+					render={props => {
+						return <Item inventory={inventory} {...props} />
+					}}
+				/>
+			</Switch>
+		</div>
+	)
 }
 
 InventoryWrapper.propTypes = {

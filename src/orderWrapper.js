@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React from "react"
 import PropType from "prop-types"
 import { Route, Switch } from "react-router-dom"
 
@@ -7,60 +7,50 @@ import Order from "./order"
 import Form from "./form"
 import Filter from "./filter"
 
-class OrderWrapper extends Component {
-	constructor(props) {
-		super(props)
-	}
-	componentWillUnmount() {
-		// console.log("order wrapper unmounted")
-	}
-	render() {
-		const { match, orders, inventory, source, handleUpdate } = this.props
-		return (
-			<div>
-				<Switch>
-					<Route
-						exact
-						path={match.url}
-						render={props => {
-							return (
-								<Filter {...props} items={orders}>
-									<Orders {...props} />
-								</Filter>
-							)
-						}}
-					/>
-					<Route
-						exact
-						path={match.url + "/create"}
-						render={props => {
-							return (
-								<section>
-									<h1>Create a New Order</h1>
-									<Form
-										{...props}
-										details={{ Marketplace: source || "Poshmark" }}
-										inventory={inventory}
-										create={true}
-										handleUpdate={handleUpdate}
-										orders={orders}
-									/>
-								</section>
-							)
-						}}
-					/>
-					<Route
-						path={match.url + "/:id"}
-						render={props => {
-							return (
-								<Order {...props} orders={orders} inventory={inventory} handleUpdate={handleUpdate} />
-							)
-						}}
-					/>
-				</Switch>
-			</div>
-		)
-	}
+const OrderWrapper = props => {
+	const { match, orders, inventory, source, handleUpdate } = props
+	return (
+		<div>
+			<Switch>
+				<Route
+					exact
+					path={match.url}
+					render={props => {
+						return (
+							<Filter {...props} items={orders}>
+								<Orders {...props} />
+							</Filter>
+						)
+					}}
+				/>
+				<Route
+					exact
+					path={match.url + "/create"}
+					render={props => {
+						return (
+							<section>
+								<h1>Create a New Order</h1>
+								<Form
+									{...props}
+									details={{ Marketplace: source || "Poshmark" }}
+									inventory={inventory}
+									create={true}
+									handleUpdate={handleUpdate}
+									orders={orders}
+								/>
+							</section>
+						)
+					}}
+				/>
+				<Route
+					path={match.url + "/:id"}
+					render={props => {
+						return <Order {...props} orders={orders} inventory={inventory} handleUpdate={handleUpdate} />
+					}}
+				/>
+			</Switch>
+		</div>
+	)
 }
 
 OrderWrapper.propTypes = {
