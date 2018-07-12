@@ -1,5 +1,5 @@
 .item__grid {
-	// margin: 0 -20px;
+	margin: 20px -20px;
 }
 .item__row {
 	display: block;
@@ -35,12 +35,18 @@
 	display: block;
 	width: 100%;
 	text-align: left;
-	&:first-child {
-		text-align: left;
-	}
+	// &:first-child {
+	// 	text-align: left;
+	// }
 	@include tablet {
 		width: 70px;
 		text-align: right;
+	}
+	&--row {
+		width: 40px;
+		border-right: 1px solid $light-primary;
+		text-align: center;
+		font-size: 14px;
 	}
 	&--desc {
 		text-align: left;

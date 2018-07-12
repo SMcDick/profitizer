@@ -15,6 +15,7 @@ class Inventory extends Component {
 				<Input type="text" name="Search" onChange={handleSearch} label="Search" className="search__wrapper" />
 				<div className="item__grid">
 					<div className="item__row item__row--header">
+						<span className="item__detail item__detail--row">#</span>
 						<span className="item__detail item__detail--desc">Item</span>
 						<span className="item__detail item__detail--minor">Quantity</span>
 						<span className="item__detail">Sold</span>
@@ -24,6 +25,7 @@ class Inventory extends Component {
 					{inventory.map(item => {
 						return (
 							<Link to={"/inventory/" + item.Item_Id} key={item.Item_Id} className="item__row">
+								<span className="item__detail item__detail--row">{item.order}</span>
 								<span className="item__detail item__detail--desc">{item.Item}</span>
 								<span className="item__detail item__detail--minor">{item.Quantity}</span>
 								<span className="item__detail item__detail">{item.Num_Sold}</span>

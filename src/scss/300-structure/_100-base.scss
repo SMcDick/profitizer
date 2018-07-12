@@ -7,17 +7,17 @@ body {
 	min-height: 100vh;
 }
 .width-wrapper {
-	max-width: 1200px;
+	max-width: 1600px;
 	width: 100%;
 	padding: 0 20px;
 	box-sizing: border-box;
 	margin: 0 auto;
-	@include tablet {
-		padding: 0 30px;
-	}
-	@include desktop {
-		padding: 0 40px;
-	}
+	// @include tablet {
+	// 	padding: 0 30px;
+	// }
+	// @include desktop {
+	// 	padding: 0 40px;
+	// }
 }
 
 section {

@@ -55,16 +55,22 @@ class Orders extends Component {
 				</div>
 				<div className="item__grid">
 					<div className="item__row item__row--header">
+						<span className="item__detail item__detail--row">#</span>
 						<span className="item__detail item__detail--icon item__detail--minor" />
 						<span className="item__detail item__detail--desc">Description</span>
 						<span className="item__detail item__detail--minor">Id</span>
 						<span className="item__detail item__detail--minor">Sale</span>
+						<span className="item__detail item__detail--minor">FVF</span>
+						<span className="item__detail item__detail--minor">Trx</span>
+						<span className="item__detail item__detail--minor">Ship</span>
+						<span className="item__detail item__detail--minor">Tax</span>
 						<span className="item__detail">Profit</span>
 						<span className="item__detail item__detail--date">Sold Date</span>
 					</div>
 					{orders.map(order => {
 						return (
 							<Link to={"/orders/" + order.Order_Id} key={order.Order_Id} className="item__row">
+								<span className="item__detail item__detail--row">{order.order}</span>
 								<span className="item__detail item__detail--icon item__detail--minor">
 									<span className={order.Completed ? "icon--check" : "icon--bang"} />
 								</span>
@@ -75,6 +81,10 @@ class Orders extends Component {
 								<span className="item__detail item__detail--minor">
 									{util.formatMoney(order.Total_Sold_Price)}
 								</span>
+								<span className="item__detail">${order.Marketplace_Fee.toFixed(2)}</span>
+								<span className="item__detail">${order.Transaction_Fee.toFixed(2)}</span>
+								<span className="item__detail">${order.Shipping.toFixed(2)}</span>
+								<span className="item__detail">${order.Tax_Calculated_Calc.toFixed(2)}</span>
 								<span className="item__detail">${order.Profit_calc.toFixed(2)}</span>
 								<span className="item__detail item__detail--date">
 									{Moment(order.Sold_Date).format("M/D/YYYY")}

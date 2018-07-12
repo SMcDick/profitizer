@@ -3,6 +3,7 @@ import propTypes from "prop-types"
 import Form from "./inventoryForm"
 import { Link } from "react-router-dom"
 import axios from "axios"
+import Moment from "moment"
 
 import util from "./utils"
 import { API_ROOT } from "./config"
@@ -77,17 +78,21 @@ class Item extends Component {
 				{saleAvailable && (
 					<div className="item-wrapper item__grid">
 						<div className="item__row item__row--header">
+							<span className="item__detail item__detail--row">#</span>
 							<span className="item__detail">Order Id</span>
 							<span className="item__detail">Profit</span>
 							<span className="item__detail item__detail--date">Sold Date</span>
 							<span className="item__detail item__detail--desc">Description</span>
 						</div>
-						{this.state.item.sales.map(sale => {
+						{this.state.item.sales.map((sale, idx) => {
 							return (
 								<Link to={"/orders/" + sale.Order_Id} key={sale.Order_Id} className="item__row">
+									<span className="item__detail item__detail--row">{idx + 1}</span>
 									<span className="item__detail">#{sale.Order_Id}</span>
 									<span className="item__detail">${sale.Profit_calc.toFixed(2)}</span>
-									<span className="item__detail item__detail--date">{sale.Sold_Date}</span>
+									<span className="item__detail item__detail--date">
+										{Moment(sale.Sold_Date).format("D/M/YYYY")}
+									</span>
 									<span className="item__detail item__detail--desc">{sale.Description}</span>
 								</Link>
 							)

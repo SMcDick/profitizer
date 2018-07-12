@@ -96,6 +96,11 @@ class Filter extends Component {
 				return stringToSearch.toLowerCase().indexOf(search.toLowerCase()) > -1
 			})
 		}
+
+		activeItems = activeItems.map((item, idx) => {
+			item.order = idx + 1
+			return item
+		})
 		return activeItems
 	}
 	static getDerivedStateFromProps(props) {
