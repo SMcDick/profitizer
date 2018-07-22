@@ -15,7 +15,6 @@ class OrderForm extends Component {
 
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleUpdate = this.handleUpdate.bind(this)
 
 		this.state = {
 			details: {},
@@ -129,16 +128,6 @@ class OrderForm extends Component {
 		details.Total_Cost_calc = cost
 		this.setState({ details })
 	}
-	handleUpdate = val => {
-		let orders = [...this.props.orders]
-		let current = orders.find(item => item.Order_Id === val.Order_Id)
-		if (current) {
-			orders[orders.indexOf(current)] = val
-		} else {
-			orders = [val, ...orders]
-		}
-		this.props.handleUpdate({ orders })
-	}
 	handleSubmit(e) {
 		const { create, details } = this.props
 		e.preventDefault()
@@ -161,13 +150,20 @@ class OrderForm extends Component {
 		delete saveDetails.Zip_Code
 
 		axios[method](url, saveDetails)
-			.then(results => {
-				let data = results.data
+			.then(() => {
 				if (create) {
-					data = data.sale
+					axios.all([axios.get(API_ROOT + "sales/all"), axios.get(API_ROOT + "inventory/all")]).then(
+						axios.spread((sales, inventory) => {
+							this.props.handleUpdate({ orders: sales.data.data, inventory: inventory.data.data })
+							this.setState({ redirect: true })
+						})
+					)
+				} else {
+					axios.get(API_ROOT + "sales/all").then(result => {
+						this.props.handleUpdate({ orders: result.data.data })
+						this.setState({ redirect: true })
+					})
 				}
-				this.handleUpdate(data)
-				this.setState({ redirect: true })
 			})
 			.catch(e => {
 				let resp = e.response.data ? e.response.data.body : e.response

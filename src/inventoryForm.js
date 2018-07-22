@@ -42,13 +42,11 @@ class InventoryForm extends Component {
 		}
 
 		axios[method](url, this.state.details)
-			.then(results => {
-				// let data = results.data
-				// if (create) {
-				// 	data = data.sale
-				// }
-				// handleOrderUpdates(data)
-				this.setState({ redirect: true })
+			.then(() => {
+				axios.get(API_ROOT + "inventory/all").then(result => {
+					this.props.handleUpdate({ inventory: result.data.data })
+					this.setState({ redirect: true })
+				})
 			})
 			.catch(e => {
 				alert(e.response.data.body)
@@ -109,7 +107,7 @@ InventoryForm.propTypes = {
 	details: propType.object,
 	edit: propType.bool,
 	create: propType.bool,
-	handleOrderUpdates: propType.func
+	handleUpdate: propType.func
 }
 
 export default InventoryForm
