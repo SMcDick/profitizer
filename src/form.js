@@ -44,7 +44,7 @@ class OrderForm extends Component {
 		if (name === "Zip_Code" && value.length === 5) {
 			axios
 				.get(
-					"http://api.zip-codes.com/ZipCodesAPI.svc/1.0/QuickGetZipCodeDetails/" +
+					"https://api.zip-codes.com/ZipCodesAPI.svc/1.0/QuickGetZipCodeDetails/" +
 						value +
 						"?key=JGGQP7LC3URUS5PSVFGX"
 				)
