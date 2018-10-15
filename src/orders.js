@@ -1,9 +1,8 @@
 import React, { Component } from "react"
 import propTypes from "prop-types"
-import { Link } from "react-router-dom"
-import Moment from "moment"
-import OrderNav from "./orderNav"
 
+import OrderNav from "./orderNav"
+import { Grid } from "./grid"
 import Input from "./input"
 
 import util from "./utils"
@@ -21,13 +20,129 @@ class Orders extends Component {
 		/**********/
 		/* Totals */
 		/**********/
-		let totals = {
-			sales: util.formatMoney(util.totaler(orders, "Total_Sold_Price")),
-			return: util.formatMoney(util.totaler(orders, "Return_calc")),
-			profit: util.formatMoney(util.totaler(orders, "Profit_calc")),
-			cost: util.formatMoney(util.totaler(orders, "Total_Cost_calc"))
-		}
+		let totals = [
+			{
+				sales: util.totaler(orders, "Total_Sold_Price"),
+				return: util.totaler(orders, "Return_calc"),
+				profit: util.totaler(orders, "Profit_calc"),
+				cost: util.totaler(orders, "Total_Cost_calc"),
+				fees: util.totaler(orders, "Marketplace_Fee") + util.totaler(orders, "Transaction_Fee"),
+				ship: util.totaler(orders, "Shipping"),
+				tax: util.totaler(orders, "Tax_Calculated_Calc")
+			}
+		]
 
+		const totalFields = [
+			{
+				name: "sales",
+				format: "positiveMoney",
+				heading: "Sales"
+			},
+			{
+				name: "fees",
+				format: "negativeMoney",
+				heading: "Fees"
+			},
+			{
+				name: "ship",
+				format: "negativeMoney",
+				heading: "Shipping"
+			},
+			{
+				name: "tax",
+				format: "negativeMoney",
+				heading: "Tax"
+			},
+			{
+				name: "return",
+				format: "positiveMoney",
+				heading: "Return"
+			},
+			{
+				name: "cost",
+				format: "negativeMoney",
+				heading: "COGS"
+			},
+			{
+				name: "profit",
+				format: "positiveMoney",
+				heading: "Profit"
+			}
+		]
+		const fields = [
+			{
+				name: "Completed",
+				mods: "icon",
+				heading: "",
+				format: "check",
+				width: 24,
+				sticky: true
+			},
+			{
+				name: "order",
+				mods: "row",
+				heading: "#",
+				width: 40,
+				sticky: true
+			},
+			{
+				name: "Description",
+				mods: "desc",
+				width: "40%",
+				sticky: true
+			},
+			{
+				name: "Platform_Order_Id",
+				heading: "ID",
+				format: "truncate",
+				className: "alignleft"
+			},
+			{
+				name: "Total_Sold_Price",
+				heading: "Sale",
+				format: "positiveMoney"
+			},
+			{
+				name: "Total_Cost_calc",
+				heading: "Cost",
+				format: "negativeMoney"
+			},
+			{
+				name: "Marketplace_Fee",
+				heading: "FVF",
+				format: "negativeMoney"
+			},
+			{
+				name: "Transaction_Fee",
+				heading: "Trx",
+				format: "negativeMoney"
+			},
+			{
+				name: "Shipping",
+				format: "negativeMoney"
+			},
+			{
+				name: "Tax_Calculated_Calc",
+				heading: "Tax",
+				format: "negativeMoney"
+			},
+			{
+				name: "Profit_calc",
+				heading: "Profit",
+				format: "positiveMoney"
+			},
+			{
+				name: "Sold_Date",
+				mods: "date",
+				heading: "Sold Date",
+				format: "date",
+				width: 100
+			}
+		]
+		const link = {
+			name: "orders",
+			id: "Order_Id"
+		}
 		return (
 			<section>
 				<h1>Orders</h1>
@@ -39,61 +154,14 @@ class Orders extends Component {
 					label="Search"
 					className="search__wrapper"
 				/>
-				<div className="item-wrapper item__grid">
-					<div className="item__row item__row--header">
-						<span className="item__detail item__detail--date">COGS</span>
-						<span className="item__detail item__detail--date">Sales</span>
-						<span className="item__detail item__detail--date">Return</span>
-						<span className="item__detail item__detail--date">Profit</span>
-					</div>
-					<div className="item__row item__row--header">
-						<span className="item__detail item__detail--date">{totals.cost}</span>
-						<span className="item__detail positive-text item__detail--date">{totals.sales}</span>
-						<span className="item__detail item__detail--date">{totals.return}</span>
-						<span className="item__detail positive-text item__detail--date">{totals.profit}</span>
-					</div>
-				</div>
-				<div className="item__grid">
-					<div className="item__row item__row--header">
-						<span className="item__detail item__detail--row">#</span>
-						<span className="item__detail item__detail--icon item__detail--minor" />
-						<span className="item__detail item__detail--desc">Description</span>
-						<span className="item__detail item__detail--minor">Id</span>
-						<span className="item__detail item__detail--minor">Sale</span>
-						<span className="item__detail item__detail--minor">FVF</span>
-						<span className="item__detail item__detail--minor">Trx</span>
-						<span className="item__detail item__detail--minor">Ship</span>
-						<span className="item__detail item__detail--minor">Tax</span>
-						<span className="item__detail">Profit</span>
-						<span className="item__detail item__detail--date">Sold Date</span>
-					</div>
-					{orders.map(order => {
-						return (
-							<Link to={"/orders/" + order.Order_Id} key={order.Order_Id} className="item__row">
-								<span className="item__detail item__detail--row">{order.order}</span>
-								<span className="item__detail item__detail--icon item__detail--minor">
-									<span className={order.Completed ? "icon--check" : "icon--bang"} />
-								</span>
-								<span className="item__detail item__detail--desc">{order.Description}</span>
-								<span className="item__detail item__detail--minor" title={order.Platform_Order_Id}>
-									{order.Platform_Order_Id.substr(0, 6)}
-								</span>
-								<span className="item__detail item__detail--minor">
-									{util.formatMoney(order.Total_Sold_Price)}
-								</span>
-								<span className="item__detail">${order.Marketplace_Fee.toFixed(2)}</span>
-								<span className="item__detail">${order.Transaction_Fee.toFixed(2)}</span>
-								<span className="item__detail">${order.Shipping.toFixed(2)}</span>
-								<span className="item__detail">${order.Tax_Calculated_Calc.toFixed(2)}</span>
-								<span className="item__detail">${order.Profit_calc.toFixed(2)}</span>
-								<span className="item__detail item__detail--date">
-									{Moment(order.Sold_Date).format("M/D/YYYY")}
-								</span>
-							</Link>
-						)
-					})}
-					{!orders.length && <div>No results</div>}
-				</div>
+				<Grid
+					className="item-wrapper total-table"
+					fields={totalFields}
+					data={totals}
+					fullHeight
+					defaultColWidth={100}
+				/>
+				<Grid fields={fields} data={orders} link={link} />
 			</section>
 		)
 	}

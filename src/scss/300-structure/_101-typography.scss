@@ -34,7 +34,8 @@ h2 {
 	}
 }
 
-strong {
+strong,
+.bold-text {
 	font-weight: 700;
 }
 a,
@@ -74,4 +75,14 @@ em {
 }
 .padBot20 {
 	padding-bottom: 20px;
+}
+
+.alignleft {
+	text-align: left !important;
+}
+.alignright {
+	text-align: right !important;
+}
+.aligncenter {
+	text-align: center !important;
 }

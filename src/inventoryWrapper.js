@@ -7,8 +7,12 @@ import Form from "./inventoryForm"
 
 import Filter from "./filter"
 
+const { func, object, string, array } = PropType
+
 const InventoryWrapper = props => {
-	const { match, inventory } = props
+	const { match, inventory, handleUpdate } = props
+	// TODO mixing props passed to InventoryWrapper with props passed to render function of Route
+	// Revisit eventually
 	return (
 		<div>
 			<Switch>
@@ -39,6 +43,7 @@ const InventoryWrapper = props => {
 									edit={true}
 									{...props}
 									create={true}
+									handleUpdate={handleUpdate}
 								/>
 							</section>
 						)
@@ -47,7 +52,7 @@ const InventoryWrapper = props => {
 				<Route
 					path={match.url + "/:id"}
 					render={props => {
-						return <Item inventory={inventory} {...props} />
+						return <Item inventory={inventory} {...props} handleUpdate={handleUpdate} />
 					}}
 				/>
 			</Switch>
@@ -56,10 +61,11 @@ const InventoryWrapper = props => {
 }
 
 InventoryWrapper.propTypes = {
-	match: PropType.object,
-	location: PropType.object,
-	type: PropType.string,
-	inventory: PropType.array
+	match: object,
+	location: object,
+	type: string,
+	inventory: array,
+	handleUpdate: func
 }
 
 export default InventoryWrapper

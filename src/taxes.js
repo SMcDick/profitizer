@@ -1,9 +1,9 @@
 import React from "react"
 import PropType from "prop-types"
 import Moment from "moment"
-import { NavLink, Link, Redirect } from "react-router-dom"
+import { NavLink, Redirect } from "react-router-dom"
 
-import { Grid, GridRow, GridHeader, GridItem } from "./grid"
+import { Grid } from "./grid"
 import Util from "./utils"
 
 const Taxes = props => {
@@ -42,12 +42,49 @@ const Taxes = props => {
 		const taxableAmount = sales - collected
 		return {
 			name: county,
-			taxableAmount: Util.formatMoney(taxableAmount),
-			collected: Util.formatMoney(collected),
-			due: Util.formatMoney(Util.totaler(countyOrders, "Tax_Calculated_Calc")),
-			orders: countyOrders.map(order => order.Order_Id)
+			taxableAmount: taxableAmount,
+			collected: collected,
+			due: Util.totaler(countyOrders, "Tax_Calculated_Calc"),
+			orders: countyOrders.map(order => {
+				return {
+					id: order.Order_Id,
+					url: "/orders/" + order.Order_Id
+				}
+			})
 		}
 	})
+
+	const fields = [
+		{
+			name: "name",
+			heading: "County",
+			width: 100,
+			mods: "desc"
+		},
+		{
+			name: "taxableAmount",
+			heading: "Taxable Amount",
+			format: "money"
+		},
+		{
+			name: "collected",
+			heading: "Tax Collected",
+			format: "money"
+		},
+		{
+			name: "due",
+			heading: "Estimated Tax Due",
+			width: 120,
+			format: "money"
+		},
+		{
+			name: "orders",
+			heading: "Orders",
+			width: "40%",
+			format: "links",
+			className: "alignleft"
+		}
+	]
 	return (
 		<section>
 			<h1>{month.format("MMMM YYYY")} Sales Tax</h1>
@@ -62,39 +99,7 @@ const Taxes = props => {
 					Two Months Ago
 				</NavLink>
 			</div>
-			<Grid>
-				<GridHeader classes="col-5">
-					<GridItem>County</GridItem>
-					<GridItem>Taxable Amount</GridItem>
-					<GridItem>Tax Collected</GridItem>
-					<GridItem>Estimated Tax Due</GridItem>
-					<GridItem>Orders</GridItem>
-				</GridHeader>
-				{totals.map(county => {
-					return (
-						<GridRow classes="col-5" key={county.name}>
-							<GridItem>{county.name}</GridItem>
-							<GridItem>{county.taxableAmount}</GridItem>
-							<GridItem>{county.collected}</GridItem>
-							<GridItem>{county.due}</GridItem>
-							<GridItem>
-								{county.orders.map(order => {
-									return (
-										<div key={order}>
-											<Link to={"/orders/" + order}>{order}</Link>
-										</div>
-									)
-								})}
-							</GridItem>
-						</GridRow>
-					)
-				})}
-				{totals.length === 0 && (
-					<GridRow>
-						<GridItem classes="item__detail--full">No sales tax due for this month</GridItem>
-					</GridRow>
-				)}
-			</Grid>
+			<Grid fields={fields} data={totals} />
 		</section>
 	)
 }

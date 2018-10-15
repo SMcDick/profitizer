@@ -13,9 +13,10 @@ class InventoryForm extends Component {
 
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+		let { details } = this.getDetails(props)
 
 		this.state = {
-			details: {},
+			details,
 			redirect: false
 		}
 	}
@@ -52,7 +53,7 @@ class InventoryForm extends Component {
 				alert(e.response.data.body)
 			})
 	}
-	static createFields() {
+	createFields() {
 		return [
 			{ name: "Item", type: "text" },
 			{ name: "Item_Id", label: "Item Id", readonly: true, type: "text" },
@@ -62,10 +63,10 @@ class InventoryForm extends Component {
 			{ name: "Num_Sold", label: "Number Sold", int: true }
 		]
 	}
-	static getDerivedStateFromProps(nextProps) {
+	getDetails(props) {
 		let details = {}
-		for (const key of InventoryForm.createFields()) {
-			details[key.name] = nextProps.details[key.name]
+		for (const key of this.createFields()) {
+			details[key.name] = props.details[key.name]
 		}
 		return { details }
 	}
@@ -95,7 +96,7 @@ class InventoryForm extends Component {
 		}
 		return (
 			<form onSubmit={this.handleSubmit} className="order-form">
-				{InventoryForm.createFields().map(field => this.renderInput(field))}
+				{this.createFields().map(field => this.renderInput(field))}
 				<div className="btn-container flex-child__100 pad10">
 					<input type="submit" value="Submit" className="btn" />
 				</div>

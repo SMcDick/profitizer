@@ -1,12 +1,14 @@
 import React, { Component } from "react"
-import propTypes from "prop-types"
+import PropType from "prop-types"
 import Form from "./inventoryForm"
 import { Link } from "react-router-dom"
 import axios from "axios"
-import Moment from "moment"
 
+import { Grid } from "./grid"
 import util from "./utils"
 import { API_ROOT } from "./config"
+
+const { func, array, string, number, oneOfType, object } = PropType
 
 class Item extends Component {
 	constructor(props) {
@@ -29,13 +31,65 @@ class Item extends Component {
 		}
 
 		const { item } = this.state
+		const { handleUpdate } = this.props
 		let totals = {
 			sales: util.totaler(item.sales, "Total_Sold_Price"),
 			return: util.totaler(item.sales, "Return_calc"),
-			realizedProfit: util.totaler(item.sales, "Profit_calc")
+			realizedProfit: util.totaler(item.sales, "Profit_calc"),
+			fees: util.totaler(item.sales, "Transaction_Fee") + util.totaler(item.sales, "Marketplace_Fee"),
+			ship: util.totaler(item.sales, "Shipping")
 		}
-		totals.overallProfit = totals.return - item.Total_Cost
-		totals.averagePerItem = totals.realizedProfit / item.Num_Sold
+
+		const totalFields = [
+			{ name: "sales", heading: "Sales", format: "positiveMoney" },
+			{ name: "fees", heading: "Fees", format: "negativeMoney" },
+			{ name: "ship", heading: "Shipping", format: "negativeMoney" },
+			{ name: "return", heading: "ROGS", format: "positiveMoney" },
+			{ name: "cogs", heading: "COGS", format: "negativeMoney" },
+			{ name: "realized", heading: "Realized", format: "positiveMoney" }
+		]
+		const lotFields = [
+			{ name: "count", heading: "# of Sales" },
+			{ name: "item_count", heading: "# of Items" },
+			{ name: "return", heading: "Return", format: "positiveMoney" },
+			{ name: "cost", heading: "Total Cost", format: "negativeMoney" },
+			{ name: "overall", heading: "Overall", format: "positiveMoney" },
+			{ name: "average", heading: "Profit/Item", format: "positiveMoney" },
+			{ name: "perSale", heading: "Profit/Sale", format: "positiveMoney" }
+		]
+		const totalData = [
+			{
+				sales: totals.sales,
+				cost: item.Total_Cost,
+				return: totals.return,
+				realized: totals.realizedProfit,
+				overall: totals.return - item.Total_Cost,
+				average: totals.realizedProfit / item.Num_Sold,
+				fees: totals.fees,
+				ship: totals.ship,
+				cogs: item.Num_Sold * item.Unit_Cost * (1 + item.Tax / 100),
+				count: item.sales.length,
+				item_count: item.Num_Sold,
+				perSale: totals.realizedProfit / item.sales.length
+			}
+		]
+		const saleFields = [
+			{ name: "order", heading: "#", width: 20 },
+			{ name: "id", heading: "Order Id", width: 40 },
+			{ name: "profit", heading: "Profit", format: "positiveMoney" },
+			{ name: "date", heading: "Sold Date", format: "date" },
+			{ name: "description", heading: "Description", mods: "desc", width: "60%" }
+		]
+		const saleData = item.sales.map((sale, idx) => {
+			return {
+				order: idx + 1,
+				id: sale.Order_Id,
+				profit: sale.Profit_calc,
+				date: sale.Sold_Date,
+				description: sale.Description
+			}
+		})
+		const saleLink = { name: "orders", id: "Order_Id" }
 		const saleAvailable = item.Num_Sold > 0
 		return (
 			<section>
@@ -44,7 +98,7 @@ class Item extends Component {
 					<span className="negative-text">{util.formatMoney(item.Final_Cost)}</span>/each
 				</h1>
 				<Link to="/inventory">Back</Link>
-				<Form details={item} />
+				<Form details={item} handleUpdate={handleUpdate} />
 				<br />
 				{!saleAvailable && (
 					<div className="item-wrapper">
@@ -52,60 +106,35 @@ class Item extends Component {
 					</div>
 				)}
 				{saleAvailable && (
-					<div className="item-wrapper item__grid">
-						<div className="item__row item__row--header profits-for-item">
-							<span className="item__detail">Total Cost</span>
-							<span className="item__detail">Sales</span>
-							<span className="item__detail">Return</span>
-							<span className="item__detail">Realized Profit</span>
-							<span className="item__detail">Overall Profit</span>
-							<span className="item__detail">Avg Profit per Item Sold</span>
-						</div>
-						<div className="item__row item__row--header profits-for-item">
-							<span className="item__detail">{util.formatMoney(item.Total_Cost)}</span>
-							<span className="item__detail positive-text">{util.formatMoney(totals.sales)}</span>
-							<span className="item__detail item__detail--date">{util.formatMoney(totals.return)}</span>
-							<span className="item__detail positive-text">
-								{util.formatMoney(totals.realizedProfit)}
-							</span>
-							<span className="item__detail positive-text">{util.formatMoney(totals.overallProfit)}</span>
-							<span className="item__detail positive-text">
-								{util.formatMoney(totals.averagePerItem)}
-							</span>
-						</div>
+					<div className="item-wrapper">
+						<h2>Sold Item Details</h2>
+						<Grid
+							className="total-table"
+							fields={totalFields}
+							data={totalData}
+							fullHeight
+							defaultColWidth={100}
+						/>
+						<h2>Lot Details</h2>
+						<Grid
+							className="total-table"
+							fields={lotFields}
+							data={totalData}
+							fullHeight
+							defaultColWidth={100}
+						/>
 					</div>
 				)}
-				{saleAvailable && (
-					<div className="item-wrapper item__grid">
-						<div className="item__row item__row--header">
-							<span className="item__detail item__detail--row">#</span>
-							<span className="item__detail">Order Id</span>
-							<span className="item__detail">Profit</span>
-							<span className="item__detail item__detail--date">Sold Date</span>
-							<span className="item__detail item__detail--desc">Description</span>
-						</div>
-						{this.state.item.sales.map((sale, idx) => {
-							return (
-								<Link to={"/orders/" + sale.Order_Id} key={sale.Order_Id} className="item__row">
-									<span className="item__detail item__detail--row">{idx + 1}</span>
-									<span className="item__detail">#{sale.Order_Id}</span>
-									<span className="item__detail">${sale.Profit_calc.toFixed(2)}</span>
-									<span className="item__detail item__detail--date">
-										{Moment(sale.Sold_Date).format("D/M/YYYY")}
-									</span>
-									<span className="item__detail item__detail--desc">{sale.Description}</span>
-								</Link>
-							)
-						})}
-					</div>
-				)}
+				{saleAvailable && <Grid data={saleData} link={saleLink} fields={saleFields} fullHeight />}
 			</section>
 		)
 	}
 }
 Item.propTypes = {
-	id: propTypes.string || propTypes.number,
-	items: propTypes.array
+	id: oneOfType([string, number]),
+	items: array,
+	handleUpdate: func,
+	match: object
 }
 
 export default Item

@@ -201,12 +201,15 @@
 	margin: 0 -10px;
 	align-items: flex-end;
 	.input__wrapper {
-		flex: 0 0 33.333%;
+		flex: 1 0 100%;
 		padding: 10px;
 		margin: 0;
 		box-sizing: border-box;
 		&:first-child {
 			flex: 1 1 100%;
+		}
+		@include large-phone {
+			flex: 1 1 33.333%;
 		}
 		label > span {
 			display: block;

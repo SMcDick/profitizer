@@ -15,9 +15,10 @@ class OrderForm extends Component {
 
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+		let { details } = this.buildDetails(props)
 
 		this.state = {
-			details: {},
+			details,
 			redirect: false
 		}
 		this.createdItems = []
@@ -170,7 +171,7 @@ class OrderForm extends Component {
 				alert(resp)
 			})
 	}
-	static createFields() {
+	createFields() {
 		return [
 			{ name: "Description", type: "text" },
 			{ name: "Platform_Order_Id", type: "text", required: true },
@@ -192,7 +193,7 @@ class OrderForm extends Component {
 			{ name: "Completed", type: "checkbox" }
 		]
 	}
-	static createItems(itemArray, props) {
+	createItems(itemArray, props) {
 		let items = itemArray.reduce((array, item) => {
 			let itemNumber = `Item_${item}`
 			let itemQuantity = `${itemNumber}_Quantity`
@@ -254,20 +255,20 @@ class OrderForm extends Component {
 		}
 		return { marketplaceFee, transactionFee }
 	}
-	static getDerivedStateFromProps(nextProps) {
+	buildDetails(props) {
 		let details = {}
-		for (const key of OrderForm.createFields()) {
-			details[key.name] = nextProps.details[key.name]
+		for (const key of this.createFields()) {
+			details[key.name] = props.details[key.name]
 		}
 		let itemArray = [1, 2, 3, 4, 5].reduce((array, item) => {
-			if (nextProps.details[`Item_${item}`]) {
+			if (props.details[`Item_${item}`]) {
 				return array.concat(item)
 			}
 			return array
 		}, [])
 
-		for (const key of OrderForm.createItems(itemArray, nextProps)) {
-			details[key.name] = nextProps.details[key.name]
+		for (const key of this.createItems(itemArray, props)) {
+			details[key.name] = props.details[key.name]
 		}
 		if (!details.Sold_Date) {
 			details.Sold_Date = new Date().toISOString().split("T")[0]
@@ -375,21 +376,19 @@ class OrderForm extends Component {
 							// TODO fix this so that the fields display correctly
 							<div className="item-field-wrapper">
 								<h3>Item Details</h3>
-								{OrderForm.createItems(this.createdItems, this.props).map(field =>
-									this.renderInput(field)
-								)}
+								{this.createItems(this.createdItems, this.props).map(field => this.renderInput(field))}
 							</div>
 						)}
 					</div>
 				)}
 				{(!this.props.create || this.createdItems.length > 0) && (
 					<div className="order-form">
-						{OrderForm.createFields().map(field => this.renderInput(field, fees))}
+						{this.createFields().map(field => this.renderInput(field, fees))}
 						{!this.props.create && (
 							<div className="item-wrapper">
 								<div className="item-field-wrapper">
 									<h3>Item Details</h3>
-									{OrderForm.createItems(this.createdItems, this.props).map(field => {
+									{this.createItems(this.createdItems, this.props).map(field => {
 										return this.renderInput(field)
 									})}
 								</div>

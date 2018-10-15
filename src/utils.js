@@ -1,15 +1,11 @@
 const util = {
-	logger: function(val) {
-		console.log(val)
-	},
-	formatDate: function(date) {
-		let fdate = new Date(date)
-		return fdate.getMonth() + 1 + "/" + fdate.getDate() + "/" + fdate.getFullYear()
-	},
 	stringify: function(val) {
 		return val.replace(/_/g, " ")
 	},
 	formatMoney: function(val) {
+		if (!val || Number.isNaN(val)) {
+			val = 0
+		}
 		if (Number(val) >= 0) {
 			return "$" + Number(val).toFixed(2)
 		} else {
@@ -84,6 +80,23 @@ const util = {
 			}
 			return ret
 		})
+	},
+	getMods(mods, name, type) {
+		let mod
+		if (mods) {
+			mod = mods.split(" ")
+			mod = mod.map(modifier => `${name}--${modifier}`).join(" ")
+		}
+		if (type) {
+			name += ` ${name}--${type}`
+		}
+		return mods ? `${name} ${mod}` : name
+	},
+	getClasses(className) {
+		return className ? ` ${className}` : ""
+	},
+	checkForPct(val, width) {
+		return typeof val === "string" && val.indexOf("%") > -1 ? (parseFloat(val) * width) / 100 : val
 	}
 }
 

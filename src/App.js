@@ -156,11 +156,23 @@ class App extends Component {
 							exact
 							render={props => {
 								let fields = [
-									{ name: "Date", type: "date" },
-									{ name: "Restaurant", type: "text" },
-									{ name: "Amount", type: "number" },
-									{ name: "Tip", type: "number" },
-									{ name: "Total", type: "number" }
+									{
+										name: "Date",
+										type: "date",
+										format: "date",
+										width: 100,
+										sticky: true
+									},
+									{
+										name: "Restaurant",
+										type: "text",
+										width: "40%",
+										mods: "desc",
+										sticky: true
+									},
+									{ name: "Amount", type: "number", format: "money" },
+									{ name: "Tip", type: "number", format: "money" },
+									{ name: "Total", type: "number", format: "money" }
 								]
 								let urls = {
 									getAll: "restaurants/all",
@@ -183,9 +195,9 @@ class App extends Component {
 							exact
 							render={props => {
 								let fields = [
-									{ name: "Date", type: "date" },
-									{ name: "Vendor", type: "text" },
-									{ name: "Amount", type: "number" },
+									{ name: "Date", type: "date", format: "date", width: 100, sticky: true },
+									{ name: "Vendor", type: "text", sticky: true, width: "40%", mods: "desc" },
+									{ name: "Amount", type: "number", format: "money" },
 									{ name: "Type", type: "text" },
 									{ name: "Notes", type: "text" }
 								]

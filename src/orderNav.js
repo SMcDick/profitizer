@@ -35,11 +35,6 @@ class OrderNav extends Component {
 				<div className="flex-child flex-child__100 btn-group padBot20">
 					{this.filters.map(filter => this.renderLink(filter.val, filter.text))}
 				</div>
-				<div className="flex-child btn-group">
-					{this.renderLink("incomplete:true", "Incomplete")}
-					{this.renderLink("taxes:true", "Sales Tax")}
-					{this.renderLink("refunds:true", "Refunds/Returns")}
-				</div>
 				<div className="flex-child">
 					<Link to="/orders/create" className="btn">
 						Create New Order
