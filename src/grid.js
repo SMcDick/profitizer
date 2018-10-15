@@ -169,7 +169,7 @@ class GridBody extends Component {
 					width={colWidth}
 					flexGrow={tableWidth.base === tableWidth.available && !field.sticky ? 1 : 0}
 					cellRenderer={({ cellData, rowData }) => {
-						let url = link ? link.name + "/" + rowData[link.id] : null
+						let url = link ? "/" + link.name + "/" + rowData[link.id] : null
 						return this.renderGridItem({ field, cellData, rowData, url })
 					}}
 					headerRenderer={({ dataKey, label }) => {

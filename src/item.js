@@ -89,7 +89,7 @@ class Item extends Component {
 				description: sale.Description
 			}
 		})
-		const saleLink = { name: "orders", id: "Order_Id" }
+		const saleLink = { name: "orders", id: "id" }
 		const saleAvailable = item.Num_Sold > 0
 		return (
 			<section>
