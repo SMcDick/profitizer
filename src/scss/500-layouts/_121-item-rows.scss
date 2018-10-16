@@ -1,17 +1,6 @@
 .grid__outer {
 	position: relative;
-	padding-bottom: 10px;
-	margin: 20px -20px;
-	.scrollable {
-		&:after {
-			@include before;
-			bottom: 0;
-			left: 0;
-			height: 10px;
-			background: $white;
-			width: 100%;
-		}
-	}
+	margin: 20px 0;
 }
 .item__grid {
 	overflow: hidden;
