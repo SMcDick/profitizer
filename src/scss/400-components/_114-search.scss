@@ -12,24 +12,13 @@
 		top: 0;
 		left: 50%;
 	}
-	label,
 	input {
 		position: relative;
 		z-index: 1;
+		background: $white;
 	}
 	label {
-		position: absolute;
-		top: 50%;
-		left: 0;
-		background: $white;
-		transform: translate(0, -50%);
-		color: $another-gray;
-		z-index: 2;
-		padding: 6px 10px;
-		line-height: 1;
-		width: 100%;
-		box-sizing: border-box;
-		border-radius: 2px;
+		display: none
 	}
 	input {
 		z-index: 3;

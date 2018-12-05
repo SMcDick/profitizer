@@ -863,6 +863,9 @@ em {
   position: relative;
   box-sizing: border-box;
   margin-bottom: 10px; }
+  .input__wrapper.short {
+    width: 140px;
+    align-self: flex-end; }
 
 .input--text {
   box-shadow: none;
@@ -1050,6 +1053,9 @@ em {
 .select-wrapper h3 {
   margin-top: 10px; }
 
+.input--textarea {
+  height: 140px; }
+
 .alert {
   opacity: 0;
   visibility: hidden;
@@ -1126,23 +1132,12 @@ em {
     z-index: 0;
     top: 0;
     left: 50%; }
-  .search__wrapper label,
   .search__wrapper input {
     position: relative;
-    z-index: 1; }
+    z-index: 1;
+    background: #fff; }
   .search__wrapper label {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    background: #fff;
-    transform: translate(0, -50%);
-    color: #EAECF0;
-    z-index: 2;
-    padding: 6px 10px;
-    line-height: 1;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 2px; }
+    display: none; }
   .search__wrapper input {
     z-index: 3; }
     .search__wrapper input:focus {
@@ -1185,7 +1180,10 @@ em {
 
 .grid__outer {
   position: relative;
-  margin: 20px 0; }
+  margin: 20px -20px; }
+  @media (min-width: 740px) {
+    .grid__outer {
+      margin: 20px 0; } }
 
 .item__grid {
   overflow: hidden;
@@ -1222,6 +1220,11 @@ em {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden; }
+  .item__detail--title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block; }
   .total-table .item__detail {
     text-align: center;
     font-weight: bold; }
@@ -1246,5 +1249,4 @@ em {
   display: flex; }
 
 .App {
-  padding-top: 30px;
-  padding-bottom: 30px; }
+  padding-top: 10px; }

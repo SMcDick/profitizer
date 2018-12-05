@@ -2,6 +2,10 @@
 	position: relative;
 	box-sizing: border-box;
 	margin-bottom: 10px;
+	&.short {
+		width: 140px;
+		align-self: flex-end;
+	}
 }
 .input--text {
 	@include input;
@@ -221,4 +225,8 @@
 	h3 {
 		margin-top: 10px;
 	}
+}
+
+.input--textarea {
+	height: 140px;
 }
