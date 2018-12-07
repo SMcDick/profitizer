@@ -67,6 +67,8 @@ class Bugs extends Component {
 		for (const key of fields) {
 			details[key.name] = key.type === "number" ? 0 : key.type === "date" ? Moment().format("YYYY-MM-DD") : ""
 		}
+		// TODO This should probably be set up on the API side
+		details.Completed = 0
 		this.setState({ showModal: true, details })
 	}
 
