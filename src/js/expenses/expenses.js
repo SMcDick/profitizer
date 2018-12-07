@@ -73,7 +73,7 @@ class Expenses extends Component {
 		if (val === "fetch") {
 			method = this.fetchData()
 		}
-		this.setState({ showModal: false, details: {} }, method)
+		this.setState({ showModal: false, details: {}, error: false }, method)
 	}
 	handleError = err => this.setState({ error: err.response.data.message })
 
