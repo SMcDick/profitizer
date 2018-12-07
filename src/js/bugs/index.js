@@ -47,7 +47,8 @@ class Bugs extends Component {
 					data: expenses.data.data,
 					loading: false,
 					requestError: false,
-					submitError: false
+					submitError: false,
+					id: undefined
 				})
 			})
 			.catch(e => {
@@ -78,7 +79,7 @@ class Bugs extends Component {
 		if (val === "fetch") {
 			method = this.fetchData()
 		}
-		this.setState({ showModal: false, details: {}, submitError: false }, method)
+		this.setState({ showModal: false, details: {}, submitError: false, id: undefined }, method)
 	}
 
 	handleError = e => {

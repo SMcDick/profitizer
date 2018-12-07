@@ -21,7 +21,8 @@ class Expenses extends Component {
 			loading: true,
 			requestError: false,
 			showModal: false,
-			details: {}
+			details: {},
+			id: undefined
 		}
 	}
 	componentDidMount() {
@@ -73,7 +74,7 @@ class Expenses extends Component {
 		if (val === "fetch") {
 			method = this.fetchData()
 		}
-		this.setState({ showModal: false, details: {}, error: false }, method)
+		this.setState({ showModal: false, details: {}, error: false, id: undefined }, method)
 	}
 	handleError = err => this.setState({ error: err.response.data.message })
 
