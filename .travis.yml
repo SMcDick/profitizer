@@ -1,10 +1,18 @@
 language: node_js
 node_js:
-  - "7"
+- '7'
 cache:
   directories:
   - node_modules
 install:
-  - npm install
+- npm install
 script:
-  - npm run build
+- npm run build
+before_install:
+- openssl aes-256-cbc -K $encrypted_33103d60feed_key -iv $encrypted_33103d60feed_iv
+  -in .travis_deploy_key.enc -out .travis_deploy_key -d
+after_success:
+  - eval "$(ssh-agent -s)"
+  - chmod 600 .travis_deploy_key
+  - ssh-add .travis_deploy_key
+  - "tar -czf - -C build . | ssh kylepsullivan_profiteer@ssh.phx.nearlyfreespeech.net 'tar -xzf - -C /protected/node-mysql/test'"
