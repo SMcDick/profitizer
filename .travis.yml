@@ -18,4 +18,6 @@ after_success:
   - eval "$(ssh-agent -s)"
   - chmod 600 .travis_deploy_key
   - ssh-add .travis_deploy_key
-  - "tar -czf - -C build . | ssh kylepsullivan_profiteer@ssh.phx.nearlyfreespeech.net 'tar -xzf - -C /home/protected/node-mysql/'"
+  # - "tar -czf - -C build . | ssh kylepsullivan_profiteer@ssh.phx.nearlyfreespeech.net 'tar -xzf - -C /home/protected/node-mysql/build'"
+  - "ssh kylepsullivan_profiteer@ssh.phx.nearlyfreespeech.net 'rm -rf /home/protected/build/*'"
+  # - "tar -czf - -C build . | ssh kylepsullivan_profiteer@ssh.phx.nearlyfreespeech.net 'tar -xzf - -C /home/protected/node-mysql/build'"
