@@ -26,6 +26,7 @@ class App extends Component {
 		return (
 			<Router>
 				<div className="App width-wrapper">
+					<p>Travis test</p>
 					{process.env.NODE_ENV === "development" && <p>This is the dev site</p>}
 					{console.log(`${util.capitalize(process.env.NODE_ENV)} build. API: ${API_ROOT}`)}
 					<Nav />
