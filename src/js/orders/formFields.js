@@ -1,6 +1,7 @@
 const fields = [
 	{ name: "Description", type: "text", className: "flex-child__100 pad10" },
 	{ name: "Platform_Order_Id", type: "text", required: true },
+	{ name: "Buyer", type: "text" },
 	{ name: "Marketplace", type: "text" },
 	{ name: "Sold_Date", type: "date", required: true },
 	{ name: "Total_Sold_Price", required: true },
