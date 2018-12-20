@@ -4,7 +4,7 @@ import axios from "axios"
 
 import fields from "./gridFields"
 
-import Chart from "./charts"
+import { Line } from "react-chartjs-2"
 
 import Loading from "../loading"
 import RequestError from "../error"
@@ -69,29 +69,25 @@ class Reports extends Component {
 		}
 		// TODO Move this out of render and play with colors
 		// Also, add in dynamic show/hide datasets
-		let labelArray = ["Fees", "Shipping", "COGS", "Profit", "Sales"]
+		let labelArray = [
+			{ name: "Profit", color: "rgba(63, 195, 128,0.7)" },
+			{ name: "COGS", color: "rgba(241, 241, 103, 0.7)" },
+			{ name: "Shipping", color: "rgba(103, 132, 241, 0.5)" },
+			{ name: "Fees", color: "rgba(241, 132, 103, 0.5)", border: "green", width: 2 }
+		]
 		let dataList = labelArray.map(label => {
 			return {
-				label,
+				label: label.name,
 				data: [],
-				borderColor: "rgba(180,0,0,0.5)",
-				borderWidth: 1,
-				backgroundColor: "rgba(0,0,0,0.3)"
+				borderColor: label.border ? label.border : "rgba(0,0,0,0.5)",
+				borderWidth: label.width ? label.width : 1,
+				backgroundColor: label.color
 			}
 		})
 		let chartData = util.sortBy(data, null, [{ name: "Sold_Date" }]).reduce(
 			(obj, datum) => {
 				let labels = [...obj.labels, datum["Sold_Date"]]
 				let datasets = dataList.map((dataset, idx) => {
-					if (dataset.label === "Sales") {
-						dataset.backgroundColor = "green"
-					}
-					if (dataset.label === "COGS") {
-						dataset.backgroundColor = "red"
-					}
-					if (dataset.label === "Profit") {
-						dataset.backgroundColor = "rgba(0,155,0,0.5)"
-					}
 					dataset.data = [...obj.datasets[idx].data, datum[dataset.label]]
 					return dataset
 				})
@@ -99,10 +95,38 @@ class Reports extends Component {
 			},
 			{ labels: [], datasets: dataList }
 		)
+		let chartOptions = {
+			tooltips: {
+				mode: "x"
+			},
+			// legend: {
+			// 	reverse: true
+			// },
+			scales: {
+				xAxes: [
+					{
+						scaleLabel: {
+							display: true,
+							labelString: "Month"
+						},
+						stacked: true
+					}
+				],
+				yAxes: [
+					{
+						stacked: true,
+						scaleLabel: {
+							display: true,
+							labelString: "Value"
+						}
+					}
+				]
+			}
+		}
 		return (
 			<section>
 				<h1>Sales Report</h1>
-				<Chart chartData={chartData} />
+				<Line data={chartData} options={chartOptions} />
 				<Grid fields={fields} {...this.state} />
 			</section>
 		)
