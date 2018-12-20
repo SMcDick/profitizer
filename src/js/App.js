@@ -9,6 +9,7 @@ import Taxes from "./taxes"
 import ExpenseWrapper from "./expenses/expenseWrapper"
 import RestaurantWrapper from "./expenses/restaurantWrapper"
 import Bugs from "./bugs"
+import Reports from './reports'
 
 import Nav from "./mainNav"
 
@@ -34,6 +35,7 @@ class App extends Component {
 						<Route path="/inventory" component={Inventory} />
 						<Route path="/orders" component={Orders} />
 						<Route path="/taxes/:month?" component={Taxes} />
+						<Route path="/reports/:year?/:month?" component={Reports} />
 						<Route path="/restaurants/:params*" component={RestaurantWrapper} />
 						<Route path="/expenses/:params*" component={ExpenseWrapper} />
 						<Route path="/Bugs/:params*" component={Bugs} />

@@ -30,6 +30,9 @@ const Nav = () => (
 			<NavLink to="/taxes">Taxes</NavLink>
 		</li>
 		<li className="flex-child nav__item">
+			<NavLink to="/reports">Reports</NavLink>
+		</li>
+		<li className="flex-child nav__item">
 			<NavLink to="/expenses">Expenses</NavLink>
 		</li>
 		<li className="flex-child nav__item">
