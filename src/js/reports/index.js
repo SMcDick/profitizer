@@ -4,6 +4,8 @@ import axios from "axios"
 
 import fields from "./gridFields"
 
+import Chart from "./charts"
+
 import Loading from "../loading"
 import RequestError from "../error"
 import { Grid } from "../grid"
@@ -57,7 +59,7 @@ class Reports extends Component {
 	}
 
 	render() {
-		const { loading, requestError } = this.state
+		const { loading, requestError, data } = this.state
 
 		if (loading) {
 			return <Loading />
@@ -65,9 +67,42 @@ class Reports extends Component {
 		if (requestError) {
 			return <RequestError />
 		}
+		// TODO Move this out of render and play with colors
+		// Also, add in dynamic show/hide datasets
+		let labelArray = ["Fees", "Shipping", "COGS", "Profit", "Sales"]
+		let dataList = labelArray.map(label => {
+			return {
+				label,
+				data: [],
+				borderColor: "rgba(180,0,0,0.5)",
+				borderWidth: 1,
+				backgroundColor: "rgba(0,0,0,0.3)"
+			}
+		})
+		let chartData = util.sortBy(data, null, [{ name: "Sold_Date" }]).reduce(
+			(obj, datum) => {
+				let labels = [...obj.labels, datum["Sold_Date"]]
+				let datasets = dataList.map((dataset, idx) => {
+					if (dataset.label === "Sales") {
+						dataset.backgroundColor = "green"
+					}
+					if (dataset.label === "COGS") {
+						dataset.backgroundColor = "red"
+					}
+					if (dataset.label === "Profit") {
+						dataset.backgroundColor = "rgba(0,155,0,0.5)"
+					}
+					dataset.data = [...obj.datasets[idx].data, datum[dataset.label]]
+					return dataset
+				})
+				return { labels, datasets }
+			},
+			{ labels: [], datasets: dataList }
+		)
 		return (
 			<section>
 				<h1>Sales Report</h1>
+				<Chart chartData={chartData} />
 				<Grid fields={fields} {...this.state} />
 			</section>
 		)
