@@ -71,9 +71,10 @@ class Reports extends Component {
 		// Also, add in dynamic show/hide datasets
 		let labelArray = [
 			{ name: "Profit", color: "rgba(63, 195, 128,0.7)" },
-			{ name: "COGS", color: "rgba(241, 241, 103, 0.7)" },
-			{ name: "Shipping", color: "rgba(103, 132, 241, 0.5)" },
-			{ name: "Fees", color: "rgba(241, 132, 103, 0.5)", border: "green", width: 2 }
+			{ name: "Return", color: "rgba(63, 195, 128,0.7)" }
+			// { name: "COGS", color: "rgba(241, 241, 103, 0.7)" },
+			// { name: "Shipping", color: "rgba(103, 132, 241, 0.5)" },
+			// { name: "Total Fees", color: "rgba(241, 132, 103, 0.5)", border: "green", width: 2 }
 		]
 		let dataList = labelArray.map(label => {
 			return {
@@ -84,9 +85,9 @@ class Reports extends Component {
 				backgroundColor: label.color
 			}
 		})
-		let chartData = util.sortBy(data, null, [{ name: "Sold_Date" }]).reduce(
+		let chartData = util.sortBy(data, null, [{ name: "Date" }]).reduce(
 			(obj, datum) => {
-				let labels = [...obj.labels, datum["Sold_Date"]]
+				let labels = [...obj.labels, datum["Date"]]
 				let datasets = dataList.map((dataset, idx) => {
 					dataset.data = [...obj.datasets[idx].data, datum[dataset.label]]
 					return dataset
@@ -99,9 +100,9 @@ class Reports extends Component {
 			tooltips: {
 				mode: "x"
 			},
-			// legend: {
-			// 	reverse: true
-			// },
+			legend: {
+				reverse: true
+			},
 			scales: {
 				xAxes: [
 					{

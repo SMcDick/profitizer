@@ -9,7 +9,7 @@ import Taxes from "./taxes"
 import ExpenseWrapper from "./expenses/expenseWrapper"
 import RestaurantWrapper from "./expenses/restaurantWrapper"
 import Bugs from "./bugs"
-import Reports from './reports'
+import Reports from "./reports"
 
 import Nav from "./mainNav"
 
