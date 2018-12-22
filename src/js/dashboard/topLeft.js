@@ -20,7 +20,7 @@ class TopLeft extends Component {
 		}
 	}
 	componentDidMount() {
-		this.fetchData(["2018"])
+		this.fetchData(["2018/09"])
 	}
 	fetchData(paramStrings) {
 		const requests = paramStrings.map(string => {
@@ -74,7 +74,18 @@ class TopLeft extends Component {
 			reverse: true
 		},
 		tooltips: {
-			mode: "x"
+			mode: "x",
+			callbacks: {
+				label: function(tooltipItem, data) {
+					var label = data.datasets[tooltipItem.datasetIndex].label || ""
+
+					if (label) {
+						label += ": $"
+					}
+					label += (Math.round(tooltipItem.yLabel * 100) / 100).toFixed(0)
+					return label
+				}
+			}
 		},
 		scales: {
 			yAxes: [
@@ -100,12 +111,12 @@ class TopLeft extends Component {
 
 		let line = {
 			labelArray: [
-				{ name: "Profit", color: "rgba(63, 195, 128,0.7)" },
+				{ name: "Profit", color: "rgba(63, 195, 128,0.9)" },
 				{ name: "Return", color: "rgba(63, 195, 128,0.7)" }
 			]
 		}
 		line.dataList = this.createDataList(line.labelArray)
-		line.chartData = this.filterChartData(line.dataList, data[0], "Gross Sales")
+		line.chartData = this.filterChartData(line.dataList, data[0], "Date")
 
 		return <Line data={line.chartData} options={chartOptions} />
 	}
