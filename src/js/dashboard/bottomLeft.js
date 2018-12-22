@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import PropType from "prop-types"
 import axios from "axios"
 
-import { Line } from "react-chartjs-2"
+import { Bar } from "react-chartjs-2"
 
 import Loading from "../loading"
 import RequestError from "../error"
@@ -20,7 +20,7 @@ class TopLeft extends Component {
 		}
 	}
 	componentDidMount() {
-		this.fetchData(["last-60"])
+		this.fetchData(["last-180?groupby=month(sold_date)"])
 	}
 	fetchData(paramStrings) {
 		const requests = paramStrings.map(string => {
@@ -97,7 +97,6 @@ class TopLeft extends Component {
 		scales: {
 			yAxes: [
 				{
-					stacked: true,
 					gridLines: false
 				}
 			],
@@ -105,7 +104,7 @@ class TopLeft extends Component {
 				{
 					type: "time",
 					time: {
-						unit: "week"
+						unit: "month"
 					},
 					gridLines: false
 				}
@@ -135,7 +134,7 @@ class TopLeft extends Component {
 		line.dataList = this.createDataList(line.labelArray)
 		line.chartData = this.filterChartData(line.dataList, data[0], "Date")
 
-		return <Line data={line.chartData} options={chartOptions} />
+		return <Bar data={line.chartData} options={chartOptions} />
 	}
 }
 
