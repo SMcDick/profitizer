@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import PropType from "prop-types"
 import axios from "axios"
+import Moment from "moment"
 
 import { Line } from "react-chartjs-2"
 
@@ -16,11 +17,26 @@ class TopLeft extends Component {
 		this.state = {
 			data: [],
 			loading: true,
-			requestError: false
+			requestError: false,
+			period: 6,
+			periodUnit: "months",
+			lookback: 1,
+			lookbackUnit: "years"
 		}
 	}
 	componentDidMount() {
-		this.fetchData(["last-60"])
+		const { period, periodUnit, lookback, lookbackUnit } = this.state
+		const formatDate = date => {
+			return date.format("YYYY-MM-DD")
+		}
+		const curStart = formatDate(Moment().subtract(period, periodUnit))
+		const curEnd = formatDate(Moment())
+		const lbStart = formatDate(Moment(curStart).subtract(lookback, lookbackUnit))
+		const lbEnd = formatDate(Moment().subtract(lookback, lookbackUnit))
+
+		const formatUrl = (start, end) => `range/${start}/${end}?groupby=month(Sold_Date)`
+
+		this.fetchData([formatUrl(curStart, curEnd), formatUrl(lbStart, lbEnd)])
 	}
 	fetchData(paramStrings) {
 		const requests = paramStrings.map(string => {
