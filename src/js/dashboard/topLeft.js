@@ -7,7 +7,6 @@ import { Line } from "react-chartjs-2"
 
 import Loading from "../loading"
 import RequestError from "../error"
-import util from "../utils"
 
 import { API_ROOT } from "../config"
 
@@ -18,8 +17,8 @@ class TopLeft extends Component {
 			data: [],
 			loading: true,
 			requestError: false,
-			period: 6,
-			periodUnit: "months",
+			period: 180,
+			periodUnit: "days",
 			lookback: 1,
 			lookbackUnit: "years"
 		}
@@ -33,8 +32,9 @@ class TopLeft extends Component {
 		const curEnd = formatDate(Moment())
 		const lbStart = formatDate(Moment(curStart).subtract(lookback, lookbackUnit))
 		const lbEnd = formatDate(Moment().subtract(lookback, lookbackUnit))
-
-		const formatUrl = (start, end) => `range/${start}/${end}?groupby=month(Sold_Date)`
+		// TODO figure out why some weeks start on Saturday and some dont
+		// Its because Im getting the max Display_Date. Figure out how to do that better
+		const formatUrl = (start, end) => `range/${start}/${end}?groupby=Week(Sold_Date)`
 
 		this.fetchData([formatUrl(curStart, curEnd), formatUrl(lbStart, lbEnd)])
 	}
@@ -60,23 +60,9 @@ class TopLeft extends Component {
 			})
 	}
 
-	filterChartData(dataList, data, label) {
-		return util.sortBy(data, null, [{ name: label }]).reduce(
-			(obj, datum) => {
-				let labels = [...obj.labels, datum[label]]
-				let datasets = dataList.map((dataset, idx) => {
-					dataset.data = [...obj.datasets[idx].data, datum[dataset.label]]
-					return dataset
-				})
-				return { labels, datasets }
-			},
-			{ labels: [], datasets: dataList }
-		)
-	}
-	createDataList(labelArray, datasets, labels) {
+	createDataList(labelArray, datasets) {
 		return labelArray.reduce(
 			(obj, label) => {
-				// let labels = [...obj.labels, label.name]
 				let dataset = {
 					label: label.name,
 					data: datasets[label.index],
@@ -87,39 +73,42 @@ class TopLeft extends Component {
 					pointRadius: 3,
 					borderJoinStyle: "miter",
 					pointHoverRadius: 5,
-					pointHoverBackgroundColor: "rgba(75,192,192,1)",
+					// pointHoverBackgroundColor: "rgba(75,192,192,1)",
 					pointHoverBorderColor: "rgba(220,220,220,1)",
-					pointHoverBorderWidth: 1,
-					pointHitRadius: 5
+					pointHoverBorderWidth: 1
+					// pointHitRadius: 5
 				}
-				return { labels, datasets: [...obj.datasets, dataset] }
+				return { datasets: [...obj.datasets, dataset] }
 			},
 			{ labels: [], datasets: [] }
 		)
 	}
 
 	lineChartOptions = {
-		legend: {
-			reverse: true
-		},
 		tooltips: {
 			mode: "x",
+			backgroundColor: "white",
+			titleFontColor: "#333",
 			callbacks: {
 				label: function(tooltipItem, data) {
 					var label = data.datasets[tooltipItem.datasetIndex].label || ""
-
 					if (label) {
 						label += ": $"
 					}
 					label += (Math.round(tooltipItem.yLabel * 100) / 100).toFixed(0)
 					return label
+				},
+				title: function(tooltipItem, data) {
+					return ["Week of ", Moment(tooltipItem[0].xLabel).format("ddd MM/DD/YY")]
+				},
+				labelTextColor: function(tooltipItem, chart) {
+					return "#543453"
 				}
 			}
 		},
 		scales: {
 			yAxes: [
 				{
-					// stacked: true,
 					gridLines: false
 				}
 			],
@@ -127,7 +116,10 @@ class TopLeft extends Component {
 				{
 					type: "time",
 					time: {
-						unit: "week"
+						unit: "week",
+						displayFormats: {
+							week: "M/D"
+						}
 					},
 					gridLines: false
 				}
@@ -154,59 +146,21 @@ class TopLeft extends Component {
 				{ name: "Past", color: "rgba(163, 95, 128,0.7)", index: 1 }
 			]
 		}
-		// line.chartData = {
-		// 	// labels: data[0].map(item => item["Date"]),
-		// 	labels: ["red", "white", "blue"],
-		// 	datasets: [
-		// 		{
-		// 			label: "Current",
-		// 			data: data[0].map(item => item["Net Sales"]),
-		// 			borderColor: "rgba(0,0,0,0.5)",
-		// 			borderWidth: 1,
-		// 			backgroundColor: "blue",
-		// 			pointRadius: 3,
-		// 			borderJoinStyle: "miter",
-		// 			pointHoverRadius: 5,
-		// 			pointHoverBackgroundColor: "rgba(75,192,192,1)",
-		// 			pointHoverBorderColor: "rgba(220,220,220,1)",
-		// 			pointHoverBorderWidth: 1,
-		// 			pointHitRadius: 5
-		// 		},
-		// 		{
-		// 			label: "Past",
-		// 			data: data[1].map(item => item["Net Sales"]),
-		// 			borderColor: "rgba(0,0,0,0.5)",
-		// 			borderWidth: 1,
-		// 			backgroundColor: "red",
-		// 			pointRadius: 3,
-		// 			borderJoinStyle: "miter",
-		// 			pointHoverRadius: 5,
-		// 			pointHoverBackgroundColor: "rgba(75,192,192,1)",
-		// 			pointHoverBorderColor: "rgba(220,220,220,1)",
-		// 			pointHoverBorderWidth: 1,
-		// 			pointHitRadius: 5
-		// 		},
-		// 		{
-		// 			label: "Another",
-		// 			data: data[1].map(item => item["Gross Sales"]),
-		// 			borderColor: "rgba(0,0,0,0.5)",
-		// 			borderWidth: 1,
-		// 			backgroundColor: "pink",
-		// 			pointRadius: 3,
-		// 			borderJoinStyle: "miter",
-		// 			pointHoverRadius: 5,
-		// 			pointHoverBackgroundColor: "rgba(75,192,192,1)",
-		// 			pointHoverBorderColor: "rgba(220,220,220,1)",
-		// 			pointHoverBorderWidth: 1,
-		// 			pointHitRadius: 5
-		// 		}
-		// 	]
-		// }
-		let temp = [data[0].map(item => item["Net Sales"]), data[1].map(item => item["Net Sales"])]
+		let current = data[0].map(item => {
+			return {
+				y: item["Net Sales"],
+				x: item["Date"]
+			}
+		})
+		let past = data[1].map(item => {
+			return {
+				y: item["Net Sales"],
+				x: Moment(item["Date"]).add(this.state.lookback, this.state.lookbackUnit)
+			}
+		})
 		// TODO this is getting the labels for the first dataset as the date. Labels should be more clear.
 		// Need to account for dates without data because labels become misaligned due do being displayed by array index
-		let labels = data[0].map(item => item["Date"])
-		line.chartData = this.createDataList(line.labelArray, temp, labels)
+		line.chartData = this.createDataList(line.labelArray, [current, past])
 
 		return <Line data={line.chartData} options={chartOptions} />
 	}
