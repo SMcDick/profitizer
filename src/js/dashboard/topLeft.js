@@ -73,23 +73,29 @@ class TopLeft extends Component {
 			{ labels: [], datasets: dataList }
 		)
 	}
-	createDataList(labelArray) {
-		return labelArray.map(label => {
-			return {
-				label: label.name,
-				data: [],
-				borderColor: label.border ? label.border : "rgba(0,0,0,0.5)",
-				borderWidth: label.width ? label.width : 1,
-				backgroundColor: label.color,
-				pointRadius: 0,
-				borderJoinStyle: "miter",
-				pointHoverRadius: 5,
-				pointHoverBackgroundColor: "rgba(75,192,192,1)",
-				pointHoverBorderColor: "rgba(220,220,220,1)",
-				pointHoverBorderWidth: 1,
-				pointHitRadius: 5
-			}
-		})
+	createDataList(labelArray, datasets, labels) {
+		return labelArray.reduce(
+			(obj, label) => {
+				// let labels = [...obj.labels, label.name]
+				let dataset = {
+					label: label.name,
+					data: datasets[label.index],
+					borderColor: label.border ? label.border : "rgba(0,0,0,0.5)",
+					borderWidth: label.width ? label.width : 1,
+					backgroundColor: label.color,
+					// pointRadius: 0,
+					pointRadius: 3,
+					borderJoinStyle: "miter",
+					pointHoverRadius: 5,
+					pointHoverBackgroundColor: "rgba(75,192,192,1)",
+					pointHoverBorderColor: "rgba(220,220,220,1)",
+					pointHoverBorderWidth: 1,
+					pointHitRadius: 5
+				}
+				return { labels, datasets: [...obj.datasets, dataset] }
+			},
+			{ labels: [], datasets: [] }
+		)
 	}
 
 	lineChartOptions = {
@@ -113,7 +119,7 @@ class TopLeft extends Component {
 		scales: {
 			yAxes: [
 				{
-					stacked: true,
+					// stacked: true,
 					gridLines: false
 				}
 			],
@@ -144,12 +150,63 @@ class TopLeft extends Component {
 
 		let line = {
 			labelArray: [
-				{ name: "Profit", color: "rgba(63, 195, 128,0.9)" },
-				{ name: "Return", color: "rgba(63, 195, 128,0.7)" }
+				{ name: "Current", color: "rgba(63, 195, 128,0.9)", index: 0 },
+				{ name: "Past", color: "rgba(163, 95, 128,0.7)", index: 1 }
 			]
 		}
-		line.dataList = this.createDataList(line.labelArray)
-		line.chartData = this.filterChartData(line.dataList, data[0], "Date")
+		// line.chartData = {
+		// 	// labels: data[0].map(item => item["Date"]),
+		// 	labels: ["red", "white", "blue"],
+		// 	datasets: [
+		// 		{
+		// 			label: "Current",
+		// 			data: data[0].map(item => item["Net Sales"]),
+		// 			borderColor: "rgba(0,0,0,0.5)",
+		// 			borderWidth: 1,
+		// 			backgroundColor: "blue",
+		// 			pointRadius: 3,
+		// 			borderJoinStyle: "miter",
+		// 			pointHoverRadius: 5,
+		// 			pointHoverBackgroundColor: "rgba(75,192,192,1)",
+		// 			pointHoverBorderColor: "rgba(220,220,220,1)",
+		// 			pointHoverBorderWidth: 1,
+		// 			pointHitRadius: 5
+		// 		},
+		// 		{
+		// 			label: "Past",
+		// 			data: data[1].map(item => item["Net Sales"]),
+		// 			borderColor: "rgba(0,0,0,0.5)",
+		// 			borderWidth: 1,
+		// 			backgroundColor: "red",
+		// 			pointRadius: 3,
+		// 			borderJoinStyle: "miter",
+		// 			pointHoverRadius: 5,
+		// 			pointHoverBackgroundColor: "rgba(75,192,192,1)",
+		// 			pointHoverBorderColor: "rgba(220,220,220,1)",
+		// 			pointHoverBorderWidth: 1,
+		// 			pointHitRadius: 5
+		// 		},
+		// 		{
+		// 			label: "Another",
+		// 			data: data[1].map(item => item["Gross Sales"]),
+		// 			borderColor: "rgba(0,0,0,0.5)",
+		// 			borderWidth: 1,
+		// 			backgroundColor: "pink",
+		// 			pointRadius: 3,
+		// 			borderJoinStyle: "miter",
+		// 			pointHoverRadius: 5,
+		// 			pointHoverBackgroundColor: "rgba(75,192,192,1)",
+		// 			pointHoverBorderColor: "rgba(220,220,220,1)",
+		// 			pointHoverBorderWidth: 1,
+		// 			pointHitRadius: 5
+		// 		}
+		// 	]
+		// }
+		let temp = [data[0].map(item => item["Net Sales"]), data[1].map(item => item["Net Sales"])]
+		// TODO this is getting the labels for the first dataset as the date. Labels should be more clear.
+		// Need to account for dates without data because labels become misaligned due do being displayed by array index
+		let labels = data[0].map(item => item["Date"])
+		line.chartData = this.createDataList(line.labelArray, temp, labels)
 
 		return <Line data={line.chartData} options={chartOptions} />
 	}
