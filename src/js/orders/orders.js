@@ -86,7 +86,8 @@ class Orders extends Component {
 				return: util.totaler(filteredData, "Total_Return"),
 				profit: util.totaler(filteredData, "Total_Profit"),
 				cost: util.totaler(filteredData, "COGS"),
-				fees: util.totaler(filteredData, "Marketplace_Fee") + util.totaler(data, "Transaction_Fee"),
+				mktFees: util.totaler(filteredData, "Marketplace_Fee"),
+				trxFees: util.totaler(data, "Transaction_Fee"),
 				ship: util.totaler(filteredData, "Shipping"),
 				tax: util.totaler(filteredData, "Tax_Calculated_Calc")
 			}

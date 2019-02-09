@@ -76,9 +76,14 @@ const totalFields = [
 		heading: "Sales"
 	},
 	{
-		name: "fees",
+		name: "mktFees",
 		format: "negativeMoney",
-		heading: "Fees"
+		heading: "Mkt Fees"
+	},
+	{
+		name: "trxFees",
+		format: "negativeMoney",
+		heading: "Trx Fees"
 	},
 	{
 		name: "ship",
