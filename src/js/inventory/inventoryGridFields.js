@@ -43,6 +43,11 @@ const fields = [
 		name: "Total_Cost",
 		heading: "Total",
 		format: "money"
+	},
+	{
+		name: "Purchase_Date",
+		heading: "Date",
+		format: "date"
 	}
 ]
 export default fields
