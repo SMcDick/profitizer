@@ -2,7 +2,9 @@ const fields = [
 	{ name: "Item", type: "text", className: "flex-child__100 pad10" },
 	{ name: "Quantity", int: true, className: "short pad10" },
 	{ name: "Unit_Cost", label: "Unit Cost", className: "short pad10" },
-	{ name: "Tax", className: "short pad10" }
+	{ name: "Tax", className: "short pad10" },
+	{ name: "Purchase_Date", label: "Purchase Date", type: "date" },
+	{ name: "Notes", type: "textarea", className: "flex-child__100 pad10" }
 ]
 const doNotUpdate = [
 	{ name: "Num_Sold" },
