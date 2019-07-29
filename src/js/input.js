@@ -43,7 +43,8 @@ class Input extends Component {
 			readonly,
 			required,
 			className = "",
-			int
+			int,
+			allowLP
 		} = options
 		let checked = type === "checkbox" && value.toString() === "1"
 		if (value === null) {
@@ -64,8 +65,8 @@ class Input extends Component {
 				name={name}
 				placeholder={placeholder}
 				readOnly={readonly}
-				autoComplete="off"
-				data-lpignore="true"
+				autoComplete={allowLP ? "off" : undefined}
+				data-lpignore={allowLP ? undefined : "true"}
 				step={type === "number" ? (int ? 1 : 0.01) : undefined}
 				required={required}
 			/>

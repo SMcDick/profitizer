@@ -14,3 +14,4 @@ if (hostname === "profiteer.nfshost.com") {
 }
 
 export const API_ROOT = `${backendHost}/v2/`
+export const ROOT = `${backendHost}/`

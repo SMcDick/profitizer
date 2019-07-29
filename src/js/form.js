@@ -88,6 +88,20 @@ class Form extends Component {
 				// alert(e.response.data.message)
 			})
 	}
+	externalSubmit = e => {
+		const { handleSubmit } = this.props;
+		const { url, id, closeModal, fields, method, handleError } = this.props
+		let saveDetails = { ...this.props.details }
+		if (this.state.details !== undefined) {
+			saveDetails = { ...this.state.details }
+		}
+		for (const field of fields) {
+			if (field.noUpdate) {
+				delete saveDetails[field.name]
+			}
+		}
+		handleSubmit(e, url, id, method, saveDetails);
+	}
 	cancel = e => {
 		e.stopPropagation()
 		this.props.closeModal()
@@ -113,12 +127,12 @@ class Form extends Component {
 	}
 	render() {
 		const { redirect } = this.state
-		const { fields, redirectTo, closeModal } = this.props
+		const { fields, redirectTo, closeModal, handleSubmit } = this.props
 		if (redirect) {
 			return <Redirect exact={true} to={redirectTo} />
 		}
 		return (
-			<form onSubmit={this.handleSubmit} className="flex-parent__wrap">
+			<form onSubmit={handleSubmit ? this.externalSubmit : this.handleSubmit} className="flex-parent__wrap">
 				{fields.map(field => this.renderInput(field))}
 				{!closeModal && (
 					<div className="btn-container flex-child__100 pad10">
@@ -154,7 +168,8 @@ Form.propTypes = {
 	closeModal: func,
 	updateCalculatedFields: func,
 	method: string,
-	handleError: func.isRequired
+	handleError: func.isRequired,
+	handleSubmit: func
 }
 Form.defaultProps = {
 	method: "post",
