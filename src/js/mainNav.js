@@ -17,6 +17,9 @@ const Nav = () => (
 			</NavLink>
 		</li>
 		<li className="flex-child nav__item">
+			<NavLink to="/profile">Profile</NavLink>
+		</li>
+		<li className="flex-child nav__item">
 			<NavLink to="/inventory/all" isActive={(match, location) => isLinkActive(location, "inventory")}>
 				Inventory
 			</NavLink>

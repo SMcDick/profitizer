@@ -5,6 +5,7 @@ import Cookies from "universal-cookie";
 import Login from "./account/login"
 import LogoutLink from "./account/logoutLink"
 import Register from "./account/register"
+import Profile from "./account/profile"
 
 import Home from "./home"
 import Inventory from "./inventory"
@@ -61,6 +62,7 @@ class App extends Component {
 								<Route path="/restaurants/:params*" component={RestaurantWrapper} />
 								<Route path="/expenses/:params*" component={ExpenseWrapper} />
 								<Route path="/bugs/:params*" component={Bugs} />
+								<Route path="/profile" component={Profile} />
 								<Redirect from="/ebay" to="/orders/incomplete" />
 								<Redirect from="/poshmark" to="/orders/incomplete" />
 								<Redirect from="/paypal" to="/orders/incomplete" />
