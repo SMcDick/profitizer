@@ -1,5 +1,5 @@
 import React from "react"
-import { NavLink } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom"
 
 let isLinkActive = (location, root) => {
 	if (location.pathname.indexOf(root) === 1) {
@@ -37,6 +37,9 @@ const Nav = () => (
 		</li>
 		<li className="flex-child nav__item">
 			<NavLink to="/bugs">Bugs</NavLink>
+		</li>
+		<li className="flex-child nav__item">
+			<Link to="/logout">Logout</Link>
 		</li>
 		{/*
             <li className="flex-child nav__item">

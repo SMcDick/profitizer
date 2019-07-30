@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-d
 import Cookies from "universal-cookie";
 
 import Login from "./login"
+import LogoutLink from "./logoutLink"
 
 import Home from "./home"
 import Inventory from "./inventory"
@@ -57,7 +58,12 @@ class App extends Component {
 								<Redirect from="/ebay" to="/orders/incomplete" />
 								<Redirect from="/poshmark" to="/orders/incomplete" />
 								<Redirect from="/paypal" to="/orders/incomplete" />
+								<Route path="/logout" exact>
+									{props => <LogoutLink {...props} updateAuth={this.updateAuth} />}
+								</Route>
+								
 								<Route path="/*" component={NotFound} />
+								
 							</Switch>
 						</React.Fragment>		
 					)}
