@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { string, object, array } from "prop-types"
 import Moment from "moment"
-import axios from "axios"
 
 import Loading from "../loading"
 import RequestError from "../error"
@@ -12,6 +11,7 @@ import Alert from "../alert"
 
 import Util from "../utils"
 import { API_ROOT } from "../config"
+import { requester } from "../utilities/apiUtils";
 
 class Expenses extends Component {
 	constructor(props) {
@@ -39,18 +39,18 @@ class Expenses extends Component {
 
 		let paramString = params ? `${params}` : ""
 
-		axios
-			.get(API_ROOT + this.props.url + paramString + search)
+		const url = API_ROOT + this.props.url + paramString + search
+		requester({ url, method: 'GET'})
 			.then(expenses => {
 				this.setState({
-					data: expenses.data.data,
+					data: expenses.data,
 					loading: false,
 					error: false
 				})
 			})
 			.catch(err => {
 				console.error(err.response)
-				this.setState({ requestError: true, loading: false, error: err.response.data.message })
+				this.setState({ requestError: true, loading: false, error: err.response.message })
 			})
 	}
 	editItem = id => {

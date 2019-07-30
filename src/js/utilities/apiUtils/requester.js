@@ -1,12 +1,16 @@
 import Cookie from "universal-cookie";
 const cookies = new Cookie()
 
-const requester = async ({ url, body, headers, method = "POST", noContentType }) => {
+const requester = async ({ url, body, headers, method = "POST", noContentType, external }) => {
     // const cookie = decodeURIComponent(readCookie("X-CSRF-Token"));
     // headers = { "Content-Type": "application/json", "X-CSRF-Token": cookies.get('auth'), ...headers };
     headers = { "Authorization": 'Bearer ' + cookies.get('auth'), "Content-Type": "application/json", ...headers };
     if (noContentType) {
         delete headers["Content-Type"];
+    }
+    if( external ){
+        delete headers["Authorization"]
+        delete headers["Content-Type"]
     }
     if (headers["Content-Type"] === "application/json") {
         body = JSON.stringify(body);

@@ -1,10 +1,10 @@
 import React, { Component } from "react"
 import { object, array, func, string, oneOfType, number } from "prop-types"
 import Input from "./input"
-import axios from "axios"
 import { Redirect } from "react-router-dom"
 
 import { API_ROOT } from "./config"
+import { requester } from "./utilities/apiUtils";
 
 class Form extends Component {
 	constructor() {
@@ -74,7 +74,7 @@ class Form extends Component {
 			// method = "post"
 		}
 
-		axios[method](endpoint, saveDetails)
+		requester({ url: endpoint, body: saveDetails, method })
 			.then(() => {
 				// TODO this is probably a bad way to determine if the form is in a modal
 				if (closeModal) {

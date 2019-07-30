@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import PropType from "prop-types"
 import Moment from "moment"
 import { NavLink, Redirect } from "react-router-dom"
-import axios from "axios"
 
 import { fields } from "./gridFields"
 
@@ -11,6 +10,7 @@ import Util from "../utils"
 import { API_ROOT } from "../config"
 import Loading from "../loading"
 import Error from "../error"
+import { requester } from "../utilities/apiUtils";
 
 class Taxes extends Component {
 	constructor(props) {
@@ -35,10 +35,10 @@ class Taxes extends Component {
 		if (month === undefined) {
 			month = Moment().format("YYYY-MM")
 		}
-		axios
-			.get(API_ROOT + "sales/month/" + month)
+		const url = API_ROOT + "sales/month/" + month
+		requester({ url, method: 'GET' })
 			.then(result => {
-				this.setState({ data: result.data.data, loading: false })
+				this.setState({ data: result.data, loading: false })
 			})
 			.catch(e => {
 				console.error(e.response)

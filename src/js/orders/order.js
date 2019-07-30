@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import axios from "axios"
 import { Link } from "react-router-dom"
 import { func, oneOfType, string, number, object } from "prop-types"
 
@@ -9,6 +8,7 @@ import Item from "./orderItems"
 import Alert from "../alert"
 import util from "../utils"
 import { API_ROOT } from "../config"
+import { requester } from "../utilities/apiUtils";
 
 class Order extends Component {
 	constructor(props) {
@@ -22,10 +22,10 @@ class Order extends Component {
 	}
 	fetchData = () => {
 		const { id } = this.props.match.params
-		axios
-			.get(API_ROOT + "sales/" + id)
+		const url = API_ROOT + "sales/" + id;
+		requester({ url, method: 'GET' })
 			.then(result => {
-				const details = result.data.data
+				const details = result.data
 				const items = details.items
 				const cogs = details.COGS
 				this.setState({ details, items, cogs, loading: false, id })

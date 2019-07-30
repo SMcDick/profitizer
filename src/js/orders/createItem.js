@@ -1,10 +1,10 @@
 import React, { Component } from "react"
 import { func } from "prop-types"
-import axios from "axios"
 
 import Input from "../input"
 import Select from "../select"
 import { API_ROOT } from "../config"
+import { requester } from "../utilities/apiUtils";
 
 class CreateItem extends Component {
 	constructor(props) {
@@ -20,8 +20,10 @@ class CreateItem extends Component {
 		this.setState({ items: val }, this.props.updateItems(this.itemsArrayToObject(val), description))
 	}
 	componentDidMount() {
-		axios.get(API_ROOT + "inventory/remaining").then(result => {
-			this.setState({ inventory: result.data.data, loading: false })
+		const url = API_ROOT + "inventory/remaining";
+		requester({ url, method: 'GET' })
+		.then(result => {
+			this.setState({ inventory: result.data, loading: false })
 		})
 	}
 	selectBuilder(collection) {

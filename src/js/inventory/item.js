@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { object } from "prop-types"
 import { Link } from "react-router-dom"
-import axios from "axios"
 
 import { fields, doNotUpdate, totalFields, lotFields, saleFields } from "./itemFields"
 
@@ -13,6 +12,7 @@ import RequestError from "../error"
 
 import util from "../utils"
 import { API_ROOT } from "../config"
+import { requester } from "../utilities/apiUtils";
 
 class Item extends Component {
 	constructor(props) {
@@ -25,10 +25,10 @@ class Item extends Component {
 	}
 	componentDidMount() {
 		const { id } = this.props.match.params
-		axios
-			.get(API_ROOT + "inventory/" + id)
+		const url = API_ROOT + "inventory/" + id
+		requester({ url, method: "GET" })
 			.then(result => {
-				this.setState({ item: result.data.data, loading: false, id })
+				this.setState({ item: result.data, loading: false, id })
 			})
 			.catch(err =>
 				this.setState({ item: {}, loading: false, requestError: true, error: err.response.data.message })

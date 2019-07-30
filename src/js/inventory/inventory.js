@@ -1,6 +1,5 @@
 import React, { Component } from "react"
 import { object } from "prop-types"
-import axios from "axios"
 
 import fields from "./inventoryGridFields"
 import { Grid } from "../grid"
@@ -8,6 +7,7 @@ import InventoryNav from "./inventoryNav"
 import Input from "../input"
 
 import { API_ROOT } from "../config"
+import { requester } from "../utilities/apiUtils"
 
 class Inventory extends Component {
 	constructor(props) {
@@ -31,10 +31,11 @@ class Inventory extends Component {
 		let { params } = this.props.match.params
 		const { search } = this.props.location
 		let paramString = params ? `/${params}` : ""
-		axios
-			.get(API_ROOT + "inventory" + paramString + search)
+
+		const url = API_ROOT + "inventory" + paramString + search;
+		requester({ url, method: 'GET' })
 			.then(inventory => {
-				const data = inventory.data.data
+				const data = inventory.data
 				this.setState({
 					data,
 					loading: false,

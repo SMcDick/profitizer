@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import PropType from "prop-types"
 import Moment from "moment"
-import axios from "axios"
 
 import fields from "./gridFields"
 import { fields as formFields } from "./formFields"
@@ -14,6 +13,7 @@ import Form from "../form"
 import Alert from "../alert"
 
 import { API_ROOT } from "../config"
+import { requester } from "../utilities/apiUtils";
 
 class Bugs extends Component {
 	constructor(props) {
@@ -40,11 +40,11 @@ class Bugs extends Component {
 
 		let paramString = params ? `${params}` : ""
 
-		axios
-			.get(API_ROOT + this.props.url + paramString + search)
+		const url = API_ROOT + this.props.url + paramString + search
+		requester({ url, method: 'GET' })
 			.then(expenses => {
 				this.setState({
-					data: expenses.data.data,
+					data: expenses.data,
 					loading: false,
 					requestError: false,
 					submitError: false,

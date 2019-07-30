@@ -1,6 +1,5 @@
 import React, { Component } from "react"
 import { object, string } from "prop-types"
-import axios from "axios"
 
 import OrderFilters from "./orderFilters"
 import OrderNav from "./orderNav"
@@ -12,6 +11,7 @@ import Input from "../input"
 import { Grid } from "../grid"
 
 import util from "../utils"
+import { requester } from "../utilities/apiUtils"
 import { API_ROOT } from "../config"
 
 class Orders extends Component {
@@ -42,10 +42,11 @@ class Orders extends Component {
 			params = filter.url
 		}
 		let paramString = params ? `/${params}` : ""
-		axios
-			.get(API_ROOT + "sales" + paramString + search)
+
+		const url = API_ROOT + "sales" + paramString + search
+		requester({ url, method: 'GET' })
 			.then(sales => {
-				const data = sales.data.data
+				const data = sales.data
 				this.setState({
 					data,
 					loading: false,

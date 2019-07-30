@@ -1,8 +1,8 @@
 import React, { Component } from "react"
-import axios from "axios"
 import { func } from "prop-types"
 
 import Input from "../input"
+import { requester } from "../utilities/apiUtils";
 
 class ZipCode extends Component {
 	constructor() {
@@ -30,14 +30,11 @@ class ZipCode extends Component {
 			this.setState({ loading: true })
 		}
 
-		axios
-			.get(
-				"https://api.zip-codes.com/ZipCodesAPI.svc/1.0/QuickGetZipCodeDetails/" +
-					zip +
-					"?key=JGGQP7LC3URUS5PSVFGX"
-			)
+		let url = "http://api.zip-codes.com/ZipCodesAPI.svc/1.0/QuickGetZipCodeDetails/"
+		url += zip + "?key=JGGQP7LC3URUS5PSVFGX"
+		requester({ url, method: 'GET', external: true })
 			.then(response => {
-				let data = response.data
+				let data = response
 				let county = data.Error ? data.Error : data.County
 				if (!county) {
 					return this.setState({ loading: false, county: "Unable to find County" })
