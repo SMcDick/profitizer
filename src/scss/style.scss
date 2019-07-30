@@ -34,3 +34,12 @@
 .App {
 	padding-top: 10px;
 }
+
+form {
+	div.field {
+		margin-top: 10px;
+		&:first-of-type {
+			margin-bottom: 0;
+		}
+	}
+}

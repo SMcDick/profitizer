@@ -1250,3 +1250,8 @@ em {
 
 .App {
   padding-top: 10px; }
+
+form div.field {
+  margin-top: 10px; }
+  form div.field:first-of-type {
+    margin-bottom: 0; }
