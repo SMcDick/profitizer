@@ -2,8 +2,8 @@ import React, { Component } from "react"
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
 import Cookies from "universal-cookie";
 
-import Login from "./login"
-import LogoutLink from "./logoutLink"
+import Login from "./account/login"
+import LogoutLink from "./account/logoutLink"
 
 import Home from "./home"
 import Inventory from "./inventory"

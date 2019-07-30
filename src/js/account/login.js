@@ -1,12 +1,12 @@
 import React from 'react';
-import Form from './form';
+import Form from '../form';
 import { Segment, Header } from "semantic-ui-react";
 import Cookies from "universal-cookie";
 
-import { ErrorHandler } from "./shared"
+import { ErrorHandler } from "../shared"
 
-import { requester } from "./utilities/apiUtils";
-import { ROOT } from "./config";
+import { requester } from "../utilities/apiUtils";
+import { ROOT } from "../config";
 
 const fields = [
 	{ name: "username", type: "text", className: "short pad10", allowLP: true, required: true },
