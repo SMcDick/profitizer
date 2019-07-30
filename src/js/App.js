@@ -26,6 +26,11 @@ const NotFound = () => (
 	</section>
 )
 
+const AuthRedirect = props => {
+	let { from } = props.location.state || { from: { pathname: "/" } };
+	return <Redirect to={from} />
+}
+
 class App extends Component {
 	constructor(props){
 		super(props);
@@ -55,7 +60,7 @@ class App extends Component {
 								<Route path="/taxes/:month?" component={Taxes} />
 								<Route path="/restaurants/:params*" component={RestaurantWrapper} />
 								<Route path="/expenses/:params*" component={ExpenseWrapper} />
-								<Route path="/Bugs/:params*" component={Bugs} />
+								<Route path="/bugs/:params*" component={Bugs} />
 								<Redirect from="/ebay" to="/orders/incomplete" />
 								<Redirect from="/poshmark" to="/orders/incomplete" />
 								<Redirect from="/paypal" to="/orders/incomplete" />
@@ -63,12 +68,8 @@ class App extends Component {
 									{props => <LogoutLink {...props} updateAuth={this.updateAuth} />}
 								</Route>
 
-								<Route path={["/register", "/login"]}>
-									{props => {
-										let { from } = props.location.state || { from: { pathname: "/" } };
-										return <Redirect to={from} />
-									}}
-								</Route>
+								<Route path="/register" exact component={AuthRedirect} />
+								<Route path="/login" exact component={AuthRedirect} />
 								
 								<Route path="/*" component={NotFound} />
 								
