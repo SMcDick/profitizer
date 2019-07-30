@@ -4,6 +4,7 @@ import Cookies from "universal-cookie";
 
 import Login from "./account/login"
 import LogoutLink from "./account/logoutLink"
+import Register from "./account/register"
 
 import Home from "./home"
 import Inventory from "./inventory"
@@ -61,6 +62,13 @@ class App extends Component {
 								<Route path="/logout" exact>
 									{props => <LogoutLink {...props} updateAuth={this.updateAuth} />}
 								</Route>
+
+								<Route path={["/register", "/login"]}>
+									{props => {
+										let { from } = props.location.state || { from: { pathname: "/" } };
+										return <Redirect to={from} />
+									}}
+								</Route>
 								
 								<Route path="/*" component={NotFound} />
 								
@@ -68,7 +76,14 @@ class App extends Component {
 						</React.Fragment>		
 					)}
 					{!isAuth && (
-						<Login updateAuth={this.updateAuth} />
+						<Switch>
+							<Route path="/register" exact>
+								{props => <Register {...props} updateAuth={this.updateAuth} />}
+							</Route>
+							<Route path="/*">
+								{props => <Login {...props} updateAuth={this.updateAuth} />}
+							</Route>
+						</Switch>
 					)}
 				</div>
 			</Router>

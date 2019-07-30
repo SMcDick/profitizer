@@ -10,11 +10,13 @@ import { requester } from "../utilities/apiUtils";
 import { ROOT } from "../config";
 
 const fields = [
-	{ name: "username", type: "text", className: "short pad10", allowLP: true, required: true },
-	{ name: "password", type: "password", className: "short pad10", allowLP: true, required: true }
+	{ name: "username", label: "Username", type: "text", className: "flex-child__100 pad10", allowLP: true, required: true },
+    { name: "password", label: "Password", type: "password", className: "flex-child__100 pad10", allowLP: true, required: true },
+    { name: "password_confirm", label: "Confirm", type: "password", className: "flex-child__100 pad10", allowLP: true, required: true },
+    { name: "email", label: "Email", type: "email", className: "short flex-child__100 pad10", allowLP: true, required: true }
 ]
 
-class Login extends React.Component {
+class Register extends React.Component {
     state = {
         errors: []
     }
@@ -22,11 +24,15 @@ class Login extends React.Component {
     handleSubmit = async (e, url, id, method, saveDetails) => {
         e.preventDefault()
         const { updateAuth } = this.props;
+        if (saveDetails['password'] !== saveDetails['password_confirm']) {
+            return this.setState({ errors: ["Passwords do not match"] })
+        } else {
+            delete saveDetails['password_confirm']
+        }
+
         const response = await requester({ url: ROOT + url, body: saveDetails });
-        if( response.error ){
-            this.setState({ errors: [response.error.message] })
-        } else if ( !response.auth ){
-            this.setState({ errors: [response.data.message] })
+        if( response instanceof Error ){
+            this.setState({ errors: [response.response ? response.response.message : response.message || response.error.message] })
         } else {
             const cookies = new Cookies()
             cookies.set('auth', response.user.token, { path: "/" })
@@ -37,21 +43,21 @@ class Login extends React.Component {
         const { errors } = this.state;
         return (
             <Segment>
-                <Header content="Login" />
+                <Header content="Register" />
                 { errors.length > 0 && <ErrorHandler errors={errors} /> }
                 <Form
                     fields={fields}
-                    details={{username: "", password: ""}}
-                    url="login"
+                    details={{username: "", password: "", password_confirm: "", email: "" }}
+                    url="register"
                     handleError={this.handleError}
                     handleSubmit={this.handleSubmit}
                 />
                 <Segment secondary>
-                    <p>Don't have an account? <Link to="/register">Create One</Link></p>
+                    <p>Already have an account? <Link to="/login">Login</Link></p>
                 </Segment>
             </Segment>
         )
     }
 }
 
-export default Login;
+export default Register;
